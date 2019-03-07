@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { Provider } from "react-redux"
+import createHistory from "history/createBrowserHistory"
+import configureStore from "../redux/configureStore"
 import logo from '../logo.svg';
 import './App.css';
 
