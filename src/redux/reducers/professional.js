@@ -1,7 +1,7 @@
 import * as actions from "../actions/professional"
 
 const professionalInitialState = {
-  professionals: null
+  professionals: "hello"
 };
 
 const professionalReducer = (state = professionalInitialState, action) => {

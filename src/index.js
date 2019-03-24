@@ -1,15 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+
 import {Provider} from "react-redux";
-import store from "./store"
+
 import './index.css';
 import App from './containers/App';
 import * as serviceWorker from './serviceWorker';
+import configureStore from "./redux/configureStore";
 
-const rootElement = document.getElementById('root')
+export const store = configureStore({});
+
+const rootElement = document.getElementById('root');
+
 ReactDOM.render(
   <Provider store={store}>
-    <App />
+    <App/>
   </Provider>,
   rootElement
 );
