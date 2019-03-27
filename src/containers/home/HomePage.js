@@ -6,7 +6,7 @@ import * as professionalActions from "../../redux/actions/professional";
 import {bindActionCreators} from "redux/es/redux";
 
 const mapStateToProps = state => ({
-  professionals: state.professionals
+  professionals: state.professionals.active
 });
 
 const mapDispatchToProps = dispatch => {
@@ -24,25 +24,29 @@ class HomePage extends Component {
   };
 
   render() {
-    console.log(this.props.professionals.professionals);
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+    if (this.props.professionals) {
+      return (
+        <div className="App">
+          <header className="App-header">
+            <img src={logo} className="App-logo" alt="logo"/>
+            <div>{this.props.professionals[0].first_name} {this.props.professionals[0].last_name}</div>
+            <p>
+              Edit <code>src/App.js</code> and save to reload.
+            </p>
+            <a
+              className="App-link"
+              href="https://reactjs.org"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Learn React
+            </a>
+          </header>
+        </div>
+      );
+    } else {
+      return null
+    }
   }
 }
 

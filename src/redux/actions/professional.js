@@ -6,7 +6,8 @@ export function fetchProfessionals() {
   return {
     type: FETCH_PROFESSIONALS,
     meta: {
-      endpoint: "/professionals",
+      method: 'GET',
+      endpoint: "/api/professionals/",
       success: updateProfessionals,
     }
   }
@@ -16,7 +17,7 @@ function updateProfessionals(data) {
   return {
     type: UPDATE_PROFESSIONALS,
     payload: {
-      professionals: data.professionals
+      professionals: data.results
     }
   }
 }

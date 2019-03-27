@@ -1,7 +1,7 @@
 import * as actions from "../actions/professional"
 
 const professionalInitialState = {
-  professionals: "hello"
+  professionals: null
 };
 
 const professionalReducer = (state = professionalInitialState, action) => {
@@ -13,7 +13,7 @@ const professionalReducer = (state = professionalInitialState, action) => {
     case actions.UPDATE_PROFESSIONALS:
       return {
         ...state,
-        professionals: action.payload.professionals
+        active: action.payload.professionals
       };
     default:
       return state
