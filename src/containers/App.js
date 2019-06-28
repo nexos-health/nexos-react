@@ -6,7 +6,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <HomePage2/>
+      <HomePage/>
     );
   }
 }

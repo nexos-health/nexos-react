@@ -1,33 +1,39 @@
-import React, { Component, useState } from 'react';
-import './HomePage.css';
+import React, { useState, useEffect } from 'react';
 
+
+const useSW = (state, personId) => {
+  const [person, setPerson] = useState(state);
+
+  useEffect(() => {
+    // Update the document title using the browser API
+    fetch('https://swapi.co/api/people/' + personId)
+      .then(function(response) {
+        return response.json();
+      })
+      .then(function(myJson) {
+        setPerson(JSON.stringify(myJson));
+      });
+  }, [personId]);
+  return person
+};
 
 export default function HomePage() {
-  const [name, setName] = useState('New');
-  const [surname, setSurname] = useState('Way');
+  // Declare a new state variable, which we'll call "count"
+  const [count, setCount] = useState(0);
+  const person = useSW(0, count);
 
-  function handleNameChange(e) {
-    setName(e.target.value);
-  }
+  useEffect(() => {
+    // Update the document title using the browser API
+    document.title = `You clicked ${count} times`;
+  });
 
-  function handleSurnameChange(e) {
-    setSurname(e.target.value);
-  }
 
   return (
-    <section>
-      <div>
-        <input
-          value={name}
-          onChange={handleNameChange}
-        />
-      </div>
-      <div>
-        <input
-          value={surname}
-          onChange={handleSurnameChange}
-        />
-      </div>
-    </section>
-  )
+    <div>
+      <p>You clicked {person} times</p>
+      <button onClick={() => setCount(count + 1)}>
+        Click me
+      </button>
+    </div>
+  );
 }
