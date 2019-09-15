@@ -1,52 +1,71 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux'
+import {StripeProvider} from 'react-stripe-elements';
+
 import logo from '../../logo.svg';
 import './HomePage.css';
-import * as professionalActions from "../../redux/actions/professional";
+import * as paymentActions from "../../redux/actions/payment";
 import {bindActionCreators} from "redux/es/redux";
 
 const mapStateToProps = state => ({
-  professionals: state.professionals.active
+  payment: state.payment
 });
 
 const mapDispatchToProps = dispatch => {
   return {
-    professionalActions: bindActionCreators(professionalActions, dispatch)
+    paymentActions: bindActionCreators(paymentActions, dispatch)
   }
 };
 
 
 class HomePage extends Component {
-  componentDidMount = () => {
-    console.log("HEllo1");
-    this.props.professionalActions.fetchProfessionals();
-    console.log("HEllo2");
+  constructor(props) {
+    super(props);
+    this.state = {
+      paymentSession: {
+        error: ""
+      },
+    };
+  }
+
+  redirectToCheckout = () => {
+    let stripe = Stripe(process.env.REACT_APP_STRIPE_PUBLIC_API_KEY);
+    fetch(process.env.REACT_APP_PLATFORM_API + "/api/payment/pay-once")
+      .then(
+        stripe.redirectToCheckout({
+          sessionId: this.props.payment.sessionId
+        }).then((result) => {
+          this.setState({
+            session: {
+              error: result.error.message
+            }
+          })
+        })
+      )
   };
 
   render() {
-    if (this.props.professionals) {
+    if (this.state.paymentSession.error) {
       return (
-        <div className="App">
-          <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo"/>
-            <div>{this.props.professionals[0].first_name} {this.props.professionals[0].last_name}</div>
-            <p>
-              Edit <code>src/App.js</code> and save to reload.
-            </p>
-            <a
+        <div>There was an error</div>
+      )
+    }
+
+    return (
+      <div className="App">
+        <script src="https://js.stripe.com/v3/"> </script>
+        <header className="App-header">
+          <img src={logo} className="App-logo" alt="logo"/>
+            <p
               className="App-link"
-              href="https://reactjs.org"
-              target="_blank"
+              onClick={this.redirectToCheckout}
               rel="noopener noreferrer"
             >
-              Learn React
-            </a>
-          </header>
-        </div>
-      );
-    } else {
-      return null
-    }
+              Click to pay Doctors Australia
+            </p>
+        </header>
+      </div>
+    );
   }
 }
 

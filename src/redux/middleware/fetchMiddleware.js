@@ -27,7 +27,7 @@ const fetchMiddleware = store => next => action => {
 
   let endpoint = action.meta.endpoint.startsWith("http://")
     ? action.meta.endpoint
-    : process.env.REACT_APP_DJANGO + action.meta.endpoint;
+    : process.env.REACT_APP_PLATFORM_API + action.meta.endpoint;
 
   console.log(endpoint);
 
