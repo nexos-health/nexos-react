@@ -10,10 +10,20 @@ const professionalReducer = (state = professionalInitialState, action) => {
       return {
         ...professionalInitialState
       };
+    case actions.UPDATE_PROFESSION_TYPES:
+      return {
+        ...state,
+        professionTypes: action.payload.professionTypes
+      };
     case actions.UPDATE_PROFESSIONALS:
       return {
         ...state,
-        active: action.payload.professionals
+        professionals: action.payload.professionals
+      };
+    case actions.UPDATE_PROFESSIONAL:
+      return {
+        ...state,
+        active: action.payload.currentProfessional
       };
     default:
       return state

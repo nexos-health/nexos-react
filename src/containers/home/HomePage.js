@@ -1,116 +1,124 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux'
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
+import MultiSelect from "react-multi-select-component";
+
 import logo from '../../logo.svg';
+import { fetchProfessionTypes, fetchProfessionals, fetchProfessional, favouriteProfessional } from "../../redux/actions/professional";
 import './HomePage.css';
-import * as professionalActions from "../../redux/actions/professional";
-import {bindActionCreators} from "redux/es/redux";
 
-const mapStateToProps = state => ({
-  professionals: state.professionals.active,
-  currentProfessional: state.professionals.currentProfessional
-});
-
-const mapDispatchToProps = dispatch => {
-  return {
-    professionalActions: bindActionCreators(professionalActions, dispatch)
-  }
+const formatProfessionTypes = (professionTypes) => {
+  let formattedProfessionTypes = professionTypes.map((professionType) => {
+    return (
+      {
+        "value": professionType.id,
+        "label": professionType.name,
+      }
+    )
+  });
+  return formattedProfessionTypes
 };
 
-
-class HomePage extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      searchTerm: "",
-      errorMessage: ""
-    };
+const filterProfessionals = (professionals, searchTerm) => {
+  let filteredProfessionals = professionals;
+  if (searchTerm && searchTerm.trim() !== "") {
+    let searchLower = searchTerm.toLowerCase();
+    filteredProfessionals = filteredProfessionals.filter(professional =>
+      (professional.firstName && professional.firstName.toLowerCase().indexOf(searchLower) >= 0) ||
+      (professional.lastName && professional.lastName.toLowerCase().indexOf(searchLower) >= 0) ||
+      (professional.description && professional.description.toLowerCase().indexOf(searchLower) >= 0)
+      // (professional.notes && professional.notes.toLowerCase().indexOf(searchLower) >= 0)
+    );
   }
 
-  componentDidMount = () => {
-    this.props.professionalActions.fetchProfessionals();
-  };
+  filteredProfessionals.sort((a, b) => {
+    const aName = a.lastName;
+    const bName = b.lastName;
+    if (aName < bName) return -1;
+    if (aName > bName) return 1;
+    return 0;
+  });
 
-  handleOnRowClick = (id) => {
-    this.props.professionalActions.fetchProfessional(id);
-  };
+  return filteredProfessionals;
+};
 
-  handleOnFavouriteClick = (id) => {
-    this.props.professionalActions.favouriteProfessional(id);
-  };
+export const HomePage = () => {
+  // Redux state initialisation
+  const professionals = useSelector(state => state.professionals.professionals);
+  const professionTypes = useSelector(state => state.professionals.professionTypes);
+  const currentProfessional = useSelector(state => state.professionals.currentProfessional);
+  const dispatch = useDispatch();
 
-  handleFieldOnChange = (field, value) => {
-    this.setState({[field]: value})
-  };
-  
-  filterProfessionals = () => {
-    let filteredProfessionals = this.props.professionals;
-    const searchTerm = this.state.searchTerm;
+  // Location state initialisation
+  const [searchTerm, setSearchTerm] = useState("");
+  const [professionTypesSelections, setProfessionTypesSelections] = useState([]);
+  const [selectedProfessionTypes, setSelectedProfessionTypes] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
 
-    if (searchTerm && searchTerm.trim() !== "") {
-      let searchLower = searchTerm.toLowerCase();
-      filteredProfessionals = filteredProfessionals.filter(professional =>
-        (professional.first_name && professional.first_name.toLowerCase().indexOf(searchLower) >= 0) ||
-        (professional.last_name && professional.last_name.toLowerCase().indexOf(searchLower) >= 0) ||
-        (professional.description && professional.description.toLowerCase().indexOf(searchLower) >= 0) ||
-        (professional.notes && professional.notes.toLowerCase().indexOf(searchLower) >= 0)
-      );
+  useEffect(() => {
+    if (!professionTypes) {
+      dispatch(fetchProfessionTypes());
     }
+  });
 
-    filteredProfessionals.sort((a, b) => {
-      const aName = a.first_name;
-      const bName = b.last_name;
-      if (aName < bName) return -1;
-      if (aName > bName) return 1;
-      return 0;
-    });
+  if (!professionTypesSelections.length && professionTypes) {
+    let formattedProfessionTypes = formatProfessionTypes(professionTypes);
+    setProfessionTypesSelections(formattedProfessionTypes);
+  }
 
-    return filteredProfessionals;
-  };
-
-  render() {
-    let professionals = this.props.professionals;
+  if (professionTypesSelections.length > 0) {
+    let filteredProfessionals = [];
     if (professionals) {
-      let filteredProfessionals = this.filterProfessionals();
-      return (
-        <div className="homepage">
-          <header className="homepage-header"/>
-          <div className="professional-body">
-            <div className="search-container">
-              <span
-                onChange={(e) => this.handleFieldOnChange("searchTerm", e.target.value)}
-              >
-                <input
-                  className="search-input"
-                  placeholder="Search by name, specialty, or location ..."
-                />
-              </span>
-            </div>
-            <ul className="professional-list">
-            {filteredProfessionals.map((professional) => {
-              return (
-                <li className="professional-list-item" onClick={() => this.handleOnRowClick(professional.id)}>
-                  <div className="professional-info">
-                    <div className="professional-name">
-                      {professional.first_name} {professional.last_name}
-                    </div>
-                    <div className="professional-description">
-                      {professional.description}
-                    </div>
-                  </div>
-                  <div className="professional-favourite">
-                    <img src={logo} className="favourite" alt="logo"/>
-                  </div>
-                </li>
-              )
-            })}
-            </ul>
-          </div>
-        </div>
-      );
-    } else {
-      return null
+      filteredProfessionals = filterProfessionals(professionals, searchTerm);
     }
+    return (
+      <div className="homepage">
+        <header className="homepage-header"/>
+        <div className="professional-body">
+          <div className="search-container">
+            <div className="professional-dropdown" onBlur={() => dispatch(fetchProfessionals(selectedProfessionTypes))}>
+              <MultiSelect
+                options={professionTypesSelections}
+                value={selectedProfessionTypes}
+                onChange={setSelectedProfessionTypes}
+                labelledBy={"Select"}
+                overrideStrings={{"selectSomeItems": "Select professions..."}}
+              />
+            </div>
+            <span
+              onChange={(e) => setSearchTerm(e.target.value)}
+            >
+              <input
+                className="search-input"
+                placeholder="Search professionals by name, location, or clinic..."
+              />
+            </span>
+          </div>
+          {professionals
+            ? <ul className="professional-list">
+              {filteredProfessionals.map((professional) => {
+                return (
+                  <li className="professional-list-item" onClick={() => dispatch(fetchProfessional(professional.id))}>
+                    <div className="professional-info">
+                      <div className="professional-name">
+                        {professional.firstName} {professional.lastName}
+                      </div>
+                      <div className="professional-description">
+                        {professional.description}
+                      </div>
+                    </div>
+                    <div className="professional-favourite">
+                      <img src={logo} className="favourite" alt="logo"/>
+                    </div>
+                  </li>
+                )
+              })}
+            </ul>
+            : null
+          }
+        </div>
+      </div>
+    );
+  } else {
+    return null
   }
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(HomePage);
+};
