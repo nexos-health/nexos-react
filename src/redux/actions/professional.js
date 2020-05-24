@@ -77,7 +77,7 @@ function updateProfessional(data) {
   return {
     type: UPDATE_PROFESSIONAL,
     payload: {
-      currentProfessional: data.results
+      currentProfessional: data
     }
   }
 }

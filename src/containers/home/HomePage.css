@@ -4,7 +4,7 @@
 }
 
 .homepage-header{
-  height: 200px;
+  height: 100px;
 }
 
 .professional-body {
@@ -12,7 +12,6 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: white;
 }
 
 .professional-dropdown {
@@ -49,9 +48,43 @@
   box-sizing: border-box;
 }
 
+.search-autocomplete {
+  color: black;
+  height: 2.38rem;
+  width: 350px;
+  padding: 0 0 0 20px;
+}
+
+.suggested-location-active {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0.5rem;
+  font-size: 0.9em;
+  background-color: lightgray;
+  height: 2.38rem;
+}
+
+.suggested-location {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 0 0.5rem;
+  font-size: 0.9em;
+  height: 2.38rem;
+  background-color: white;
+}
+
+.suggested-locations-box {
+  box-sizing: content-box;
+  border: solid #DBE2E9;
+  border-width: 0 1px 1px 1px;
+}
+
 .professional-list {
-  width: 60%;
+  width: 550px;
   text-align: left;
+  overflow: scroll;
 }
 
 .professional-list-item {
@@ -73,6 +106,58 @@
   justify-content: space-around;
   flex-grow: 2;
   width: 80%;
+}
+
+.current-professional-box {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: black;
+  border-color: darkslategrey;
+  border-left: inset;
+  padding: 20px;
+  width: 550px;
+}
+
+.current-professional {
+  display: flex;
+  flex-direction: column;
+}
+
+.current-professional-name {
+  padding: 10px 0 10px 0;
+}
+
+.current-professional-description {
+  color: darkgray;
+  padding: 0 0 10px 0;
+}
+
+.current-professional-clinics {
+  padding: 10px 0 10px 0;
+}
+
+.current-professional-clinic {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  padding-top: 20px;
+  font-size: small;
+}
+
+.professionals-results-body {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+}
+
+.no-selection {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: black;
+  border-color: darkslategrey;
+  padding: 20px;
 }
 
 .professional-favourite {
