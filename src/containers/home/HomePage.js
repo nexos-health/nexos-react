@@ -161,12 +161,17 @@ export const HomePage = () => {
                         setCurrentProfessional(professionals.filter(item => item.id === professional.id)[0])
                       }>
                         <div className="professional-info">
-                          <div className="professional-name">
-                            {professional.firstName} {professional.lastName}
+                          <div className="professional-top-row">
+                            <div className="professional-name">
+                              {professional.firstName} {professional.lastName}
+                            </div>
+                            <span className="professional-wait-time">{professional.waitTimes}</span>
                           </div>
                           <div className="professional-description">
                             {professional.description}
                           </div>
+                          <span className="professional-extras">Fees: {professional.fees}</span>
+                          <span className="professional-extras">BB: {professional.bulkBilling}</span>
                         </div>
                         <div className="professional-favourite">
                           <img src={logo} className="favourite" alt="logo"/>
@@ -183,6 +188,15 @@ export const HomePage = () => {
                       </span>
                       <span className="current-professional-description">
                         {currentProfessional.description}
+                      </span>
+                      <span className="current-professional-extras">
+                        <b>Wait Time:</b> {currentProfessional.waitTimes}
+                      </span>
+                      <span className="current-professional-extras">
+                        <b>Fees:</b> {currentProfessional.fees}
+                      </span>
+                      <span className="current-professional-extras">
+                        <b>Bulk Billing:</b> {currentProfessional.bulkBilling}
                       </span>
                       <div className="current-professional-clinics">
                         <span><b>Clinics</b></span>
