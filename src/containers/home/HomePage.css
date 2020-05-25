@@ -85,6 +85,9 @@
   width: 550px;
   text-align: left;
   overflow: scroll;
+  box-sizing: content-box;
+  border-color: darkslategrey;
+  border-right: inset;
 }
 
 .professional-list-item {
@@ -113,8 +116,6 @@
   flex-direction: column;
   justify-content: flex-start;
   color: black;
-  border-color: darkslategrey;
-  border-left: inset;
   padding: 20px;
   width: 550px;
 }
@@ -195,6 +196,10 @@
 .professional-extras {
   color: darkgray;
   font-size: small;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 0 0 5px 0;
 }
 
 .professional-wait-time {
