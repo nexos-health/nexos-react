@@ -89,6 +89,7 @@ export const HomePage = () => {
   const handleLocationCancel = () => {
     setLocationSelected(false);
     setLocationSearchTerm("");
+    setLatLngBounds({});
     document.getElementById("location-search-input").focus()
   };
 
@@ -176,8 +177,12 @@ export const HomePage = () => {
                 <ul className="professional-list">
                   {filteredProfessionals.map((professional) => {
                     return (
-                      <li className="professional-list-item" onClick={() =>
-                        setCurrentProfessional(professionals.filter(item => item.id === professional.id)[0])
+                      <li
+                        className={
+                          currentProfessional && professional.id === currentProfessional.id
+                            ? "active-professional-list-item" : "professional-list-item"
+                        }
+                        onClick={() => setCurrentProfessional(professionals.filter(item => item.id === professional.id)[0])
                       }>
                         <div className="professional-info">
                           <div className="professional-top-row">
