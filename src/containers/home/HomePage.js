@@ -67,6 +67,7 @@ export const HomePage = () => {
   // Location state initialisation
   const [searchTerm, setSearchTerm] = useState("");
   const [locationSearchTerm, setLocationSearchTerm] = useState("");
+  const [locationSelected, setLocationSelected] = useState(false);
   const [latLngBounds, setLatLngBounds] = useState({});
   const [currentProfessional, setCurrentProfessional] = useState(null);
   const [professionTypesSelections, setProfessionTypesSelections] = useState([]);
@@ -77,11 +78,18 @@ export const HomePage = () => {
     const results = await geocodeByAddress(value);
     const latBounds = await Object.values(results[0].geometry.bounds.Ya);
     const lngBounds = await Object.values(results[0].geometry.bounds.Ua);
+    setLocationSelected(true);
     setLocationSearchTerm(value);
     setLatLngBounds({
       latitude: {min: latBounds[0], max:latBounds[1]},
       longitude: {min: lngBounds[0], max:lngBounds[1]}
     });
+  };
+
+  const handleLocationCancel = () => {
+    setLocationSelected(false);
+    setLocationSearchTerm("");
+    document.getElementById("location-search-input").focus()
   };
 
   useEffect(() => {
@@ -122,6 +130,7 @@ export const HomePage = () => {
               onChange={(e) => setSearchTerm(e.target.value)}
             >
               <input
+                id="search-input"
                 className="search-input"
                 placeholder="Search by name, specialty, or clinic..."
               />
@@ -132,11 +141,21 @@ export const HomePage = () => {
                 onChange={setLocationSearchTerm}
                 onSelect={handleLocationSelect}
                 searchOptions={{types: ["(cities)"], componentRestrictions: {country: ["au"]}}}
+                debounce={200}
               >
                 {({getInputProps, suggestions, getSuggestionItemProps}) => (
                   <div>
-                    <input className="search-input" {...getInputProps({placeholder: "Type address..."})}/>
-                    <div className={suggestions.length > 0 && "suggested-locations-box"}>
+                    <div className="location-search-box">
+                      <input
+                        id="location-search-input"
+                        className="location-search-input" {...getInputProps({placeholder: "Search by suburb..."})}
+                        readOnly={!!locationSelected}
+                      />
+                      {locationSelected &&
+                        <i className="fa fa-times" style={{fontSize: "20px", color: "grey", paddingTop: "7px"}} onClick={() => handleLocationCancel()}/>
+                      }
+                    </div>
+                    <div className={suggestions.length > 0 ? "suggested-locations-box" : null}>
                       {suggestions.map(suggestion => {
                         const className = suggestion.active ? "suggested-location-active" : "suggested-location";
                         return (

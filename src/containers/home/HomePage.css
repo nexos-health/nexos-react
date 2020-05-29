@@ -48,6 +48,38 @@
   box-sizing: border-box;
 }
 
+.location-search-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  border: 1px solid #DBE2E9;
+  height: 2.38rem;
+  width: 350px;
+  border-radius: 3px;
+  padding: 0 0.5rem;
+  -webkit-appearance: none;
+  outline: none;
+  transition: border-color 0.3s ease;
+  box-sizing: border-box;
+}
+
+.location-search-input {
+  height: 2.15rem;
+  width: 350px;
+  padding: 0 0.5rem;
+  -webkit-appearance: none;
+  outline: none;
+  transition: border-color 0.3s ease;
+  font-size: 0.9em;
+  box-sizing: border-box;
+  border: 0;
+}
+
+.search-cancel {
+  width: 20px;
+  color: black;
+}
+
 .search-autocomplete {
   color: black;
   height: 2.38rem;
