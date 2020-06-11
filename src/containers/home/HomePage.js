@@ -3,9 +3,11 @@ import { useDispatch, useSelector } from 'react-redux'
 import MultiSelect from "react-multi-select-component";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
-import logo from '../../logo.svg';
-import { fetchProfessionTypes, fetchProfessionals, fetchProfessional, favouriteProfessional } from "../../redux/actions/professional";
+import logo from '../../assets/logo.svg';
 import './HomePage.css';
+import {SingleDropdown} from "../../components/SingleDropdown";
+import { fetchProfessionTypes, fetchProfessionals, fetchProfessional, favouriteProfessional } from "../../redux/actions/professional";
+import { login } from "../../redux/actions/account";
 
 const formatProfessionTypes = (professionTypes) => {
   let formattedProfessionTypes = professionTypes.map((professionType) => {
@@ -59,20 +61,32 @@ const filterProfessionals = (professionals, searchTerm, latLngBounds) => {
 
 export const HomePage = () => {
   // Redux state initialisation
+  const account = useSelector(state => state.account.accountDetails);
   const professionals = useSelector(state => state.professionals.professionals);
   const professionTypes = useSelector(state => state.professionals.professionTypes);
   // const currentProfessional = useSelector(state => state.professionals.currentProfessional);
   const dispatch = useDispatch();
 
-  // Location state initialisation
+  // State initialisation
+  const distanceOptions = [
+    {value: "5", label: "5km", distance: 1},
+    {value: "20", label: "20km", distance: 4},
+    {value: "50", label: "50km", distance: 10},
+    {value: "100", label: "100km", distance: 20},
+    {value: "200", label: "200km+", distance: 40},
+  ];
+
   const [searchTerm, setSearchTerm] = useState("");
   const [locationSearchTerm, setLocationSearchTerm] = useState("");
   const [locationSelected, setLocationSelected] = useState(false);
   const [latLngBounds, setLatLngBounds] = useState({});
+  const [distance, setDistance] = useState({});
   const [currentProfessional, setCurrentProfessional] = useState(null);
   const [professionTypesSelections, setProfessionTypesSelections] = useState([]);
   const [selectedProfessionTypes, setSelectedProfessionTypes] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+
+
 
   const handleLocationSelect = async (value) => {
     const results = await geocodeByAddress(value);
@@ -117,58 +131,69 @@ export const HomePage = () => {
       <div className="homepage">
         <header className="homepage-header"/>
         <div className="professional-body">
-          <div className="search-container">
-            <div className="professional-dropdown">
-              <MultiSelect
-                options={professionTypesSelections}
-                value={selectedProfessionTypes}
-                onChange={setSelectedProfessionTypes}
-                labelledBy={"Select"}
-                overrideStrings={{"selectSomeItems": "Select professions..."}}
-              />
+          <div>
+            <div className="login-box auth0-box before">
+              <img alt="auth0-logo" src="https://i.cloudup.com/StzWWrY34s.png"/>
+              <h3>Auth0 Example</h3>
+              <p>Zero friction identity infrastructure, built for developers</p>
+              <a className="btn btn-primary btn-lg btn-login btn-block" onClick={login}>Log In</a>
             </div>
-            <span
-              onChange={(e) => setSearchTerm(e.target.value)}
-            >
-              <input
-                id="search-input"
-                className="search-input"
-                placeholder="Search by name, specialty, or clinic..."
+            <div className="search-container">
+              <div className="professional-dropdown">
+                <MultiSelect
+                  options={professionTypesSelections}
+                  value={selectedProfessionTypes}
+                  onChange={setSelectedProfessionTypes}
+                  labelledBy={"Select"}
+                  overrideStrings={{"selectSomeItems": "Select professions..."}}
+                />
+              </div>
+              <span onChange={(e) => setSearchTerm(e.target.value)}>
+                <input
+                  id="search-input"
+                  className="search-input"
+                  placeholder="Search by name, specialty, or clinic..."
+                />
+              </span>
+              <div className="search-autocomplete">
+                <PlacesAutocomplete
+                  value={locationSearchTerm}
+                  onChange={setLocationSearchTerm}
+                  onSelect={handleLocationSelect}
+                  searchOptions={{types: ["(cities)"], componentRestrictions: {country: ["au"]}}}
+                  debounce={200}
+                >
+                  {({getInputProps, suggestions, getSuggestionItemProps}) => (
+                    <div>
+                      <div className="location-search-box">
+                        <input
+                          id="location-search-input"
+                          className="location-search-input" {...getInputProps({placeholder: "Search by suburb..."})}
+                          readOnly={!!locationSelected}
+                        />
+                        {locationSelected &&
+                          <i className="fa fa-times" style={{fontSize: "20px", color: "grey", paddingTop: "7px"}} onClick={() => handleLocationCancel()}/>
+                        }
+                      </div>
+                      <div className={suggestions.length > 0 ? "suggested-locations-box" : null}>
+                        {suggestions.map(suggestion => {
+                          const className = suggestion.active ? "suggested-location-active" : "suggested-location";
+                          return (
+                            <div {...getSuggestionItemProps(suggestion, {className})}>
+                              {suggestion.description}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                </PlacesAutocomplete>
+              </div>
+              <SingleDropdown
+                options={distanceOptions}
+                selectedValue={distance}
+                onChange={setDistance}
               />
-            </span>
-            <div className="search-autocomplete">
-              <PlacesAutocomplete
-                value={locationSearchTerm}
-                onChange={setLocationSearchTerm}
-                onSelect={handleLocationSelect}
-                searchOptions={{types: ["(cities)"], componentRestrictions: {country: ["au"]}}}
-                debounce={200}
-              >
-                {({getInputProps, suggestions, getSuggestionItemProps}) => (
-                  <div>
-                    <div className="location-search-box">
-                      <input
-                        id="location-search-input"
-                        className="location-search-input" {...getInputProps({placeholder: "Search by suburb..."})}
-                        readOnly={!!locationSelected}
-                      />
-                      {locationSelected &&
-                        <i className="fa fa-times" style={{fontSize: "20px", color: "grey", paddingTop: "7px"}} onClick={() => handleLocationCancel()}/>
-                      }
-                    </div>
-                    <div className={suggestions.length > 0 ? "suggested-locations-box" : null}>
-                      {suggestions.map(suggestion => {
-                        const className = suggestion.active ? "suggested-location-active" : "suggested-location";
-                        return (
-                          <div {...getSuggestionItemProps(suggestion, {className})}>
-                            {suggestion.description}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </PlacesAutocomplete>
             </div>
           </div>
           <div className="professional-results">

@@ -84,7 +84,7 @@
   color: black;
   height: 2.38rem;
   width: 350px;
-  padding: 0 0 0 20px;
+  padding: 0 20px 0 20px;
 }
 
 .suggested-location-active {
