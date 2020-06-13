@@ -30,7 +30,7 @@ ReactDOM.render(
       onRedirectCallback={onRedirectCallback}
     >
       <App />
-    </Auth0Provider>,
+    </Auth0Provider>
   </Provider>,
   rootElement
 );

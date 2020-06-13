@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import "./SingleDropdown.css";
 
 
-export const SingleDropdown = ({options, selectedValue, onChange, error}) => {
+const SingleDropdown = ({options, selectedValue, onChange, placeholder, valuePrefix, error}) => {
   const [showOptions, setShowOptions] = useState(false);
 
   const handleOnOptionClick = (newSelectedValue) => {
@@ -18,14 +18,14 @@ export const SingleDropdown = ({options, selectedValue, onChange, error}) => {
       <div
         className={"dropdown-selected-box" + (showOptions ? " open": "")}
         tabIndex="0"
-        onBlur={() => setShowOptions(false)}
+        // onBlur={() => setShowOptions(false)}
         onClick={() => setShowOptions(!showOptions)}
       >
         <div className={"current-value" + (error ? " error" : "")}>
-          {selectedValue.label || "Distance..."}
+          { selectedValue.label ? valuePrefix + selectedValue.label : placeholder }
         </div>
         <i
-          className={"fa fa-chevron-" + (showOptions ? "down" : "up")}
+          className={"fa fa-chevron-" + (showOptions ? "up" : "down")}
           style={{fontSize: "13px", color: "grey", paddingTop: "10px"}}
         />
       </div>
@@ -51,3 +51,5 @@ export const SingleDropdown = ({options, selectedValue, onChange, error}) => {
     </div>
   );
 };
+
+export default SingleDropdown;

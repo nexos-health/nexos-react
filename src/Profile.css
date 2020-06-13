@@ -1,0 +1,24 @@
+
+.profile-header {
+  text-align: center;
+  margin-bottom: 3rem
+}
+
+.profile-header .lead {
+  font-size: 1.25rem
+}
+
+.profile-header .profile-picture {
+  box-shadow: 0 0 4px 0 #b3bac7;
+  margin-bottom: 1.5rem
+}
+
+@media (min-width: 768px) {
+  .profile-header {
+    text-align: left
+  }
+
+  .profile-header .profile-picture {
+    margin-bottom: inherit
+  }
+}

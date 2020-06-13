@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { NavLink as RouterNavLink } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 import {
   Collapse,
   Container,
@@ -17,6 +16,8 @@ import {
   DropdownMenu,
   DropdownItem
 } from "reactstrap";
+
+import "./NavBar.css";
 
 import { useAuth0 } from "../react-auth0-spa";
 
@@ -45,7 +46,7 @@ const NavBar = () => {
                   exact
                   activeClassName="router-link-exact-active"
                 >
-                  Home
+                  Search
                 </NavLink>
               </NavItem>
             </Nav>

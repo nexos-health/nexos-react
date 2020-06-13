@@ -1,0 +1,18 @@
+
+.hero {
+  max-width: 500px;
+  margin: 0 auto
+}
+
+.hero p.lead {
+  margin-bottom: 10rem;
+  font-size: 1.45rem
+}
+
+.hero p.lead a {
+  font-weight: 500
+}
+
+.hero .app-logo {
+  max-width: 7.5rem
+}
