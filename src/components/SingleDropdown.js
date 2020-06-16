@@ -6,7 +6,7 @@ const SingleDropdown = ({options, selectedValue, onChange, placeholder, valuePre
   const [showOptions, setShowOptions] = useState(false);
 
   const handleOnOptionClick = (newSelectedValue) => {
-    console.log("newSelectedValue", newSelectedValue)
+    console.log("newSelectedValue", newSelectedValue);
     if (selectedValue !== newSelectedValue && onChange) {
       onChange(newSelectedValue);
     }
