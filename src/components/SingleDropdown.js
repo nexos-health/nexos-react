@@ -13,6 +13,8 @@ const SingleDropdown = ({options, selectedValue, onChange, placeholder, valuePre
     setShowOptions(false)
   };
 
+  let selectedValueLabel = selectedValue && selectedValue.label;
+
   return (
     <div className="dropdown-content-box">
       <div
@@ -22,7 +24,7 @@ const SingleDropdown = ({options, selectedValue, onChange, placeholder, valuePre
         onClick={() => setShowOptions(!showOptions)}
       >
         <div className={"current-value" + (error ? " error" : "")}>
-          { selectedValue.label ? valuePrefix + selectedValue.label : placeholder }
+          {selectedValueLabel ? valuePrefix + selectedValueLabel : placeholder}
         </div>
         <i
           className={"fa fa-chevron-" + (showOptions ? "up" : "down")}
@@ -35,13 +37,13 @@ const SingleDropdown = ({options, selectedValue, onChange, placeholder, valuePre
             {options.map((option) => {
               return (
                 <div
-                  className={"dropdown-option" + (option.value === selectedValue.value ? " selected" : "")}
+                  className={"dropdown-option" + (option.value === selectedValueLabel ? " selected" : "")}
                   onClick={() => handleOnOptionClick(option)}
                   key={option.value}>
                   <span>
                     {option.label}
                   </span>
-                  {option.value === selectedValue.value && <i className="fa fa-check" style={{paddingTop: "10px"}}/>}
+                  {option.value === selectedValueLabel && <i className="fa fa-check" style={{paddingTop: "10px"}}/>}
                 </div>
               );
             })}

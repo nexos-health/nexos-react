@@ -4,7 +4,8 @@ export const FETCH_PROFESSIONALS = "FETCH_PROFESSIONALS";
 export const UPDATE_PROFESSIONALS = "UPDATE_PROFESSIONALS";
 export const FETCH_PROFESSIONAL = "FETCH_PROFESSIONAL";
 export const UPDATE_PROFESSIONAL = "UPDATE_PROFESSIONAL";
-export const FAVOURITE_PROFESSIONAL = "FAVOURITE_PROFESSIONAL";
+export const FETCH_GROUPS = "FETCH_GROUPS";
+export const UPDATE_GROUPS = "UPDATE_GROUPS";
 
 
 export function fetchProfessionTypes() {
@@ -78,6 +79,26 @@ function updateProfessional(data) {
     type: UPDATE_PROFESSIONAL,
     payload: {
       currentProfessional: data
+    }
+  }
+}
+
+export function fetchGroups() {
+  return {
+    type: FETCH_GROUPS,
+    meta: {
+      method: 'GET',
+      endpoint: "/api/groups/",
+      success: updateGroups,
+    }
+  }
+}
+
+function updateGroups(data) {
+  return {
+    type: UPDATE_GROUPS,
+    payload: {
+      groups: data
     }
   }
 }

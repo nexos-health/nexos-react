@@ -7,6 +7,7 @@ import Loading from "./components/Loading";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
 import HomePage from "./containers/home/HomePage";
+import Groups from "./containers/groups/Groups";
 import Profile from "./views/Profile";
 import { useAuth0 } from "./react-auth0-spa";
 import history from "./utils/history";
@@ -33,6 +34,7 @@ const App = () => {
         <div>
           <Switch>
             <Route path="/" exact component={HomePage} />
+            <PrivateRoute path="/groups" exact component={Groups} />
             <PrivateRoute path="/profile" component={Profile} />
           </Switch>
         </div>

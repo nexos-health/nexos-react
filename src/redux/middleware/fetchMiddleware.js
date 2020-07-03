@@ -1,10 +1,17 @@
 import fetch from 'cross-fetch'
+import { getAccessToken } from "../../utils/authentication";
 
 const fetchMiddleware = store => next => action => {
   next(action); // ensures the action is evaluated
+
   let options = {};
+  const accessToken = getAccessToken();
+  console.log("accessToken", accessToken);
 
   options.headers = action.meta.headers || {"Content-Type": "application/json"};
+  if (accessToken) {
+    options.headers.Authorization = `Bearer ${accessToken}`;
+  }
   // options.mode = "same-origin";
 
   switch (action.meta.method) {

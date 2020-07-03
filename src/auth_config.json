@@ -1,4 +1,5 @@
 {
   "domain": "medrecruitment.au.auth0.com",
-  "clientId": "W8sI6wOb7fvE25BG1dWiy9kPpBHhzO7u"
+  "clientId": "W8sI6wOb7fvE25BG1dWiy9kPpBHhzO7u",
+  "audience": "https://medrecruitment.au.auth0.com/api/v2/"
 }

@@ -17,6 +17,7 @@
     "express": "^4.16.4",
     "highlight.js": "^9.15.6",
     "morgan": "^1.9.1",
+    "node-fetch": "^2.6.0",
     "prop-types": "^15.7.2",
     "react": "^16.8.4",
     "react-dom": "^16.8.4",
@@ -30,7 +31,8 @@
     "react-scroll": "^1.7.16",
     "reactstrap": "^8.4.1",
     "redux": "^4.0.1",
-    "redux-thunk": "^2.3.0"
+    "redux-thunk": "^2.3.0",
+    "request": "^2.88.2"
   },
   "scripts": {
     "start": "react-scripts start",

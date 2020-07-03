@@ -1,7 +1,10 @@
 import * as actions from "../actions/professional"
 
 const professionalInitialState = {
-  professionals: null
+  professionals: null,
+  groups: [],
+  professionTypes: null,
+  active: null,
 };
 
 const professionalReducer = (state = professionalInitialState, action) => {
@@ -24,6 +27,11 @@ const professionalReducer = (state = professionalInitialState, action) => {
       return {
         ...state,
         active: action.payload.currentProfessional
+      };
+    case actions.UPDATE_GROUPS:
+      return {
+        ...state,
+        groups: action.payload.groups
       };
     default:
       return state
