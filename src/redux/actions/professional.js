@@ -4,6 +4,8 @@ export const FETCH_PROFESSIONALS = "FETCH_PROFESSIONALS";
 export const UPDATE_PROFESSIONALS = "UPDATE_PROFESSIONALS";
 export const FETCH_PROFESSIONAL = "FETCH_PROFESSIONAL";
 export const UPDATE_PROFESSIONAL = "UPDATE_PROFESSIONAL";
+export const ADD_PROFESSIONALS_TO_GROUP = "ADD_PROFESSIONALS_TO_GROUP";
+export const CREATE_GROUP = "CREATE_GROUP";
 export const FETCH_GROUPS = "FETCH_GROUPS";
 export const UPDATE_GROUPS = "UPDATE_GROUPS";
 
@@ -43,22 +45,29 @@ export function fetchProfessionals(professionTypes) {
   }
 }
 
-// export function fetchProfessionals() {
-//   return {
-//     type: FETCH_PROFESSIONALS,
-//     meta: {
-//       method: 'GET',
-//       endpoint: `/api/professionals/`,
-//       success: updateProfessionals,
-//     }
-//   }
-// }
-
 function updateProfessionals(data) {
   return {
     type: UPDATE_PROFESSIONALS,
     payload: {
       professionals: data
+    }
+  }
+}
+
+export function addProfessionalsToGroup(professionals, groupUid) {
+  let professionalUids = professionals.map((professional) => {
+    return (professional.uid)
+  });
+  return {
+    type: ADD_PROFESSIONALS_TO_GROUP,
+    meta: {
+      method: 'POST',
+      endpoint: `/api/groups/`,
+      body: {
+        group: groupUid,
+        professionals: professionalUids
+      },
+      success: updateGroups,
     }
   }
 }
@@ -83,6 +92,21 @@ function updateProfessional(data) {
   }
 }
 
+export function createGroup(name, description) {
+  return {
+    type: CREATE_GROUP,
+    meta: {
+      method: 'POST',
+      endpoint: "/api/groups/",
+      body: {
+        name: name,
+        description: description
+      },
+      success: updateGroups,
+    }
+  }
+}
+
 export function fetchGroups() {
   return {
     type: FETCH_GROUPS,
@@ -102,13 +126,3 @@ function updateGroups(data) {
     }
   }
 }
-
-// function favouriteProfessional(data) {
-//   return {
-//     type: UPDATE_PROFESSIONALS,
-//     payload: {
-//       professionals: data.results
-//     },
-//     success:
-//   }
-// }

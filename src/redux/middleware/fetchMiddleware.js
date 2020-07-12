@@ -17,16 +17,12 @@ const fetchMiddleware = store => next => action => {
   switch (action.meta.method) {
     case "PUT":
     case "POST":
-      action.meta.method
-        ? options.method = action.meta.method.toLowerCase()
-        : options.method = "post";
+      options.method = "post";
 
-      if (action.meta.body || options.headers["Accept"] === "application/json") {
+      if (action.meta.body) {
+        options.headers["Accept"] = "application/json";
         options.body = JSON.stringify(action.meta.body);
-      } else {
-        options.body = action.meta.body;
       }
-
       break;
     default:
       options.method = 'get'

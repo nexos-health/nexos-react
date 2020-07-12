@@ -1,280 +1,85 @@
-html {
-  font-size: 16px;
-}
 
-.homepage {
-  height: 100%;
-}
-
-/*.homepage-header{*/
-  /*height: 100px;*/
-/*}*/
-
-.professional-body {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding-top: 30px;
-}
-
-.professional-dropdown {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  color: #6d6d6d;
-}
-
-.multi-select {
-  width: 350px;
-  padding-right: 20px;
-}
-
-.search-container {
-  display: flex;
-  padding: 0 0 50px 0;
-  width: 100%;
-  justify-content: center;
-  border-bottom: 1px solid darkslategrey;
-}
-
-.dropdown-container {
+.group-dropdown-container {
   padding: 0 20px 0 0;
 }
 
-.search-input {
-  border: 1px solid #DBE2E9;
-  height: 2.38rem;
-  width: 350px;
-  border-radius: 3px;
-  padding: 0 0.5rem;
-  -webkit-appearance: none;
-  outline: none;
-  transition: border-color 0.3s ease;
-  font-size: 0.9em;
-  box-sizing: border-box;
+.create-group-text {
+  padding: 0 0 0 5px;
 }
 
-.location-search-box {
+.create-group-border-container {
+  padding: 3px 0 0 75px;
+}
+
+.create-group-container {
+  background-color: #0065f9;
+  color: white;
+  border: 1px solid #DBE2E9;
+  font-size: 0.9em;
+  border-radius: 3px;
+  padding: 5px 8px;
+}
+
+
+.create-group-modal {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
+}
+
+.create-form-name {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 0 20px 0;
+}
+
+.create-form-description {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+
+
+.modal-actions {
+  display:flex;
   justify-content: flex-end;
+  padding: 27px 0 0 0;
+}
+
+.cancel-button-container {
+  padding-right: 10px;
+}
+
+.name-input {
   border: 1px solid #DBE2E9;
   height: 2.38rem;
-  width: 350px;
+  width: 200px;
   border-radius: 3px;
   padding: 0 0.5rem;
   -webkit-appearance: none;
   outline: none;
   transition: border-color 0.3s ease;
+  font-size: 0.9em;
   box-sizing: border-box;
 }
 
-.location-search-input {
-  height: 2.15rem;
-  width: 350px;
-  padding: 0 0.5rem;
-  -webkit-appearance: none;
-  outline: none;
+.description-input {
+  background-color: #FFF;
+  width: 100%;
+  height: 100px;
+  border: 1px solid #DBE2E9;
+  border-radius: 3px;
+  color: #53565A;
+  padding: 0.7em;
+  box-sizing: border-box;
+  font-size: 0.79rem;
   transition: border-color 0.3s ease;
-  font-size: 0.9em;
-  box-sizing: border-box;
-  border: 0;
 }
 
-.search-cancel {
-  width: 20px;
-  color: black;
-}
-
-.search-autocomplete {
-  color: black;
-  height: 2.38rem;
-  padding: 0 20px 0 20px;
-}
-
-.suggested-location-active {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 0.5rem;
-  font-size: 0.9em;
-  background-color: lightgray;
-  height: 2.38rem;
-}
-
-.suggested-location {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: 0 0.5rem;
-  font-size: 0.9em;
-  height: 2.38rem;
-  background-color: white;
-}
-
-.suggested-locations-box {
-  box-sizing: content-box;
-  border: solid #DBE2E9;
-  border-width: 0 1px 1px 1px;
-}
-
-.professional-list {
-  width: 550px;
-  text-align: left;
-  overflow: scroll;
-  box-sizing: content-box;
-  border-color: darkslategrey;
-  border-right: inset;
-}
-
-.professional-list-item {
-  display: flex;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  height: 150px;
-  padding: 10px 0;
-  justify-content: space-between;
-  flex-direction: row;
-  border-bottom: 1px solid dimgrey;
-  border-left: 1px solid dimgrey;
-  list-style-position: inside;
-}
-
-.active-professional-list-item {
-  display: flex;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  height: 150px;
-  padding: 10px 0;
-  justify-content: space-between;
-  flex-direction: row;
-  border-bottom: 1px solid dimgrey;
-  border-left: 1px solid dimgrey;
-  list-style-position: inside;
-  background-color: #dbe2e9;
-}
-
-.professional-info {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  flex-grow: 2;
-  width: 80%;
-}
-
-.current-professional-box {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  color: black;
-  padding: 20px;
-  width: 550px;
-}
-
-.current-professional {
-  display: flex;
-  flex-direction: column;
-}
-
-.current-professional-name {
-  padding: 10px 0 10px 0;
-}
-
-.current-professional-description {
-  color: darkgray;
-  padding: 0 0 10px 0;
-}
-
-.current-professional-extras {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  padding: 10px 0 0 0;
-  font-size: small;
-}
-
-.current-professional-clinics {
-  padding: 25px 0 10px 0;
-}
-
-.current-professional-clinic {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  padding-top: 20px;
-  font-size: small;
-}
-
-.professionals-results-body {
+.create-group-form {
   display: flex;
   flex-direction: row;
   justify-content: center;
   height: 650px;
-}
-
-.no-selection {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  color: black;
-  border-color: darkslategrey;
-  padding: 20px;
-}
-
-.professional-favourite {
-  display: flex;
-  justify-content: center;
-  flex-grow: 1
-}
-
-.favourite {
-  width: 100px;
-}
-
-.professional-top-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.professional-name {
-  padding: 10px 0 0 10px;
-  color: black;
-  font-size: medium;
-  flex-grow: 1;
-}
-
-.professional-extras {
-  color: darkgray;
-  font-size: small;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding: 0 0 5px 10px;
-}
-
-.professional-wait-time {
-  color: black;
-  padding-top: 10px;
-  font-size: small;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100px;
-}
-
-.professional-description {
-  color: darkgray;
-  font-size: medium;
-  flex-grow: 4;
-  padding: 10px 0 0 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  height: 100px;
-  max-width: 100%;
 }

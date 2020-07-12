@@ -6,18 +6,44 @@ import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-au
 import logo from '../../assets/logo.svg';
 import './HomePage.css';
 import SingleDropdown from "../../components/SingleDropdown";
-import { fetchProfessionTypes, fetchProfessionals, fetchProfessional, favouriteProfessional } from "../../redux/actions/professional";
+import {
+  fetchProfessionTypes,
+  fetchProfessionals,
+  fetchProfessional,
+  addProfessionalsToGroup,
+  createGroup,
+  fetchGroups
+} from "../../redux/actions/professional";
 import { login } from "../../redux/actions/account";
 import {kmToLatLng} from "../../utils/helpers";
+import {CurrentProfessionalContent} from "../../components/CurrentProfessionalContent";
+import {ProfessionalListItem} from "../../components/ProfessionalListItem";
+import Modal from "react-modal";
+import {CreateGroupForm} from "../../components/CreateGroupForm";
+
+
+Modal.setAppElement('#root');
+
+
+const customStyles = {
+  content : {
+    top                   : '40%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    height                : '305px',
+    width                 : '400px',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
 
 const formatProfessionTypes = (professionTypes) => {
   let formattedProfessionTypes = professionTypes.map((professionType) => {
-    return (
-      {
-        "value": professionType.id,
+    return ({
+        "value": professionType.uid,
         "label": professionType.name,
-      }
-    )
+      })
   });
   return formattedProfessionTypes
 };
@@ -60,11 +86,23 @@ const filterProfessionals = (professionals, searchTerm, latLngBounds) => {
   return filteredProfessionals;
 };
 
+const formatGroups = (groups) => {
+  let formattedGroups = [];
+  if (Object.keys(groups).length > 0) {
+    Object.entries(groups).forEach(([uid, group]) => {
+      formattedGroups.push({value: uid, label: group.name, description: group.description})
+    });
+  }
+  return formattedGroups;
+};
+
+
 const HomePage = () => {
   // Redux state initialisation
   const account = useSelector(state => state.account.accountDetails);
   const professionals = useSelector(state => state.professionals.professionals);
   const professionTypes = useSelector(state => state.professionals.professionTypes);
+  const groups = useSelector(state => state.professionals.groups);
   // const currentProfessional = useSelector(state => state.professionals.currentProfessional);
   const dispatch = useDispatch();
 
@@ -77,12 +115,25 @@ const HomePage = () => {
     {value: 100, label: "200km"},
   ];
 
+  const groupsOptions = formatGroups(groups);
+
+  const sidebarOptions = [
+    {value: "all", label: "All"},
+    {value: "groups", label: "Groups"},
+  ];
+
+  const [createGroupModalOpen, setCreateGroupModalOpen] = useState(false);
+  const [createFormName, setCreateFormName] = useState("");
+  const [createFormDescription, setCreateFromDescription] = useState("");
+  const [selectedGroup, setSelectedGroup] = useState(null);
+  const [selectedSidebarOption, setSelectedSidebarOption] = useState(sidebarOptions[0].value);
   const [searchTerm, setSearchTerm] = useState("");
   const [locationSearchTerm, setLocationSearchTerm] = useState("");
   const [locationSelected, setLocationSelected] = useState(false);
   const [latLngBounds, setLatLngBounds] = useState({});
   const [distance, setDistance] = useState(Object.values(distanceOptions)[1]);
   const [currentProfessional, setCurrentProfessional] = useState(null);
+  const [selectedProfessionals, setSelectedProfessionals] = useState(new Set());
   const [professionTypesSelections, setProfessionTypesSelections] = useState([]);
   const [selectedProfessionTypes, setSelectedProfessionTypes] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -118,11 +169,57 @@ const HomePage = () => {
     }
   };
 
+  const handleSelectedProfessional = (uid) => {
+    if (selectedProfessionals.has(uid)) {
+      setSelectedProfessionals(selectedProfessionals => new Set([...selectedProfessionals].filter(x => x !== uid)));
+    } else {
+      setSelectedProfessionals(selectedProfessionals => new Set([...selectedProfessionals, ...new Set([uid])]))
+    }
+
+  };
+
+  const handleCreateGroupModalClose = () => {
+    setCreateGroupModalOpen(false);
+    setCreateFromDescription("");
+    setCreateFormName("");
+  };
+
+  const handleCreateGroupSubmit = () => {
+    dispatch(createGroup(createFormName, createFormDescription));
+    setCreateGroupModalOpen(false);
+    setCreateFromDescription("");
+    setCreateFormName("");
+  };
+
+  const handleGroupOptions = () => {
+    prompt("Edit Group")
+  };
+
+  const handleSelectGroup = (group) => {
+    setSelectedGroup(group);
+    setSelectedSidebarOption("groups");
+  };
+
+  const handleSidebarTitleSelection = (title) => {
+    setSelectedSidebarOption(title);
+    setSelectedGroup(null)
+  };
+
+  const handleAddProfessionalsToGroup = (group) => {
+    addProfessionalsToGroup(selectedProfessionals, group);
+  };
+
   useEffect(() => {
     if (!professionTypes) {
       dispatch(fetchProfessionTypes());
     }
   }, [professionTypesSelections]);
+
+  useEffect(() => {
+    if (Object.entries(groups).length === 0) {
+      dispatch(fetchGroups());
+    }
+  }, [selectedGroup]);
 
   useEffect(() => {
     dispatch(fetchProfessionals(selectedProfessionTypes))
@@ -136,8 +233,10 @@ const HomePage = () => {
   if (professionTypesSelections.length > 0) {
     let filteredProfessionals = [];
     if (professionals) {
-      filteredProfessionals = filterProfessionals(professionals, searchTerm, latLngBounds);
+      let professionalsList = selectedGroup ? groups[selectedGroup.value]["professionals"] : professionals;
+      filteredProfessionals = filterProfessionals(professionalsList, searchTerm, latLngBounds);
     }
+
     return (
       <div className="homepage">
         <div className="professional-body">
@@ -201,70 +300,104 @@ const HomePage = () => {
             />
           </div>
           <div className="professional-results">
+            {filteredProfessionals &&
+              <div className="search-sidebar-container">
+                <div className="search-sidebar">
+                  <div className="search-sidebar-heading">SEARCH</div>
+                  <div
+                    className={"search-sidebar-section-text" +
+                      (selectedSidebarOption === "all" ? " selected" : "")}
+                    onClick={() => handleSidebarTitleSelection("all")}>
+                    All
+                  </div>
+                  <div className="search-sidebar-groups">
+                    <div className="sidebar-groups-heading" onClick={() => handleSidebarTitleSelection("groups")}>
+                      <div
+                        className={"search-sidebar-section-text" +
+                        (selectedSidebarOption === "groups" ? " selected" : "")}
+                        >
+                        Groups
+                      </div>
+                      <i
+                        className="fa fa-plus plus-icon"
+                        aria-hidden="true"
+                        onClick={() => setCreateGroupModalOpen(true)}
+                      >
+                      </i>
+                      <Modal
+                        isOpen={createGroupModalOpen}
+                        onRequestClose={() => setCreateGroupModalOpen(!createGroupModalOpen)}
+                        style={customStyles}
+                        contentLabel="Example Modal"
+                      >
+                        <CreateGroupForm
+                          groupName={createFormName}
+                          groupDescription={createFormDescription}
+                          setGroupName={setCreateFormName}
+                          setGroupDescription={setCreateFromDescription}
+                          handleSubmit={handleCreateGroupSubmit}
+                          handleClose={handleCreateGroupModalClose}
+                        />
+                      </Modal>
+                    </div>
+                    {groupsOptions.map((group) => {
+                      return (
+                        <div
+                          className={"group-list-item" + (selectedGroup && group.value === selectedGroup.value ? " selected" : "")}
+                          onClick={() => handleSelectGroup(group)}
+                        >
+                          <div>
+                            {group.label}
+                          </div>
+                          <i
+                            className="fa fa-ellipsis-h sidebar-icon"
+                            aria-hidden="true"
+                            onClick={() => handleGroupOptions(group.value)}
+                          />
+                        </div>
+                      )
+                    })}
+                  </div>
+                </div>
+              </div>
+            }
             {filteredProfessionals.length
               ? <div className="professionals-results-body">
-                <ul className="professional-list">
-                  {filteredProfessionals.map((professional) => {
-                    return (
-                      <li
-                        className={
-                          currentProfessional && professional.id === currentProfessional.id
-                            ? "active-professional-list-item" : "professional-list-item"
-                        }
-                        onClick={() => setCurrentProfessional(professionals.filter(item => item.id === professional.id)[0])
-                      }>
-                        <div className="professional-info">
-                          <div className="professional-top-row">
-                            <div className="professional-name">
-                              {professional.firstName} {professional.lastName}
-                            </div>
-                            <span className="professional-wait-time">{professional.waitTimes}</span>
-                          </div>
-                          <div className="professional-description">
-                            {professional.description}
-                          </div>
-                          <span className="professional-extras">Fees: {professional.fees}</span>
-                          <span className="professional-extras">BB: {professional.bulkBilling}</span>
-                        </div>
-                        <div className="professional-favourite">
-                          <img src={logo} className="favourite" alt="logo"/>
-                        </div>
-                      </li>
-                    )
-                  })}
-                </ul>
+                <div className="professional-list-container">
+                  {selectedSidebarOption === "groups" &&
+                    <div className="group-summary">
+                      <div className="group-summary-title">{selectedGroup.label}</div>
+                      <div className="group-summary-description">{selectedGroup.description}</div>
+                    </div>
+                  }
+                  <div className="professional-list-actions">
+                    <i className="fa fa-square-o selection-action"/>
+                    <div className="selection-action-text">Actions</div>
+                    {selectedSidebarOption === "groups" && <i className="fa fa-trash selection-action-delete"/>}
+                    {/*<i className="fa fa-share-alt selection-action-share"/>*/}
+                    <i
+                      className="fa fa-plus selection-action-group-add"
+                      // Need to add professional to group
+                      onClick={handleAddProfessionalsToGroup}/>
+                  </div>
+                  <ul className="professional-list">
+                    {filteredProfessionals.map((professional) => {
+                      return (
+                        <ProfessionalListItem
+                          currentProfessional={currentProfessional}
+                          professional={professional}
+                          professionals={filteredProfessionals}
+                          setCurrentProfessional={setCurrentProfessional}
+                          selectedProfessionals={selectedProfessionals}
+                          handleSelectedProfessional={handleSelectedProfessional}
+                        />
+                      )
+                    })}
+                  </ul>
+                </div>
                 <div className="current-professional-box">
                   {currentProfessional && filteredProfessionals.indexOf(currentProfessional) >= 0
-                    ? <div className="current-professional">
-                      <span className="current-professional-name">
-                        {currentProfessional.firstName} {currentProfessional.lastName}
-                      </span>
-                      <span className="current-professional-description">
-                        {currentProfessional.description}
-                      </span>
-                      <span className="current-professional-extras">
-                        <b>Wait Time:</b> {currentProfessional.waitTimes}
-                      </span>
-                      <span className="current-professional-extras">
-                        <b>Fees:</b> {currentProfessional.fees}
-                      </span>
-                      <span className="current-professional-extras">
-                        <b>Bulk Billing:</b> {currentProfessional.bulkBilling}
-                      </span>
-                      <div className="current-professional-clinics">
-                        <span><b>Clinics</b></span>
-                        {currentProfessional.clinics.map((clinic) => {
-                          return (
-                            <div className="current-professional-clinic">
-                              <span>{clinic.clinicName}</span>
-                              <span>Phone: {clinic.phone}</span>
-                              <span>Fax: {clinic.fax}</span>
-                              <span>Address: {clinic.streetNumber} {clinic.streetName} {clinic.suburb}, {clinic.state}, {clinic.postcode}</span>
-                            </div>
-                          )
-                        })}
-                      </div>
-                    </div>
+                    ? <CurrentProfessionalContent currentProfessional={currentProfessional}/>
                     : <div className="no-selection">No Professional Selected</div>
                   }
                 </div>

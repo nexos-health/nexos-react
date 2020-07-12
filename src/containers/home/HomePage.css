@@ -121,8 +121,7 @@ html {
   text-align: left;
   overflow: scroll;
   box-sizing: content-box;
-  border-color: darkslategrey;
-  border-right: inset;
+  height: 93%;
 }
 
 .professional-list-item {
@@ -131,27 +130,15 @@ html {
   text-overflow: ellipsis;
   white-space: nowrap;
   height: 150px;
-  padding: 10px 0;
   justify-content: space-between;
   flex-direction: row;
-  border-bottom: 1px solid dimgrey;
-  border-left: 1px solid dimgrey;
   list-style-position: inside;
 }
 
-.active-professional-list-item {
+.checkbox-selection-container {
   display: flex;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  height: 150px;
-  padding: 10px 0;
-  justify-content: space-between;
-  flex-direction: row;
-  border-bottom: 1px solid dimgrey;
-  border-left: 1px solid dimgrey;
-  list-style-position: inside;
-  background-color: #dbe2e9;
+  justify-content: center;
+  padding: 20px 20px 0 0;
 }
 
 .professional-info {
@@ -160,6 +147,19 @@ html {
   justify-content: space-around;
   flex-grow: 2;
   width: 80%;
+  border-bottom: 1px solid dimgrey;
+  padding: 10px 0;
+}
+
+.active-professional-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  flex-grow: 2;
+  width: 80%;
+  border-bottom: 1px solid dimgrey;
+  padding: 10px 0;
+  background-color: #dbe2e9;
 }
 
 .current-professional-box {
@@ -205,11 +205,170 @@ html {
   font-size: small;
 }
 
+.professional-results {
+  display: flex;
+  width: 100%;
+}
+
+.search-sidebar {
+  width: 150px;
+}
+
+.plus-icon {
+  padding: 10px 0 0 0;
+  font-size: 14px;
+}
+
+.plus-icon:hover {
+  cursor: pointer;
+}
+
+.search-sidebar-container {
+  padding: 30px 20px 0 100px;
+  border-right-width: thin;
+  border-right-color: black;
+  border-right-style: solid;
+}
+
+.search-sidebar-heading {
+  font-size: 10px
+}
+
+.search-sidebar-section-text {
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 14px;
+  padding: 5px 0 5px 0;
+}
+
+.search-sidebar-section-text.selected {
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 14px;
+  padding: 5px 0 5px 0;
+  color: #3b6ad3;
+}
+
+.search-sidebar-section-text:hover {
+  cursor: pointer;
+  background-color: #f1f1f1;
+}
+
+.sidebar-groups-heading:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.sidebar-icon {
+  padding: 4px 0 0 0;
+}
+
+.sidebar-groups-heading {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.group-list-item {
+  display: flex;
+  flex-direction: row;
+  padding: 5px 0 5px 20px;
+  justify-content: space-between;
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 14px;
+}
+
+.group-list-item:hover {
+  cursor: pointer;
+  background-color: #f1f1f1;
+}
+
+.group-list-item.selected {
+  display: flex;
+  flex-direction: row;
+  padding: 5px 0 5px 20px;
+  justify-content: space-between;
+  font-size: 14px;
+  color: #3b6ad3;
+}
+
+.group-summary {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 10px 0 0 10px;
+  height: 100px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+}
+
+.group-summary-title {
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 20px;
+}
+
+.group-summary-description {
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 14px;
+}
+
+.professional-list-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 8px 0 8px 40px;
+  border-bottom-width: 1px;
+  border-top-width: 1px;
+  border-bottom-style: solid;
+}
+
+.selection-action {
+  font-size: larger;
+  padding: 3px 0 0 0;
+}
+
+.professional-list-container {
+  border-color: darkslategrey;
+  border-right: inset;
+}
+
 .professionals-results-body {
   display: flex;
   flex-direction: row;
   justify-content: center;
   height: 650px;
+}
+
+.selection-action-delete {
+  padding: 3px 0 0 20px;
+  color: #3b6ad3;
+}
+
+
+.selection-action-share {
+  padding: 3px 0 0 20px;
+  color: #3b6ad3;
+}
+
+.selection-action-group-add {
+  padding: 3px 0 0 20px;
+  color: #3b6ad3;
+}
+
+.selection-action-text {
+  padding: 0 0 0 20px;
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 14px;
 }
 
 .no-selection {
