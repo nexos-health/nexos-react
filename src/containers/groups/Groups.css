@@ -21,6 +21,22 @@
 }
 
 
+.move-to-group-modal {
+  display: flex;
+  flex-direction: column;
+}
+
+.move-to-group-container {
+  display: flex;
+  flex-direction: column;
+}
+
+.move-to-group-list {
+  overflow: scroll;
+  height: 195px;
+  margin-bottom: 0;
+}
+
 .create-group-modal {
   display: flex;
   flex-direction: column;
@@ -39,7 +55,13 @@
   justify-content: space-between;
 }
 
-
+.move-to-modal-actions {
+  display:flex;
+  justify-content: flex-end;
+  padding: 16px 0 0 0;
+  border-top-style: solid;
+  border-top-width: 1px;
+}
 
 .modal-actions {
   display:flex;

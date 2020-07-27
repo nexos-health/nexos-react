@@ -20,6 +20,7 @@ import {CurrentProfessionalContent} from "../../components/CurrentProfessionalCo
 import {ProfessionalListItem} from "../../components/ProfessionalListItem";
 import Modal from "react-modal";
 import {CreateGroupForm} from "../../components/CreateGroupForm";
+import {MoveToGroupSelector} from "../../components/MoveToGroupSelector";
 
 
 Modal.setAppElement('#root');
@@ -123,6 +124,7 @@ const HomePage = () => {
   ];
 
   const [createGroupModalOpen, setCreateGroupModalOpen] = useState(false);
+  const [addToGroupModalOpen, setAddToGroupModalOpen] = useState(false);
   const [createFormName, setCreateFormName] = useState("");
   const [createFormDescription, setCreateFromDescription] = useState("");
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -378,7 +380,19 @@ const HomePage = () => {
                     <i
                       className="fa fa-plus selection-action-group-add"
                       // Need to add professional to group
-                      onClick={handleAddProfessionalsToGroup}/>
+                      onClick={() => setAddToGroupModalOpen(!addToGroupModalOpen)}/>
+                    <Modal
+                      isOpen={addToGroupModalOpen}
+                      onRequestClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}
+                      style={customStyles}
+                      contentLabel="Example Modal"
+                    >
+                      <MoveToGroupSelector
+                        groups={groupsOptions}
+                        handleSubmit={handleAddProfessionalsToGroup}
+                        handleClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}
+                      />
+                    </Modal>
                   </div>
                   <ul className="professional-list">
                     {filteredProfessionals.map((professional) => {
