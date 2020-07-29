@@ -11,8 +11,10 @@ import {
   fetchProfessionals,
   fetchProfessional,
   addProfessionalsToGroup,
+  removeProfessionalsFromGroup,
   createGroup,
-  fetchGroups
+  fetchGroups,
+  deleteGroup,
 } from "../../redux/actions/professional";
 import { login } from "../../redux/actions/account";
 import {kmToLatLng} from "../../utils/helpers";
@@ -21,12 +23,15 @@ import {ProfessionalListItem} from "../../components/ProfessionalListItem";
 import Modal from "react-modal";
 import {CreateGroupForm} from "../../components/CreateGroupForm";
 import {MoveToGroupSelector} from "../../components/MoveToGroupSelector";
+import {RemoveFromGroupConfirmation} from "../../components/RemoveFromGroupConfirmation";
+import {DeleteGroupConfirmation} from "../../components/DeleteGroupConfirmation";
+import {GroupActionsOptions} from "../../components/GroupActionsOptions";
 
 
 Modal.setAppElement('#root');
 
 
-const customStyles = {
+const createGroupCustomStyles = {
   content : {
     top                   : '40%',
     left                  : '50%',
@@ -38,6 +43,59 @@ const customStyles = {
     transform             : 'translate(-50%, -50%)'
   }
 };
+
+const addToGroupCustomStyles = {
+  content : {
+    top                   : '40%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    height                : '315px',
+    width                 : '400px',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
+const removeFromGroupCustomStyles = {
+  content : {
+    top                   : '40%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    height                : '250px',
+    width                 : '400px',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
+const deleteGroupCustomStyles = {
+  content : {
+    top                   : '40%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    height                : '250px',
+    width                 : '400px',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
+const groupActionsCustomStyles = {
+  content : {
+    // top                   : '40%',
+    // left                  : '50%',
+    // right                 : 'auto',
+    // bottom                : 'auto',
+    // marginRight           : '-50%',
+    height                : '100px',
+    width                 : '150px',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
 
 const formatProfessionTypes = (professionTypes) => {
   let formattedProfessionTypes = professionTypes.map((professionType) => {
@@ -125,6 +183,9 @@ const HomePage = () => {
 
   const [createGroupModalOpen, setCreateGroupModalOpen] = useState(false);
   const [addToGroupModalOpen, setAddToGroupModalOpen] = useState(false);
+  const [removeFromGroupModalOpen, setRemoveFromGroupModalOpen] = useState(false);
+  const [deleteGroupModalOpen, setDeleteGroupModalOpen] = useState(false);
+  const [groupActionsModalOpen, setGroupActionsModalOpen] = useState(false);
   const [createFormName, setCreateFormName] = useState("");
   const [createFormDescription, setCreateFromDescription] = useState("");
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -180,19 +241,6 @@ const HomePage = () => {
 
   };
 
-  const handleCreateGroupModalClose = () => {
-    setCreateGroupModalOpen(false);
-    setCreateFromDescription("");
-    setCreateFormName("");
-  };
-
-  const handleCreateGroupSubmit = () => {
-    dispatch(createGroup(createFormName, createFormDescription));
-    setCreateGroupModalOpen(false);
-    setCreateFromDescription("");
-    setCreateFormName("");
-  };
-
   const handleGroupOptions = () => {
     prompt("Edit Group")
   };
@@ -207,8 +255,32 @@ const HomePage = () => {
     setSelectedGroup(null)
   };
 
-  const handleAddProfessionalsToGroup = (group) => {
-    addProfessionalsToGroup(selectedProfessionals, group);
+  const handleCreateGroupModalClose = () => {
+    setCreateGroupModalOpen(false);
+    setCreateFromDescription("");
+    setCreateFormName("");
+  };
+
+  const handleCreateGroupSubmit = () => {
+    dispatch(createGroup(createFormName, createFormDescription));
+    setCreateGroupModalOpen(false);
+    setCreateFromDescription("");
+    setCreateFormName("");
+  };
+
+  const handleAddProfessionalsToGroupSubmit = (group) => {
+    dispatch(addProfessionalsToGroup(selectedProfessionals, group.value));
+    setAddToGroupModalOpen(false);
+  };
+
+  const handleRemoveFromGroupSubmit = (group) => {
+    dispatch(removeProfessionalsFromGroup(selectedProfessionals, group.value));
+    setRemoveFromGroupModalOpen(false)
+  };
+
+  const handleDeleteGroupConfirm = (group) => {
+    dispatch(deleteGroup(group.value));
+    setDeleteGroupModalOpen(false)
   };
 
   useEffect(() => {
@@ -329,7 +401,7 @@ const HomePage = () => {
                       <Modal
                         isOpen={createGroupModalOpen}
                         onRequestClose={() => setCreateGroupModalOpen(!createGroupModalOpen)}
-                        style={customStyles}
+                        style={createGroupCustomStyles}
                         contentLabel="Example Modal"
                       >
                         <CreateGroupForm
@@ -356,6 +428,30 @@ const HomePage = () => {
                             aria-hidden="true"
                             onClick={() => handleGroupOptions(group.value)}
                           />
+                          <Modal
+                            isOpen={groupActionsModalOpen}
+                            onRequestClose={() => setGroupActionsModalOpen(!groupActionsModalOpen)}
+                            style={groupActionsCustomStyles}
+                            contentLabel="Example Modal"
+                          >
+                            <GroupActionsOptions
+                              group={group}
+                              handleSubmit={() => handleDeleteGroupConfirm(group)}
+                              handleClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}
+                            />
+                          </Modal>
+                        <Modal
+                            isOpen={deleteGroupModalOpen}
+                            onRequestClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}
+                            style={deleteGroupCustomStyles}
+                            contentLabel="Example Modal"
+                          >
+                            <DeleteGroupConfirmation
+                              group={group}
+                              handleSubmit={() => handleDeleteGroupConfirm(group)}
+                              handleClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}
+                            />
+                          </Modal>
                         </div>
                       )
                     })}
@@ -377,6 +473,19 @@ const HomePage = () => {
                     <div className="selection-action-text">Actions</div>
                     {selectedSidebarOption === "groups" && <i className="fa fa-trash selection-action-delete"/>}
                     {/*<i className="fa fa-share-alt selection-action-share"/>*/}
+                    <Modal
+                      isOpen={removeFromGroupModalOpen}
+                      onRequestClose={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
+                      style={removeFromGroupCustomStyles}
+                      contentLabel="Example Modal"
+                    >
+                      <RemoveFromGroupConfirmation
+                        group={selectedGroup}
+                        selectedProfessionals={selectedProfessionals}
+                        handleSubmit={handleRemoveFromGroupSubmit}
+                        handleClose={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
+                      />
+                    </Modal>
                     <i
                       className="fa fa-plus selection-action-group-add"
                       // Need to add professional to group
@@ -384,12 +493,12 @@ const HomePage = () => {
                     <Modal
                       isOpen={addToGroupModalOpen}
                       onRequestClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}
-                      style={customStyles}
+                      style={addToGroupCustomStyles}
                       contentLabel="Example Modal"
                     >
                       <MoveToGroupSelector
                         groups={groupsOptions}
-                        handleSubmit={handleAddProfessionalsToGroup}
+                        handleSubmit={handleAddProfessionalsToGroupSubmit}
                         handleClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}
                       />
                     </Modal>

@@ -21,6 +21,11 @@
 }
 
 
+.group-actions-modal-container {
+  display: flex;
+  flex-direction: column;
+}
+
 .move-to-group-modal {
   display: flex;
   flex-direction: column;
@@ -33,7 +38,7 @@
 
 .move-to-group-list {
   overflow: scroll;
-  height: 195px;
+  height: 205px;
   margin-bottom: 0;
 }
 

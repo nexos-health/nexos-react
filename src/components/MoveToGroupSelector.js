@@ -30,7 +30,7 @@ export const MoveToGroupSelector = ({groups, handleSubmit, handleClose}) => {
           <Button
             text="Cancel"
             onPress={handleClose}
-            style={{"color": "darkslategrey", "background-color": "white"}}
+            style={{"color": "darkslategrey", "backgroundColor": "white"}}
           />
         </div>
         <div className="submit-button-container">

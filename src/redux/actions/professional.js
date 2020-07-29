@@ -5,8 +5,10 @@ export const UPDATE_PROFESSIONALS = "UPDATE_PROFESSIONALS";
 export const FETCH_PROFESSIONAL = "FETCH_PROFESSIONAL";
 export const UPDATE_PROFESSIONAL = "UPDATE_PROFESSIONAL";
 export const ADD_PROFESSIONALS_TO_GROUP = "ADD_PROFESSIONALS_TO_GROUP";
+export const REMOVE_PROFESSIONALS_FROM_GROUP = "REMOVE_PROFESSIONALS_FROM_GROUP";
 export const CREATE_GROUP = "CREATE_GROUP";
 export const FETCH_GROUPS = "FETCH_GROUPS";
+export const DELETE_GROUP = "DELETE_GROUP";
 export const UPDATE_GROUPS = "UPDATE_GROUPS";
 
 
@@ -54,18 +56,30 @@ function updateProfessionals(data) {
   }
 }
 
-export function addProfessionalsToGroup(professionals, groupUid) {
-  let professionalUids = professionals.map((professional) => {
-    return (professional.uid)
-  });
+export function addProfessionalsToGroup(professionals, group) {
   return {
     type: ADD_PROFESSIONALS_TO_GROUP,
     meta: {
       method: 'POST',
-      endpoint: `/api/groups/`,
+      endpoint: "/api/groups/add_professionals/",
       body: {
-        group: groupUid,
-        professionals: professionalUids
+        group: group.value,
+        professionals: professionals
+      },
+      success: updateGroups,
+    }
+  }
+}
+
+export function removeProfessionalsFromGroup(professionals, group) {
+  return {
+    type: REMOVE_PROFESSIONALS_FROM_GROUP,
+    meta: {
+      method: 'POST',
+      endpoint: "/api/groups/remove_professionals/",
+      body: {
+        group: group.value,
+        professionals: professionals
       },
       success: updateGroups,
     }
@@ -92,6 +106,17 @@ function updateProfessional(data) {
   }
 }
 
+export function fetchGroups() {
+  return {
+    type: FETCH_GROUPS,
+    meta: {
+      method: 'GET',
+      endpoint: "/api/groups/",
+      success: updateGroups,
+    }
+  }
+}
+
 export function createGroup(name, description) {
   return {
     type: CREATE_GROUP,
@@ -107,16 +132,17 @@ export function createGroup(name, description) {
   }
 }
 
-export function fetchGroups() {
+export function deleteGroup() {
   return {
-    type: FETCH_GROUPS,
+    type: DELETE_GROUP,
     meta: {
-      method: 'GET',
+      method: 'DELETE',
       endpoint: "/api/groups/",
       success: updateGroups,
     }
   }
 }
+
 
 function updateGroups(data) {
   return {
