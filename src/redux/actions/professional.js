@@ -10,6 +10,7 @@ export const CREATE_GROUP = "CREATE_GROUP";
 export const FETCH_GROUPS = "FETCH_GROUPS";
 export const DELETE_GROUP = "DELETE_GROUP";
 export const UPDATE_GROUPS = "UPDATE_GROUPS";
+export const UPDATE_GROUP = "UPDATE_GROUP";
 
 
 export function fetchProfessionTypes() {
@@ -57,31 +58,33 @@ function updateProfessionals(data) {
 }
 
 export function addProfessionalsToGroup(professionals, group) {
+  let professionalsList = [...professionals];
   return {
     type: ADD_PROFESSIONALS_TO_GROUP,
     meta: {
       method: 'POST',
       endpoint: "/api/groups/add_professionals/",
       body: {
-        group: group.value,
-        professionals: professionals
+        group: group,
+        professionals: professionalsList
       },
-      success: updateGroups,
+      success: updateGroup,
     }
   }
 }
 
 export function removeProfessionalsFromGroup(professionals, group) {
+  let professionalsList = [...professionals];
   return {
     type: REMOVE_PROFESSIONALS_FROM_GROUP,
     meta: {
-      method: 'POST',
+      method: 'DELETE',
       endpoint: "/api/groups/remove_professionals/",
       body: {
-        group: group.value,
-        professionals: professionals
+        group: group,
+        professionals: professionalsList
       },
-      success: updateGroups,
+      success: updateGroup,
     }
   }
 }
@@ -127,7 +130,7 @@ export function createGroup(name, description) {
         name: name,
         description: description
       },
-      success: updateGroups,
+      success: updateGroup,
     }
   }
 }
@@ -138,7 +141,7 @@ export function deleteGroup() {
     meta: {
       method: 'DELETE',
       endpoint: "/api/groups/",
-      success: updateGroups,
+      success: updateGroup,
     }
   }
 }
@@ -149,6 +152,16 @@ function updateGroups(data) {
     type: UPDATE_GROUPS,
     payload: {
       groups: data
+    }
+  }
+}
+
+function updateGroup(data) {
+  return {
+    type: UPDATE_GROUP,
+    payload: {
+      groupUid: Object.keys(data)[0],
+      groupDetails: Object.values(data)[0]
     }
   }
 }

@@ -24,6 +24,13 @@ const fetchMiddleware = store => next => action => {
         options.body = JSON.stringify(action.meta.body);
       }
       break;
+    case "DELETE":
+      options.method = "delete";
+      if (action.meta.body) {
+        options.headers["Accept"] = "application/json";
+        options.body = JSON.stringify(action.meta.body);
+      }
+      break;
     default:
       options.method = 'get'
   }

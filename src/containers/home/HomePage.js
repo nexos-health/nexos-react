@@ -64,7 +64,7 @@ const removeFromGroupCustomStyles = {
     right                 : 'auto',
     bottom                : 'auto',
     marginRight           : '-50%',
-    height                : '250px',
+    height                : '135px',
     width                 : '400px',
     transform             : 'translate(-50%, -50%)'
   }
@@ -271,11 +271,13 @@ const HomePage = () => {
   const handleAddProfessionalsToGroupSubmit = (group) => {
     dispatch(addProfessionalsToGroup(selectedProfessionals, group.value));
     setAddToGroupModalOpen(false);
+    setSelectedProfessionals(new Set());
   };
 
   const handleRemoveFromGroupSubmit = (group) => {
     dispatch(removeProfessionalsFromGroup(selectedProfessionals, group.value));
-    setRemoveFromGroupModalOpen(false)
+    setRemoveFromGroupModalOpen(false);
+    setSelectedProfessionals(new Set());
   };
 
   const handleDeleteGroupConfirm = (group) => {
@@ -459,7 +461,7 @@ const HomePage = () => {
                 </div>
               </div>
             }
-            {filteredProfessionals.length
+            {filteredProfessionals.length || selectedSidebarOption === "groups"
               ? <div className="professionals-results-body">
                 <div className="professional-list-container">
                   {selectedSidebarOption === "groups" &&
@@ -471,7 +473,10 @@ const HomePage = () => {
                   <div className="professional-list-actions">
                     <i className="fa fa-square-o selection-action"/>
                     <div className="selection-action-text">Actions</div>
-                    {selectedSidebarOption === "groups" && <i className="fa fa-trash selection-action-delete"/>}
+                    {selectedSidebarOption === "groups" &&
+                      <i onClick={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
+                        className="fa fa-trash selection-action-delete"/>
+                    }
                     {/*<i className="fa fa-share-alt selection-action-share"/>*/}
                     <Modal
                       isOpen={removeFromGroupModalOpen}

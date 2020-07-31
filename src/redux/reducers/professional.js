@@ -33,6 +33,14 @@ const professionalReducer = (state = professionalInitialState, action) => {
         ...state,
         groups: action.payload.groups
       };
+    case actions.UPDATE_GROUP:
+      return {
+        ...state,
+        groups: {
+          ...state.groups,
+          [action.payload.groupUid]: action.payload.groupDetails
+        }
+      };
     default:
       return state
   }

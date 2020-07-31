@@ -68,6 +68,12 @@
   border-top-width: 1px;
 }
 
+.remove-from-group-actions {
+  display:flex;
+  justify-content: flex-end;
+  padding: 16px 0 0 0;
+}
+
 .modal-actions {
   display:flex;
   justify-content: flex-end;
