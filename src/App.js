@@ -34,7 +34,6 @@ const App = () => {
         <div>
           <Switch>
             <Route path="/" exact component={HomePage} />
-            <PrivateRoute path="/groups" exact component={Groups} />
             <PrivateRoute path="/profile" component={Profile} />
           </Switch>
         </div>

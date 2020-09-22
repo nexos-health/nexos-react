@@ -10,3 +10,7 @@ export const getAccessToken = () => {
   return localStorage.getItem(tokenStorageName);
 };
 
+export const clearAccessToken = () => {
+  return localStorage.setItem(tokenStorageName, "")
+};
+

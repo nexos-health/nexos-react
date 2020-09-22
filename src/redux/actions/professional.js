@@ -9,8 +9,10 @@ export const REMOVE_PROFESSIONALS_FROM_GROUP = "REMOVE_PROFESSIONALS_FROM_GROUP"
 export const CREATE_GROUP = "CREATE_GROUP";
 export const FETCH_GROUPS = "FETCH_GROUPS";
 export const DELETE_GROUP = "DELETE_GROUP";
+export const EDIT_GROUP = "EDIT_GROUP";
 export const UPDATE_GROUPS = "UPDATE_GROUPS";
 export const UPDATE_GROUP = "UPDATE_GROUP";
+export const UPDATE_EDITED_GROUP = "UPDATE_EDITED_GROUP";
 
 
 export function fetchProfessionTypes() {
@@ -135,13 +137,32 @@ export function createGroup(name, description) {
   }
 }
 
-export function deleteGroup() {
+export function deleteGroup(value) {
   return {
     type: DELETE_GROUP,
     meta: {
       method: 'DELETE',
-      endpoint: "/api/groups/",
+      endpoint: "/api/groups/delete_group/",
+      body: {
+        group: value
+      },
       success: updateGroup,
+    }
+  }
+}
+
+export function editGroup(value, name, description) {
+  return {
+    type: EDIT_GROUP,
+    meta: {
+      method: 'PUT',
+      endpoint: "/api/groups/edit_group/",
+      body: {
+        group: value,
+        name: name,
+        description: description
+      },
+      success: updateEditedGroup,
     }
   }
 }
@@ -162,6 +183,17 @@ function updateGroup(data) {
     payload: {
       groupUid: Object.keys(data)[0],
       groupDetails: Object.values(data)[0]
+    }
+  }
+}
+
+function updateEditedGroup(data) {
+  return {
+    type: UPDATE_EDITED_GROUP,
+    payload: {
+      groupUid: data["uid"],
+      groupName: data["name"],
+      groupDescription: data["description"]
     }
   }
 }

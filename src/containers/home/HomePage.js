@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import MultiSelect from "react-multi-select-component";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
@@ -15,6 +15,7 @@ import {
   createGroup,
   fetchGroups,
   deleteGroup,
+  editGroup,
 } from "../../redux/actions/professional";
 import { login } from "../../redux/actions/account";
 import {kmToLatLng} from "../../utils/helpers";
@@ -26,6 +27,8 @@ import {MoveToGroupSelector} from "../../components/MoveToGroupSelector";
 import {RemoveFromGroupConfirmation} from "../../components/RemoveFromGroupConfirmation";
 import {DeleteGroupConfirmation} from "../../components/DeleteGroupConfirmation";
 import {GroupActionsOptions} from "../../components/GroupActionsOptions";
+import {useAuth0} from "../../react-auth0-spa";
+import {AuthenticatePrompt} from "../../components/AuthenticatePrompt";
 
 
 Modal.setAppElement('#root');
@@ -96,6 +99,19 @@ const groupActionsCustomStyles = {
   }
 };
 
+const authenticateCustomStyles = {
+  content : {
+    top                   : '40%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    height                : '190px',
+    width                 : '400px',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
 
 const formatProfessionTypes = (professionTypes) => {
   let formattedProfessionTypes = professionTypes.map((professionType) => {
@@ -111,11 +127,18 @@ const filterProfessionals = (professionals, searchTerm, latLngBounds) => {
   let filteredProfessionals = professionals;
   if (searchTerm && searchTerm.trim() !== "") {
     let searchLower = searchTerm.toLowerCase();
-    filteredProfessionals = filteredProfessionals.filter(professional =>
-      (professional.firstName && professional.firstName.toLowerCase().indexOf(searchLower) >= 0) ||
-      (professional.lastName && professional.lastName.toLowerCase().indexOf(searchLower) >= 0) ||
-      (professional.description && professional.description.toLowerCase().indexOf(searchLower) >= 0)
-      // (professional.notes && professional.notes.toLowerCase().indexOf(searchLower) >= 0)
+    filteredProfessionals = filteredProfessionals.filter(professional => {
+        let firstName = professional.firstName && professional.firstName.toLowerCase();
+        let lastName = professional.lastName && professional.lastName.toLowerCase();
+
+        return (
+          (firstName && firstName.indexOf(searchLower) >= 0) ||
+          (lastName && lastName.indexOf(searchLower) >= 0) ||
+          (firstName && lastName && `${firstName} ${lastName}`.indexOf(searchLower) >= 0) ||
+          (professional.description && professional.description.toLowerCase().indexOf(searchLower) >= 0)
+        // (professional.notes && professional.notes.toLowerCase().indexOf(searchLower) >= 0)
+        )
+      }
     );
   }
 
@@ -152,7 +175,14 @@ const formatGroups = (groups) => {
       formattedGroups.push({value: uid, label: group.name, description: group.description})
     });
   }
-  return formattedGroups;
+
+  return formattedGroups.sort((a, b) => {
+    const aName = a.label.toLowerCase();
+    const bName = b.label.toLowerCase();
+    if (aName < bName) return -1;
+    if (aName > bName) return 1;
+    return 0;
+  });
 };
 
 
@@ -164,6 +194,11 @@ const HomePage = () => {
   const groups = useSelector(state => state.professionals.groups);
   // const currentProfessional = useSelector(state => state.professionals.currentProfessional);
   const dispatch = useDispatch();
+  const {
+    isAuthenticated,
+    isLoading,
+    loginWithRedirect,
+  } = useAuth0();
 
   // State initialisation
   const distanceOptions = [
@@ -186,6 +221,10 @@ const HomePage = () => {
   const [removeFromGroupModalOpen, setRemoveFromGroupModalOpen] = useState(false);
   const [deleteGroupModalOpen, setDeleteGroupModalOpen] = useState(false);
   const [groupActionsModalOpen, setGroupActionsModalOpen] = useState(false);
+  const [groupEditable, setGroupEditable] = useState(false);
+  const [editGroupName, setEditGroupName] = useState("");
+  const [editGroupDescription, setEditGroupDescription] = useState("");
+  const [authenticateModalOpen, setAuthenticateModalOpen] = useState(false);
   const [createFormName, setCreateFormName] = useState("");
   const [createFormDescription, setCreateFromDescription] = useState("");
   const [selectedGroup, setSelectedGroup] = useState(null);
@@ -200,8 +239,6 @@ const HomePage = () => {
   const [professionTypesSelections, setProfessionTypesSelections] = useState([]);
   const [selectedProfessionTypes, setSelectedProfessionTypes] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
-
-
 
   const handleLocationSelect = async (value, distance) => {
     const results = await geocodeByAddress(value);
@@ -283,6 +320,24 @@ const HomePage = () => {
   const handleDeleteGroupConfirm = (group) => {
     dispatch(deleteGroup(group.value));
     setDeleteGroupModalOpen(false)
+  };
+
+  const handleEditGroup = (group) => {
+    setEditGroupName(group.label);
+    setEditGroupDescription(group.description);
+    setGroupEditable(group.value)
+  };
+
+  const handleEditGroupSave = (group) => {
+    setSelectedGroup({...selectedGroup, "label": editGroupName, "description": editGroupDescription});
+    dispatch(editGroup(group.value, editGroupName, editGroupDescription));
+    setGroupEditable(false);
+  };
+
+  const handleEditGroupCancel = () => {
+    setEditGroupName("");
+    setEditGroupDescription("");
+    setGroupEditable(null)
   };
 
   useEffect(() => {
@@ -367,13 +422,15 @@ const HomePage = () => {
                 )}
               </PlacesAutocomplete>
             </div>
-            <SingleDropdown
-              options={distanceOptions}
-              selectedValue={distance}
-              onChange={handleDistanceChange}
-              placeholder="Distance..."
-              valuePrefix="within "
-            />
+            {locationSelected &&
+              <SingleDropdown
+                options={distanceOptions}
+                selectedValue={distance}
+                onChange={handleDistanceChange}
+                placeholder="Distance..."
+                valuePrefix="within "
+                />
+            }
           </div>
           <div className="professional-results">
             {filteredProfessionals &&
@@ -387,7 +444,20 @@ const HomePage = () => {
                     All
                   </div>
                   <div className="search-sidebar-groups">
-                    <div className="sidebar-groups-heading" onClick={() => handleSidebarTitleSelection("groups")}>
+                    <div className="sidebar-groups-heading" onClick={() => {isAuthenticated
+                        ? handleSidebarTitleSelection("groups")
+                        : setAuthenticateModalOpen(!authenticateModalOpen)}}>
+                      <Modal
+                        isOpen={authenticateModalOpen}
+                        onRequestClose={() => setAuthenticateModalOpen(!authenticateModalOpen)}
+                        style={authenticateCustomStyles}
+                        contentLabel="Example Modal"
+                      >
+                        <AuthenticatePrompt
+                          login={loginWithRedirect}
+                          handleClose={() => setAuthenticateModalOpen(!authenticateModalOpen)}
+                        />
+                      </Modal>
                       <div
                         className={"search-sidebar-section-text" +
                         (selectedSidebarOption === "groups" ? " selected" : "")}
@@ -425,11 +495,11 @@ const HomePage = () => {
                           <div>
                             {group.label}
                           </div>
-                          <i
-                            className="fa fa-ellipsis-h sidebar-icon"
-                            aria-hidden="true"
-                            onClick={() => handleGroupOptions(group.value)}
-                          />
+                          {/*<i*/}
+                            {/*className="fa fa-ellipsis-h sidebar-icon"*/}
+                            {/*aria-hidden="true"*/}
+                            {/*onClick={() => handleGroupOptions(group.value)}*/}
+                          {/*/>*/}
                           <Modal
                             isOpen={groupActionsModalOpen}
                             onRequestClose={() => setGroupActionsModalOpen(!groupActionsModalOpen)}
@@ -464,12 +534,36 @@ const HomePage = () => {
             {filteredProfessionals.length || selectedSidebarOption === "groups"
               ? <div className="professionals-results-body">
                 <div className="professional-list-container">
-                  {selectedSidebarOption === "groups" &&
-                    <div className="group-summary">
-                      <div className="group-summary-title">{selectedGroup.label}</div>
+                  {selectedSidebarOption === "groups" && (selectedGroup && groupEditable === selectedGroup.value
+                    ? <div className="group-summary-content">
+                      <div className="group-summary-top edit">
+                        <span onChange={(e) => setEditGroupName(e.target.value)}>
+                          <input
+                            id="search-input"
+                            className="group-summary-title edit"
+                            value={editGroupName}
+                          />
+                        </span>
+                        <div className="group-edit-actions">
+                          <div className="group-edit-save" onClick={() => handleEditGroupSave(selectedGroup)}>Save</div>
+                          <i className="fa fa-times group-edit-cancel" onClick={handleEditGroupCancel}/>
+                        </div>
+                      </div>
+                      <textarea
+                        className="group-summary-description edit"
+                        value={editGroupDescription}
+                        onChange={(e) => setEditGroupDescription(e.target.value)}
+                      />
+                    </div>
+                    : selectedGroup &&
+                      <div className="group-summary-content">
+                      <div className="group-summary-top">
+                        <div className="group-summary-title">{selectedGroup.label}</div>
+                        <i className="fa fa-edit group-edit" onClick={() => handleEditGroup(selectedGroup)}/>
+                      </div>
                       <div className="group-summary-description">{selectedGroup.description}</div>
                     </div>
-                  }
+                  )}
                   <div className="professional-list-actions">
                     <i className="fa fa-square-o selection-action"/>
                     <div className="selection-action-text">Actions</div>

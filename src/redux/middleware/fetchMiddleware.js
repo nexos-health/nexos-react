@@ -17,7 +17,7 @@ const fetchMiddleware = store => next => action => {
   switch (action.meta.method) {
     case "PUT":
     case "POST":
-      options.method = "post";
+      options.method = action.meta.method.toLowerCase();
 
       if (action.meta.body) {
         options.headers["Accept"] = "application/json";
