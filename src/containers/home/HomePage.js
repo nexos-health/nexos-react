@@ -467,7 +467,7 @@ const HomePage = () => {
                       <i
                         className="fa fa-plus plus-icon"
                         aria-hidden="true"
-                        onClick={() => setCreateGroupModalOpen(true)}
+                        onClick={() => setCreateGroupModalOpen(isAuthenticated && true)}
                       >
                       </i>
                       <Modal
@@ -587,8 +587,9 @@ const HomePage = () => {
                     </Modal>
                     <i
                       className="fa fa-plus selection-action-group-add"
-                      // Need to add professional to group
-                      onClick={() => setAddToGroupModalOpen(!addToGroupModalOpen)}/>
+                      onClick={() => {isAuthenticated
+                        ? setAddToGroupModalOpen(false)
+                        : setAuthenticateModalOpen(true)}}/>
                     <Modal
                       isOpen={addToGroupModalOpen}
                       onRequestClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}

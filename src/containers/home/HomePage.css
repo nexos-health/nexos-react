@@ -422,6 +422,10 @@ html {
   color: #3b6ad3;
 }
 
+.selection-action-group-add:hover {
+  cursor: pointer;
+}
+
 .selection-action-text {
   padding: 0 0 0 20px;
   font-family: "Lato", Helvetica, Arial, serif;
