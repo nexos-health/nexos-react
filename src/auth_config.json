@@ -1,5 +1,5 @@
 {
-  "domain": "medrecruitment.au.auth0.com",
-  "clientId": "W8sI6wOb7fvE25BG1dWiy9kPpBHhzO7u",
-  "audience": "https://medrecruitment.au.auth0.com/api/v2/"
+  "domain": "nexoshealth.au.auth0.com",
+  "clientId": "Sj14sLVUGId1qYhZvYVK1WTENlVJAzk2",
+  "audience": "https://nexoshealth.au.auth0.com/api/v2/"
 }
