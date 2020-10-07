@@ -1,5 +1,6 @@
 import React from "react";
 import {Button} from "./Button";
+import {BaseButton} from "./BaseStyledComponents";
 
 export const AuthenticatePrompt = ({handleClose, login}) => {
   return (
@@ -12,14 +13,10 @@ export const AuthenticatePrompt = ({handleClose, login}) => {
       </div>
       <div className="move-to-modal-actions">
         <div className="cancel-button-container">
-          <Button
-            text="Cancel"
-            onPress={handleClose}
-            style={{"color": "darkslategrey", "backgroundColor": "white"}}
-          />
+          <BaseButton secondary onClick={handleClose}>Cancel</BaseButton>
         </div>
         <div className="submit-button-container">
-          <Button text="Login" onPress={login}/>
+          <BaseButton onClick={login}>Login</BaseButton>
         </div>
       </div>
     </div>

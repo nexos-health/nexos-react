@@ -4,6 +4,7 @@ html {
 
 .homepage {
   height: 100%;
+  width: 100%;
 }
 
 /*.homepage-header{*/
@@ -424,6 +425,10 @@ html {
 
 .selection-action-group-add:hover {
   cursor: pointer;
+}
+
+.groups-container {
+
 }
 
 .selection-action-text {

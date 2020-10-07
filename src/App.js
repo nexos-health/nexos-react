@@ -1,6 +1,7 @@
 import React from "react";
 import { Router, Route, Switch } from "react-router-dom";
 import { Container } from "reactstrap";
+import styled from 'styled-components';
 
 import PrivateRoute from "./components/PrivateRoute";
 import Loading from "./components/Loading";
@@ -31,12 +32,12 @@ const App = () => {
       <div id="app" className="d-flex flex-column h-100 app-container">
         <NavBar />
         {/*<Container className="flex-grow-1 mt-5">*/}
-        <div>
+        <PageBody>
           <Switch>
             <Route path="/" exact component={HomePage} />
             <PrivateRoute path="/profile" component={Profile} />
           </Switch>
-        </div>
+        </PageBody>
         {/*</Container>*/}
         <Footer />
       </div>
@@ -45,3 +46,13 @@ const App = () => {
 };
 
 export default App;
+
+const PageBody = styled.div`
+  display: flex;
+  height: 100%;
+`;
+
+// const AppContainer = styled.div`
+//   display: flex;
+//   flex-direction: column;
+// `;

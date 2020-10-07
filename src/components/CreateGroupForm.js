@@ -1,5 +1,6 @@
 import React from "react";
 import {Button} from "./Button";
+import {BaseButton} from "./BaseStyledComponents";
 
 export const CreateGroupForm = ({groupName, groupDescription, setGroupName, setGroupDescription, handleSubmit, handleClose}) => {
   return (
@@ -25,14 +26,10 @@ export const CreateGroupForm = ({groupName, groupDescription, setGroupName, setG
       </div>
       <div className="modal-actions">
         <div className="cancel-button-container">
-          <Button
-            text="Cancel"
-            onPress={handleClose}
-            style={{"color": "darkslategrey", "backgroundColor": "white"}}
-          />
+          <BaseButton secondary onClick={handleClose}>Cancel</BaseButton>
         </div>
         <div className="submit-button-container">
-          <Button text="Created" onPress={handleSubmit}/>
+          <BaseButton onClick={handleSubmit}>Create</BaseButton>
         </div>
       </div>
     </div>

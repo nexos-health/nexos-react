@@ -181,8 +181,8 @@ function updateGroup(data) {
   return {
     type: UPDATE_GROUP,
     payload: {
-      groupUid: Object.keys(data)[0],
-      groupDetails: Object.values(data)[0]
+      groupUid: Object.keys(data).pop(),
+      groupDetails: Object.values(data).pop()
     }
   }
 }

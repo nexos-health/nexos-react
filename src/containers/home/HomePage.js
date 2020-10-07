@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
+import styled from 'styled-components';
 import MultiSelect from "react-multi-select-component";
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
@@ -23,12 +24,16 @@ import {CurrentProfessionalContent} from "../../components/CurrentProfessionalCo
 import {ProfessionalListItem} from "../../components/ProfessionalListItem";
 import Modal from "react-modal";
 import {CreateGroupForm} from "../../components/CreateGroupForm";
+import {CreateFirstGroup} from "../../components/CreateFirstGroup";
 import {MoveToGroupSelector} from "../../components/MoveToGroupSelector";
 import {RemoveFromGroupConfirmation} from "../../components/RemoveFromGroupConfirmation";
 import {DeleteGroupConfirmation} from "../../components/DeleteGroupConfirmation";
 import {GroupActionsOptions} from "../../components/GroupActionsOptions";
 import {useAuth0} from "../../react-auth0-spa";
 import {AuthenticatePrompt} from "../../components/AuthenticatePrompt";
+import {EditableGroupSummary} from "../../components/EditableGroupSummary";
+import {GroupsTable} from "../../components/GroupsTable";
+import {BaseButton, FlexColumn, FlexRow, IconButton, Text} from "../../components/BaseStyledComponents";
 
 
 Modal.setAppElement('#root');
@@ -444,165 +449,158 @@ const HomePage = () => {
                     All
                   </div>
                   <div className="search-sidebar-groups">
-                    <div className="sidebar-groups-heading" onClick={() => {isAuthenticated
-                        ? handleSidebarTitleSelection("groups")
-                        : setAuthenticateModalOpen(!authenticateModalOpen)}}>
-                      <Modal
-                        isOpen={authenticateModalOpen}
-                        onRequestClose={() => setAuthenticateModalOpen(!authenticateModalOpen)}
-                        style={authenticateCustomStyles}
-                        contentLabel="Example Modal"
-                      >
-                        <AuthenticatePrompt
-                          login={loginWithRedirect}
-                          handleClose={() => setAuthenticateModalOpen(!authenticateModalOpen)}
-                        />
-                      </Modal>
+                    <div className="sidebar-groups-heading" onClick={() => handleSidebarTitleSelection("groups")}>
                       <div
                         className={"search-sidebar-section-text" +
                         (selectedSidebarOption === "groups" ? " selected" : "")}
                         >
-                        Groups
+                        My Groups
                       </div>
-                      <i
-                        className="fa fa-plus plus-icon"
-                        aria-hidden="true"
-                        onClick={() => setCreateGroupModalOpen(isAuthenticated && true)}
-                      >
-                      </i>
-                      <Modal
-                        isOpen={createGroupModalOpen}
-                        onRequestClose={() => setCreateGroupModalOpen(!createGroupModalOpen)}
-                        style={createGroupCustomStyles}
-                        contentLabel="Example Modal"
-                      >
-                        <CreateGroupForm
-                          groupName={createFormName}
-                          groupDescription={createFormDescription}
-                          setGroupName={setCreateFormName}
-                          setGroupDescription={setCreateFromDescription}
-                          handleSubmit={handleCreateGroupSubmit}
-                          handleClose={handleCreateGroupModalClose}
-                        />
-                      </Modal>
                     </div>
-                    {groupsOptions.map((group) => {
-                      return (
-                        <div
-                          className={"group-list-item" + (selectedGroup && group.value === selectedGroup.value ? " selected" : "")}
-                          onClick={() => handleSelectGroup(group)}
-                        >
-                          <div>
-                            {group.label}
-                          </div>
+                    {/*{groupsOptions.map((group) => {*/}
+                      {/*return (*/}
+                        {/*<div*/}
+                          {/*className={"group-list-item" + (selectedGroup && group.value === selectedGroup.value ? " selected" : "")}*/}
+                          {/*onClick={() => handleSelectGroup(group)}*/}
+                        {/*>*/}
+                          {/*<div>*/}
+                            {/*{group.label}*/}
+                          {/*</div>*/}
                           {/*<i*/}
                             {/*className="fa fa-ellipsis-h sidebar-icon"*/}
                             {/*aria-hidden="true"*/}
                             {/*onClick={() => handleGroupOptions(group.value)}*/}
                           {/*/>*/}
-                          <Modal
-                            isOpen={groupActionsModalOpen}
-                            onRequestClose={() => setGroupActionsModalOpen(!groupActionsModalOpen)}
-                            style={groupActionsCustomStyles}
-                            contentLabel="Example Modal"
-                          >
-                            <GroupActionsOptions
-                              group={group}
-                              handleSubmit={() => handleDeleteGroupConfirm(group)}
-                              handleClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}
-                            />
-                          </Modal>
-                        <Modal
-                            isOpen={deleteGroupModalOpen}
-                            onRequestClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}
-                            style={deleteGroupCustomStyles}
-                            contentLabel="Example Modal"
-                          >
-                            <DeleteGroupConfirmation
-                              group={group}
-                              handleSubmit={() => handleDeleteGroupConfirm(group)}
-                              handleClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}
-                            />
-                          </Modal>
-                        </div>
-                      )
-                    })}
+                          {/*<Modal*/}
+                            {/*isOpen={groupActionsModalOpen}*/}
+                            {/*onRequestClose={() => setGroupActionsModalOpen(!groupActionsModalOpen)}*/}
+                            {/*style={groupActionsCustomStyles}*/}
+                            {/*contentLabel="Example Modal"*/}
+                          {/*>*/}
+                            {/*<GroupActionsOptions*/}
+                              {/*group={group}*/}
+                              {/*handleSubmit={() => handleDeleteGroupConfirm(group)}*/}
+                              {/*handleClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}*/}
+                            {/*/>*/}
+                          {/*</Modal>*/}
+                        {/*<Modal*/}
+                            {/*isOpen={deleteGroupModalOpen}*/}
+                            {/*onRequestClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}*/}
+                            {/*style={deleteGroupCustomStyles}*/}
+                            {/*contentLabel="Example Modal"*/}
+                          {/*>*/}
+                            {/*<DeleteGroupConfirmation*/}
+                              {/*group={group}*/}
+                              {/*handleSubmit={() => handleDeleteGroupConfirm(group)}*/}
+                              {/*handleClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}*/}
+                            {/*/>*/}
+                          {/*</Modal>*/}
+                        {/*</div>*/}
+                      {/*)*/}
+                    {/*})}*/}
                   </div>
                 </div>
               </div>
             }
-            {filteredProfessionals.length || selectedSidebarOption === "groups"
-              ? <div className="professionals-results-body">
-                <div className="professional-list-container">
-                  {selectedSidebarOption === "groups" && (selectedGroup && groupEditable === selectedGroup.value
-                    ? <div className="group-summary-content">
-                      <div className="group-summary-top edit">
-                        <span onChange={(e) => setEditGroupName(e.target.value)}>
-                          <input
-                            id="search-input"
-                            className="group-summary-title edit"
-                            value={editGroupName}
-                          />
-                        </span>
-                        <div className="group-edit-actions">
-                          <div className="group-edit-save" onClick={() => handleEditGroupSave(selectedGroup)}>Save</div>
-                          <i className="fa fa-times group-edit-cancel" onClick={handleEditGroupCancel}/>
-                        </div>
-                      </div>
-                      <textarea
-                        className="group-summary-description edit"
-                        value={editGroupDescription}
-                        onChange={(e) => setEditGroupDescription(e.target.value)}
+            {selectedSidebarOption === "groups" && (
+              selectedGroup
+                ? <ProfessionalResultsContainer>
+                  <ProfessionalResultsListContainer>
+                    {groupEditable === selectedGroup.value
+                      ? <EditableGroupSummary
+                        selectedGroup={selectedGroup}
+                        editGroupName={editGroupName}
+                        editGroupDescription={editGroupDescription}
+                        setEditGroupName={setEditGroupName}
+                        setEditGroupDescription={setEditGroupDescription}
+                        handleEditGroupSave={handleEditGroupSave}
+                        handleEditGroupCancel={handleEditGroupCancel}
                       />
-                    </div>
-                    : selectedGroup &&
-                      <div className="group-summary-content">
-                      <div className="group-summary-top">
-                        <div className="group-summary-title">{selectedGroup.label}</div>
-                        <i className="fa fa-edit group-edit" onClick={() => handleEditGroup(selectedGroup)}/>
-                      </div>
-                      <div className="group-summary-description">{selectedGroup.description}</div>
-                    </div>
-                  )}
-                  <div className="professional-list-actions">
-                    <i className="fa fa-square-o selection-action"/>
-                    <div className="selection-action-text">Actions</div>
-                    {selectedSidebarOption === "groups" &&
-                      <i onClick={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
-                        className="fa fa-trash selection-action-delete"/>
+                      : <GroupSummary>
+                        <BackButtonContainer>
+                          <BackIcon className="fa fa-chevron-left"/>
+                          <IconButton onClick={() => setSelectedGroup(null)}>Back to Groups</IconButton>
+                        </BackButtonContainer>
+                        <GroupSummaryHeader>
+                          <GroupSummaryTitle>{selectedGroup.label}</GroupSummaryTitle>
+                          <i className="fa fa-edit group-edit" onClick={() => handleEditGroup(selectedGroup)}/>
+                        </GroupSummaryHeader>
+                        <GroupSummaryDescription>{selectedGroup.description}</GroupSummaryDescription>
+                      </GroupSummary>
                     }
+                    <ProfessionalListActions>
+                      <i className="fa fa-square-o selection-action"/>
+                      <TitleText>Actions</TitleText>
+                      <i onClick={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
+                         className="fa fa-trash selection-action-delete"/>
+                      <i className="fa fa-plus selection-action-group-add"
+                        onClick={() => setAddToGroupModalOpen(true)}/>
+                      {/*<i className="fa fa-share-alt selection-action-share"/>*/}
+                    </ProfessionalListActions>
+                    <ul className="professional-list">
+                      {filteredProfessionals.map((professional) => {
+                        return (
+                          <ProfessionalListItem
+                            currentProfessional={currentProfessional}
+                            professional={professional}
+                            professionals={filteredProfessionals}
+                            setCurrentProfessional={setCurrentProfessional}
+                            selectedProfessionals={selectedProfessionals}
+                            handleSelectedProfessional={handleSelectedProfessional}
+                          />
+                        )
+                      })}
+                    </ul>
+                  </ProfessionalResultsListContainer>
+                  <CurrentProfessionalContainer>
+                    {currentProfessional && filteredProfessionals.indexOf(currentProfessional) >= 0
+                      ? <CurrentProfessionalContent currentProfessional={currentProfessional}/>
+                      : <NoCurrentProfessionalContainer>No Professional Selected</NoCurrentProfessionalContainer>
+                    }
+                  </CurrentProfessionalContainer>
+                </ProfessionalResultsContainer>
+                : <GroupsContainer>
+                  <GroupsHeader>
+                    <FlexColumn>
+                      <GroupsTitle>Groups</GroupsTitle>
+                      <GroupsDescription>
+                        Create groups to organise professionals into helpful categories
+                        such as “Diabetes Support” or “Favourites”,
+                        so you can quickly find them at a later stage
+                      </GroupsDescription>
+                    </FlexColumn>
+                    <GroupsActions>
+                      {groupsOptions.length > 0 &&
+                        <BaseButton onClick={() => setCreateGroupModalOpen(true)}>Create Group</BaseButton>
+                      }
+                    </GroupsActions>
+                  </GroupsHeader>
+                  {groupsOptions.length > 0
+                    ? <div>
+                      <GroupsTable
+                        groupsOptions={groupsOptions}
+                        handleSelectedGroup={setSelectedGroup}
+                      />
+                    </div> // <GroupsList/>
+                    : <CreateFirstGroup
+                        createGroup={createGroupModalOpen}
+                        loginWithRedirect={loginWithRedirect}
+                        isAuthenticated={isAuthenticated}/>
+                  }
+                </GroupsContainer>
+            )}
+            {selectedSidebarOption === "all" &&
+              <ProfessionalResultsContainer>
+                <ProfessionalResultsListContainer>
+                  <ProfessionalListActions>
+                    <i className="fa fa-square-o selection-action"/>
+                    <TitleText>Actions</TitleText>
+                    <i onClick={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
+                       className="fa fa-trash selection-action-delete"/>
+                    <i className="fa fa-plus selection-action-group-add"
+                       onClick={() => setAddToGroupModalOpen(true)}/>
                     {/*<i className="fa fa-share-alt selection-action-share"/>*/}
-                    <Modal
-                      isOpen={removeFromGroupModalOpen}
-                      onRequestClose={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
-                      style={removeFromGroupCustomStyles}
-                      contentLabel="Example Modal"
-                    >
-                      <RemoveFromGroupConfirmation
-                        group={selectedGroup}
-                        selectedProfessionals={selectedProfessionals}
-                        handleSubmit={handleRemoveFromGroupSubmit}
-                        handleClose={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
-                      />
-                    </Modal>
-                    <i
-                      className="fa fa-plus selection-action-group-add"
-                      onClick={() => {isAuthenticated
-                        ? setAddToGroupModalOpen(false)
-                        : setAuthenticateModalOpen(true)}}/>
-                    <Modal
-                      isOpen={addToGroupModalOpen}
-                      onRequestClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}
-                      style={addToGroupCustomStyles}
-                      contentLabel="Example Modal"
-                    >
-                      <MoveToGroupSelector
-                        groups={groupsOptions}
-                        handleSubmit={handleAddProfessionalsToGroupSubmit}
-                        handleClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}
-                      />
-                    </Modal>
-                  </div>
+                  </ProfessionalListActions>
                   <ul className="professional-list">
                     {filteredProfessionals.map((professional) => {
                       return (
@@ -617,18 +615,58 @@ const HomePage = () => {
                       )
                     })}
                   </ul>
-                </div>
-                <div className="current-professional-box">
+                </ProfessionalResultsListContainer>
+                <CurrentProfessionalContainer>
                   {currentProfessional && filteredProfessionals.indexOf(currentProfessional) >= 0
                     ? <CurrentProfessionalContent currentProfessional={currentProfessional}/>
-                    : <div className="no-selection">No Professional Selected</div>
+                    : <NoCurrentProfessionalContainer>No Professional Selected</NoCurrentProfessionalContainer>
                   }
-                </div>
-              </div>
-              : <div className="professionals-results-body"/>
+                </CurrentProfessionalContainer>
+              </ProfessionalResultsContainer>
             }
           </div>
         </div>
+        {/*BELOW WE KEEP THE CODE FOR THE MODALS*/}
+        <Modal
+          isOpen={createGroupModalOpen}
+          onRequestClose={() => setCreateGroupModalOpen(!createGroupModalOpen)}
+          style={createGroupCustomStyles}
+          contentLabel="Example Modal"
+        >
+          <CreateGroupForm
+            groupName={createFormName}
+            groupDescription={createFormDescription}
+            setGroupName={setCreateFormName}
+            setGroupDescription={setCreateFromDescription}
+            handleSubmit={handleCreateGroupSubmit}
+            handleClose={handleCreateGroupModalClose}
+          />
+        </Modal>
+        <Modal
+          isOpen={removeFromGroupModalOpen}
+          onRequestClose={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
+          style={removeFromGroupCustomStyles}
+          contentLabel="Example Modal"
+        >
+          <RemoveFromGroupConfirmation
+            group={selectedGroup}
+            selectedProfessionals={selectedProfessionals}
+            handleSubmit={handleRemoveFromGroupSubmit}
+            handleClose={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
+          />
+        </Modal>
+        <Modal
+          isOpen={addToGroupModalOpen}
+          onRequestClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}
+          style={addToGroupCustomStyles}
+          contentLabel="Example Modal"
+        >
+          <MoveToGroupSelector
+            groups={groupsOptions}
+            handleSubmit={handleAddProfessionalsToGroupSubmit}
+            handleClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}
+          />
+        </Modal>
       </div>
     );
   } else {
@@ -637,3 +675,123 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+const ProfessionalResultsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  min-height: 650px;
+`;
+
+const ProfessionalResultsListContainer = styled.div`
+  border-color: darkslategrey;
+  border-right: inset;
+`;
+
+const GroupsContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 650px;
+`;
+
+const GroupsHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  padding: 10px 30px 80px 30px;
+`;
+
+const GroupsActions = styled.div`
+  align-self: flex-start;
+  white-space: nowrap;
+`;
+
+const GroupsTitle = styled(Text)`
+  font-weight: 600;
+  font-size: 24px;
+`;
+
+const GroupsDescription= styled(Text)`
+  max-width: 550px;
+  font-weight: 500;
+`;
+
+const GroupSummary = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  padding: 10px;
+  min-height: 100px;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+`;
+
+const GroupSummaryHeader = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+
+const GroupSummaryTitle = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 20px;
+`;
+
+const GroupSummaryDescription = styled.div`
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-weight: 500;
+  font-style: normal;
+  font-size: 14px;
+  max-width: 550px;
+`;
+
+const ProfessionalListActions = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 8px 0 8px 40px;
+  border-bottom-width: 1px;
+  border-top-width: 1px;
+  border-bottom-style: solid;
+`;
+
+const TitleText = styled.div`
+  padding: 0 0 0 20px;
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 14px;
+`;
+
+const CurrentProfessionalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: black;
+  padding: 20px;
+  width: 550px;
+`;
+
+const NoCurrentProfessionalContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  color: black;
+  border-color: darkslategrey;
+  padding: 20px;
+`;
+
+const BackButtonContainer = styled(FlexRow)`
+  align-self: flex-start;
+`;
+
+const BackIcon = styled.i`
+  align-self: center;
+  padding-right: 3px;
+  font-size: x-small;
+`;

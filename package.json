@@ -33,7 +33,8 @@
     "reactstrap": "^8.4.1",
     "redux": "^4.0.1",
     "redux-thunk": "^2.3.0",
-    "request": "^2.88.2"
+    "request": "^2.88.2",
+    "styled-components": "^5.2.0"
   },
   "scripts": {
     "start": "react-scripts start",

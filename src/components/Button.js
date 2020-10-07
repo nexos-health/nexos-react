@@ -1,13 +1,13 @@
 import React from "react";
-
+import {BaseButton} from "./BaseStyledComponents";
 
 export const Button = ({text, onPress, icon=null, style=null}) => {
   return (
     <div>
-      <button className="create-group-container" style={style} onClick={onPress}>
+      <BaseButton onClick={onPress}>
         {icon}
         {text}
-      </button>
+      </BaseButton>
     </div>
   )
 };

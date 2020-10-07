@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {Button} from "./Button";
+import {BaseButton} from "./BaseStyledComponents";
 
 export const RemoveFromGroupConfirmation = ({group, selectedProfessionals, handleSubmit, handleClose}) => {
   let count = selectedProfessionals.size;
@@ -10,14 +11,10 @@ export const RemoveFromGroupConfirmation = ({group, selectedProfessionals, handl
       </div>
       <div className="remove-from-group-actions">
         <div className="cancel-button-container">
-          <Button
-            text="Cancel"
-            onPress={handleClose}
-            style={{"color": "darkslategrey", "backgroundColor": "white"}}
-          />
+          <BaseButton secondary onClick={handleClose}>Cancel</BaseButton>
         </div>
         <div className="submit-button-container">
-          <Button text="Confirm" onPress={() => handleSubmit(group)}/>
+          <BaseButton onClick={() => handleSubmit(group)}>Confirm</BaseButton>
         </div>
       </div>
     </div>

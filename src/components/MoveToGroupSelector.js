@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {Button} from "./Button";
+import {BaseButton} from "./BaseStyledComponents";
 
 export const MoveToGroupSelector = ({groups, handleSubmit, handleClose}) => {
   const [selectedGroup, setSelectedGroup] = useState(false);
@@ -27,14 +28,10 @@ export const MoveToGroupSelector = ({groups, handleSubmit, handleClose}) => {
       </div>
       <div className="move-to-modal-actions">
         <div className="cancel-button-container">
-          <Button
-            text="Cancel"
-            onPress={handleClose}
-            style={{"color": "darkslategrey", "backgroundColor": "white"}}
-          />
+          <BaseButton secondary onClick={handleClose}>Cancel</BaseButton>
         </div>
         <div className="submit-button-container">
-          <Button text="Move" onPress={() => handleSubmit(selectedGroup)}/>
+          <BaseButton onClick={() => handleSubmit(selectedGroup)}>Move</BaseButton>
         </div>
       </div>
     </div>
