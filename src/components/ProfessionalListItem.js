@@ -24,7 +24,7 @@ export const ProfessionalListItem = ({currentProfessional: current, professional
           <div className="professional-name">
             {professional.firstName} {professional.lastName}
           </div>
-          <span className="professional-wait-time">{professional.waitTimes}</span>
+          <ProfessionalWaitTime>{professional.waitTimes}</ProfessionalWaitTime>
         </div>
         <ProfessionalDescription>
           {professional.description}
@@ -59,4 +59,11 @@ const ProfessionalInfoContainer = styled(FlexColumn)`
   ${props => props.active && css`
       background-color: #dbe2e9;
   `}
+`;
+
+const ProfessionalWaitTime = styled(OverflowText)`
+  color: black;
+  padding-top: 14px;
+  font-size: small;
+  max-width: 100px;
 `;

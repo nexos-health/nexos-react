@@ -56,6 +56,7 @@ export const ParagraphText = styled(Text)`
 `;
 
 export const OverflowText = styled(ParagraphText)`
+  display: block;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
