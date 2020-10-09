@@ -25,6 +25,10 @@ html {
   align-items: center;
   justify-content: center;
   color: #6d6d6d;
+  width: 400px;
+  padding-right: 20px;
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-size: 0.9em;
 }
 
 .multi-select {
@@ -50,6 +54,7 @@ html {
   outline: none;
   transition: border-color 0.3s ease;
   font-size: 0.9em;
+  font-family: "Lato", Helvetica, Arial, serif;
   box-sizing: border-box;
 }
 
@@ -63,9 +68,11 @@ html {
   border-radius: 3px;
   padding: 0 0.5rem;
   -webkit-appearance: none;
+  -webkit-font-smoothing: antialiased;
   outline: none;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
+  color: hsl(0,0%,50%);
 }
 
 .location-search-input {
@@ -73,11 +80,15 @@ html {
   width: 350px;
   padding: 0 0.5rem;
   -webkit-appearance: none;
+  -webkit-font-smoothing: antialiased;
+  line-height: 1.5;
+  font-weight: 400;
   outline: none;
   transition: border-color 0.3s ease;
   font-size: 0.9em;
   box-sizing: border-box;
   border: 0;
+  color: hsl(0,0%,50%);
 }
 
 .search-cancel {
@@ -172,18 +183,8 @@ html {
   width: 550px;
 }
 
-.current-professional {
-  display: flex;
-  flex-direction: column;
-}
-
 .current-professional-name {
   padding: 10px 0 10px 0;
-}
-
-.current-professional-description {
-  color: darkgray;
-  padding: 0 0 10px 0;
 }
 
 .current-professional-extras {

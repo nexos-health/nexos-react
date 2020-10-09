@@ -1,15 +1,18 @@
 import React from "react";
+import styled, {css} from "styled-components";
+
+import {FlexColumn, ParagraphText} from "./BaseStyledComponents";
 
 
 export const CurrentProfessionalContent = ({currentProfessional}) => {
   return (
-    <div className="current-professional">
+    <FlexColumn>
       <span className="current-professional-name">
         {currentProfessional.firstName} {currentProfessional.lastName}
       </span>
-      <span className="current-professional-description">
+      <CurrentProfessionalDescription>
         {currentProfessional.description}
-      </span>
+      </CurrentProfessionalDescription>
       <span className="current-professional-extras">
         <b>Wait Time:</b> {currentProfessional.waitTimes}
       </span>
@@ -34,6 +37,12 @@ export const CurrentProfessionalContent = ({currentProfessional}) => {
           )
         })}
       </div>
-    </div>
+    </FlexColumn>
   )
 };
+
+
+const CurrentProfessionalDescription = styled(ParagraphText)`
+  color: darkgray;
+  padding: 0 0 10px 0;
+`;

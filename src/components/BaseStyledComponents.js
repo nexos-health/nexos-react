@@ -43,8 +43,20 @@ export const FlexRow = styled.div`
 export const Text = styled.div`
   display: flex;
   font-family: "Lato", Helvetica, Arial, serif;
-  font-weight: 600;
   font-style: normal;
   font-size: 14px;
 `;
 
+export const BoldedText = styled(Text)`
+  font-weight: 600;
+`;
+
+export const ParagraphText = styled(Text)`
+  font-weight: 400;
+`;
+
+export const OverflowText = styled(ParagraphText)`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;

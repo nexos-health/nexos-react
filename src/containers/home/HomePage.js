@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
 import styled from 'styled-components';
-import MultiSelect from "react-multi-select-component";
+import Select, { components } from 'react-select'
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
 import logo from '../../assets/logo.svg';
@@ -33,7 +33,7 @@ import {useAuth0} from "../../react-auth0-spa";
 import {AuthenticatePrompt} from "../../components/AuthenticatePrompt";
 import {EditableGroupSummary} from "../../components/EditableGroupSummary";
 import {GroupsTable} from "../../components/GroupsTable";
-import {BaseButton, FlexColumn, FlexRow, IconButton, Text} from "../../components/BaseStyledComponents";
+import {BaseButton, FlexColumn, FlexRow, IconButton, BoldedText} from "../../components/BaseStyledComponents";
 
 
 Modal.setAppElement('#root');
@@ -115,6 +115,17 @@ const authenticateCustomStyles = {
     width                 : '400px',
     transform             : 'translate(-50%, -50%)'
   }
+};
+
+const customStyles = {
+  container: (provided, state) => ({
+    ...provided,
+    width: "100%"
+  }),
+  // placeholder: (provided, state) => ({
+  //   ...provided,
+  //
+  // })
 };
 
 
@@ -358,7 +369,7 @@ const HomePage = () => {
   }, [selectedGroup]);
 
   useEffect(() => {
-    dispatch(fetchProfessionals(selectedProfessionTypes))
+    dispatch(fetchProfessionals(selectedProfessionTypes || []))
   }, [selectedProfessionTypes]);
 
   if (!professionTypesSelections.length && professionTypes) {
@@ -378,12 +389,17 @@ const HomePage = () => {
         <div className="professional-body">
           <div className="search-container">
             <div className="professional-dropdown">
-              <MultiSelect
+              <Select
                 options={professionTypesSelections}
                 value={selectedProfessionTypes}
                 onChange={setSelectedProfessionTypes}
-                labelledBy={"Select"}
-                overrideStrings={{"selectSomeItems": "Select professions..."}}
+                styles={customStyles}
+                isMulti
+                isSearchable
+                name="profession"
+                placeholder="Select professions"
+                className="basic-multi-select"
+                classNamePrefix="select"
               />
             </div>
             <span onChange={(e) => setSearchTerm(e.target.value)}>
@@ -427,15 +443,34 @@ const HomePage = () => {
                 )}
               </PlacesAutocomplete>
             </div>
-            {locationSelected &&
-              <SingleDropdown
-                options={distanceOptions}
-                selectedValue={distance}
-                onChange={handleDistanceChange}
-                placeholder="Distance..."
-                valuePrefix="within "
-                />
-            }
+            <DistanceContainer>
+              {locationSelected &&
+                <Select
+                  options={distanceOptions}
+                  value={distance}
+                  onChange={handleDistanceChange}
+                  placeholder="Distance..."
+                  style={customStyles}
+                  components={{
+                    SingleValue: ({ children, ...props }) => {
+                      return (
+                        <components.SingleValue {...props}>
+                          {"within " + children}
+                        </components.SingleValue>
+                      );
+                    },
+                    Placeholder: ({ children, ...props }) => {
+                      return (
+                        <components.Placeholder {...props}>
+                          {"within " + children}
+                        </components.Placeholder>
+                      );
+                    },
+                    IndicatorSeparator: () => null,
+                  }}
+                  />
+              }
+            </DistanceContainer>
           </div>
           <div className="professional-results">
             {filteredProfessionals &&
@@ -563,11 +598,11 @@ const HomePage = () => {
                   <GroupsHeader>
                     <FlexColumn>
                       <GroupsTitle>Groups</GroupsTitle>
-                      <GroupsDescription>
+                      {groupsOptions.length > 0 && <GroupsDescription>
                         Create groups to organise professionals into helpful categories
                         such as “Diabetes Support” or “Favourites”,
                         so you can quickly find them at a later stage
-                      </GroupsDescription>
+                      </GroupsDescription>}
                     </FlexColumn>
                     <GroupsActions>
                       {groupsOptions.length > 0 &&
@@ -583,7 +618,7 @@ const HomePage = () => {
                       />
                     </div> // <GroupsList/>
                     : <CreateFirstGroup
-                        createGroup={createGroupModalOpen}
+                        createGroup={() => setCreateGroupModalOpen(true)}
                         loginWithRedirect={loginWithRedirect}
                         isAuthenticated={isAuthenticated}/>
                   }
@@ -680,7 +715,7 @@ const ProfessionalResultsContainer = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: center;
-  min-height: 650px;
+  height: 650px;
 `;
 
 const ProfessionalResultsListContainer = styled.div`
@@ -707,12 +742,12 @@ const GroupsActions = styled.div`
   white-space: nowrap;
 `;
 
-const GroupsTitle = styled(Text)`
+const GroupsTitle = styled(BoldedText)`
   font-weight: 600;
   font-size: 24px;
 `;
 
-const GroupsDescription= styled(Text)`
+const GroupsDescription= styled(BoldedText)`
   max-width: 550px;
   font-weight: 500;
 `;
@@ -777,9 +812,7 @@ const CurrentProfessionalContainer = styled.div`
   width: 550px;
 `;
 
-const NoCurrentProfessionalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+const NoCurrentProfessionalContainer = styled(FlexColumn)`
   justify-content: flex-start;
   color: black;
   border-color: darkslategrey;
@@ -794,4 +827,10 @@ const BackIcon = styled.i`
   align-self: center;
   padding-right: 3px;
   font-size: x-small;
+`;
+
+const DistanceContainer = styled.div`
+  width: 140px;
+  font-size: 0.9em;
+  color: hsl(0,0%,50%);
 `;

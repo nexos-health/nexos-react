@@ -3,24 +3,6 @@ import styled, {css} from 'styled-components';
 
 
 export const GroupsTable = ({groupsOptions, handleSelectedGroup}) => {
-  // return (
-  //   <GroupListContainer>
-  //     <GroupListHeadings>
-  //       <GroupItemText heading>Name</GroupItemText>
-  //       <GroupItemDescription heading>Description</GroupItemDescription>
-  //       <GroupEndItemText heading>Members</GroupEndItemText>
-  //     </GroupListHeadings>
-  //     {groupsOptions.map((group) => {
-  //       return (
-  //         <ListItem onClick={() => handleSelectedGroup(group)}>
-  //           <GroupItemText>{group.label}</GroupItemText>
-  //           <GroupItemDescription>{group.description}</GroupItemDescription>
-  //           <GroupEndItemText># Members</GroupEndItemText>
-  //         </ListItem>
-  //       )
-  //     })}
-  //   </GroupListContainer>
-  // )
   return (
     <GroupListContainer>
       <Table>
@@ -47,23 +29,6 @@ export const GroupsTable = ({groupsOptions, handleSelectedGroup}) => {
   )
 };
 
-
-const GroupListHeadings = styled.li`
-  display: flex;
-  flex-direction: row;
-  padding: 5px;
-  border-bottom-color: #e6d2d2;
-  border-bottom-width: thin;
-  border-bottom-style: solid;
-`;
-
-export const ListItem = styled(GroupListHeadings)`
-  border: none;
-  &:hover {
-    cursor: pointer;
-    background-color: lightgrey;
-  }
-`;
 
 const Table = styled.table`
   width: 100%;
@@ -124,30 +89,6 @@ const TableData = styled.td`
 const TableDataEnd = styled(TableData)`
   text-align: right;
   padding-right: 10px;
-`;
-
-export const GroupItemText = styled.div`
-  font-family: "Lato", Helvetica, Arial, serif;
-  font-weight: 400;
-  font-style: normal;
-  font-size: 14px;
-  padding: 5px 0 5px 0;
-  flex-grow: 1;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-`;
-
-const GroupEndItemText = styled(GroupItemText)`
-    text-align: right;
-    padding-right: 10px;
-`;
-
-const GroupItemDescription = styled(GroupItemText)`
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  flex-grow: 3;
 `;
 
 const GroupListContainer= styled.div`
