@@ -596,6 +596,7 @@ const GroupsContainer = styled.div`
   flex-direction: column;
   width: 100%;
   height: 650px;
+  padding: 0 150px;
 `;
 
 const GroupsHeader = styled.div`

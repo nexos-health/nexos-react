@@ -8,7 +8,7 @@ import styled, {css} from "styled-components";
 import { useAuth0 } from "../react-auth0-spa";
 import {clearAccessToken, getAccessToken} from "../utils/authentication";
 import { SidebarData } from "./SidebarData";
-import {FlexColumn, FlexRow} from "./BaseStyledComponents";
+import {BaseButton, FlexColumn, FlexRow} from "./BaseStyledComponents";
 import {SIDEBAR_WIDTH, TOP_BAR_HEIGHT} from "../utils/constants"
 import {
   Button,
@@ -44,84 +44,72 @@ const NavBar = ({toggleSidebar, sidebar}) => {
         {/*<MenuBarsLink to="#">*/}
           {/*<FaBars onClick={toggleSidebar}/>*/}
         {/*</MenuBarsLink>*/}
-        <Nav className="d-none d-md-block" navbar>
+        <div>
+          <Nav className="d-none d-md-block" navbar>
+            {!isAuthenticated && (
+              <NavItem>
+                <BaseButton onClick={() => loginWithRedirect({})}>Sign In</BaseButton>
+              </NavItem>
+            )}
+            {isAuthenticated && (
+              <UncontrolledDropdown nav inNavbar>
+                <DropdownToggle nav caret id="profileDropDown">
+                  <img
+                    src={user.picture}
+                    alt="Profile"
+                    className="nav-user-profile rounded-circle"
+                    width="35"
+                  />
+                </DropdownToggle>
+                <DropdownMenu right style={{position: "absolute"}}>
+                  <DropdownItem header>{user.name}</DropdownItem>
+                  <DropdownItem
+                    id="qsLogoutBtn"
+                    onClick={() => logoutWithRedirect()}
+                  >
+                    <FontAwesomeIcon icon="power-off" className="mr-3" /> Log out
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
+            )}
+          </Nav>
           {!isAuthenticated && (
-            <NavItem>
-              <Button
-                id="qsLoginBtn"
-                color="primary"
-                className="btn-margin"
-                onClick={() => loginWithRedirect({})}
-              >
-                Sign In
-              </Button>
-            </NavItem>
+            <Nav className="d-md-none" navbar>
+              <NavItem>
+                <BaseButton onClick={() => loginWithRedirect({})}>Sign In</BaseButton>
+              </NavItem>
+            </Nav>
           )}
           {isAuthenticated && (
-            <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret id="profileDropDown">
-                <img
-                  src={user.picture}
-                  alt="Profile"
-                  className="nav-user-profile rounded-circle"
-                  width="35"
-                />
-              </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem header>{user.name}</DropdownItem>
-                <DropdownItem
+            <Nav
+              className="d-md-none justify-content-between"
+              navbar
+              style={{ minHeight: 170 }}
+            >
+              <NavItem>
+                <span className="user-info">
+                  <img
+                    src={user.picture}
+                    alt="Profile"
+                    className="nav-user-profile d-inline-block rounded-circle mr-3"
+                    width="50"
+                  />
+                  <h6 className="d-inline-block">{user.name}</h6>
+                </span>
+              </NavItem>
+              <NavItem>
+                <FontAwesomeIcon icon="power-off" className="mr-3" />
+                <RouterNavLink
+                  to="#"
                   id="qsLogoutBtn"
                   onClick={() => logoutWithRedirect()}
                 >
-                  <FontAwesomeIcon icon="power-off" className="mr-3" /> Log out
-                </DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
+                  Log out
+                </RouterNavLink>
+              </NavItem>
+            </Nav>
           )}
-        </Nav>
-        {!isAuthenticated && (
-          <Nav className="d-md-none" navbar>
-            <NavItem>
-              <Button
-                id="qsLoginBtn"
-                color="primary"
-                block
-                onClick={() => loginWithRedirect({})}
-              >
-                Sign In
-              </Button>
-            </NavItem>
-          </Nav>
-        )}
-        {isAuthenticated && (
-          <Nav
-            className="d-md-none justify-content-between"
-            navbar
-            style={{ minHeight: 170 }}
-          >
-            <NavItem>
-              <span className="user-info">
-                <img
-                  src={user.picture}
-                  alt="Profile"
-                  className="nav-user-profile d-inline-block rounded-circle mr-3"
-                  width="50"
-                />
-                <h6 className="d-inline-block">{user.name}</h6>
-              </span>
-            </NavItem>
-            <NavItem>
-              <FontAwesomeIcon icon="power-off" className="mr-3" />
-              <RouterNavLink
-                to="#"
-                id="qsLogoutBtn"
-                onClick={() => logoutWithRedirect()}
-              >
-                Log out
-              </RouterNavLink>
-            </NavItem>
-          </Nav>
-        )}
+        </div>
       </TopNavBar>
       <NavMenu active={sidebar}>
         <NavMenuItems>
@@ -269,13 +257,14 @@ const NavBar = ({toggleSidebar, sidebar}) => {
 export default NavBar;
 
 const TopNavBar = styled(FlexRow)`
-  background-color: #f9f9ff;
+  background-color: #fefefe;
   height: ${TOP_BAR_HEIGHT};
   justify-content: flex-end;
   align-items: center;
   position: fixed;
   width: 100vw;
   padding-right: 20px;
+  box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
 `;
 
 const MenuBarsLink = styled(Link)`
@@ -285,7 +274,7 @@ const MenuBarsLink = styled(Link)`
 `;
 
 const NavMenu = styled.nav`
-  background-color: #060b26;
+  background-color: #f8f9fa;
   width: ${SIDEBAR_WIDTH};
   height: 100vh;
   display: flex;
@@ -311,8 +300,9 @@ const NavText = styled.li`
 
 const NavTextLink = styled(Link)`
   text-decoration: none;
-  color: #f5f5f5;
-  font-size: 18px;
+  color: #394963;
+  font-size: 16px;
+  font-weight: 600;
   width: 95%;
   height: 100%;
   display: flex;
@@ -320,7 +310,7 @@ const NavTextLink = styled(Link)`
   padding: 0 16px;
   border-radius: 4px;
   &:hover {
-    background-color: #1a83ff;
+    background-color: #ebebeb;
   }
 `;
 

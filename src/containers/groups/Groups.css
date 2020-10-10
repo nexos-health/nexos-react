@@ -36,14 +36,6 @@ html {
   padding-right: 20px;
 }
 
-.search-container {
-  display: flex;
-  padding: 0 0 50px 0;
-  width: 100%;
-  justify-content: center;
-  border-bottom: 1px solid darkslategrey;
-}
-
 .search-input {
   border: 1px solid #DBE2E9;
   height: 2.38rem;
