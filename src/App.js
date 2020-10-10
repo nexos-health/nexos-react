@@ -1,14 +1,11 @@
-import React from "react";
+import React, {useState} from "react";
 import { Router, Route, Switch } from "react-router-dom";
-import { Container } from "reactstrap";
-import styled from 'styled-components';
+import styled, { css }from 'styled-components';
 
 import PrivateRoute from "./components/PrivateRoute";
 import Loading from "./components/Loading";
 import NavBar from "./components/NavBar";
-import Footer from "./components/Footer";
-import HomePage from "./containers/home/HomePage";
-import Profile from "./views/Profile";
+import Home from "./containers/home/Home";
 import { useAuth0 } from "./react-auth0-spa";
 import history from "./utils/history";
 
@@ -16,11 +13,19 @@ import "./App.css"
 
 // fontawesome
 import initFontAwesome from "./utils/initFontAwesome";
+import Groups from "./containers/groups/Groups";
+import {FlexRow} from "./components/BaseStyledComponents";
+import {SIDEBAR_WIDTH, TOP_BAR_HEIGHT} from "./utils/constants";
 initFontAwesome();
 
 
 const App = () => {
   const { loading } = useAuth0();
+  const [sidebar, setSidebar] = useState(true);
+
+  const toggleSidebar = () => {
+    setSidebar(!sidebar)
+  };
 
   if (loading) {
     return <Loading />;
@@ -28,27 +33,28 @@ const App = () => {
 
   return (
     <Router history={history}>
-      <div id="app" className="d-flex flex-column h-100 app-container">
-        <NavBar />
-        {/*<Container className="flex-grow-1 mt-5">*/}
-        <PageBody>
-          <Switch>
-            <Route path="/" exact component={HomePage} />
-            <PrivateRoute path="/profile" component={Profile} />
-          </Switch>
-        </PageBody>
-        {/*</Container>*/}
-        <Footer />
-      </div>
+      <NavBar toggleSidebar={toggleSidebar} sidebar={sidebar}/>
+      <PageBody sidebar={sidebar}>
+        <Switch>
+          <Route path="/" exact component={Home} />
+          <PrivateRoute path="/groups" component={Groups} />
+        </Switch>
+      </PageBody>
     </Router>
   );
 };
 
 export default App;
 
-const PageBody = styled.div`
+const PageBody = styled(FlexRow)`
   display: flex;
   height: 100%;
+  padding-top: ${TOP_BAR_HEIGHT};
+  transition: 350ms;
+  ${props => props.sidebar && css`
+    padding-left: ${SIDEBAR_WIDTH};  
+    transition: 550ms;
+  `}
 `;
 
 // const AppContainer = styled.div`
