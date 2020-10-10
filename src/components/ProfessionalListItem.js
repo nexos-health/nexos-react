@@ -2,7 +2,7 @@ import React from "react";
 import styled, {css} from "styled-components";
 
 import {FlexColumn, BoldedText} from "../components/BaseStyledComponents";
-import {OverflowText, ParagraphText} from "./BaseStyledComponents";
+import {FlexRow, OverflowText, ParagraphText} from "./BaseStyledComponents";
 
 
 export const ProfessionalListItem = ({currentProfessional: current, professional, professionals, setCurrentProfessional, selectedProfessionals=null, handleSelectedProfessional=null}) => {
@@ -20,21 +20,34 @@ export const ProfessionalListItem = ({currentProfessional: current, professional
       }
       <ProfessionalInfoContainer active={current && professional.uid === current.uid}
        onClick={() => setCurrentProfessional(professionals.filter(item => item.uid === professional.uid)[0])}>
-        <div className="professional-top-row">
-          <div className="professional-name">
-            {professional.firstName} {professional.lastName}
-          </div>
+        <FlexRow>
+          <ProfessionalName>{professional.firstName} {professional.lastName}</ProfessionalName>
           <ProfessionalWaitTime>{professional.waitTimes}</ProfessionalWaitTime>
-        </div>
-        <ProfessionalDescription>
-          {professional.description}
-        </ProfessionalDescription>
+        </FlexRow>
+        <ProfessionalDescription>{professional.description}</ProfessionalDescription>
         <ProfessionalExtras>Fees: {professional.fees}</ProfessionalExtras>
         <ProfessionalExtras>BB: {professional.bulkBilling}</ProfessionalExtras>
       </ProfessionalInfoContainer>
     </li>
   )
 };
+
+const ProfessionalInfoContainer = styled(FlexColumn)`
+  justify-content: space-around;
+  flex-grow: 2;
+  width: 80%;
+  border-bottom: 1px solid dimgrey;
+  padding: 10px 20px 10px 0;
+  ${props => props.active && css`
+      background-color: #dbe2e9;
+  `}
+`;
+
+const ProfessionalName = styled(OverflowText)`
+  padding: 10px 0 0 10px;
+  color: black;
+  flex-grow: 1;
+`;
 
 const ProfessionalExtras = styled(OverflowText)`
   color: darkgray;
@@ -50,20 +63,9 @@ const ProfessionalDescription = styled(OverflowText)`
   max-width: 100%;
 `;
 
-const ProfessionalInfoContainer = styled(FlexColumn)`
-  justify-content: space-around;
-  flex-grow: 2;
-  width: 80%;
-  border-bottom: 1px solid dimgrey;
-  padding: 10px 20px 10px 0;
-  ${props => props.active && css`
-      background-color: #dbe2e9;
-  `}
-`;
-
 const ProfessionalWaitTime = styled(OverflowText)`
   color: black;
   padding-top: 14px;
-  font-size: small;
+  font-size: 12px;
   max-width: 100px;
 `;

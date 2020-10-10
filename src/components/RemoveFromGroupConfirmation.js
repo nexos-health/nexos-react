@@ -1,6 +1,6 @@
-import React, {useState} from "react";
-import {Button} from "./Button";
-import {BaseButton} from "./BaseStyledComponents";
+import React from "react";
+import {BaseButton, ButtonContainer, FlexRow} from "./BaseStyledComponents";
+import styled from "styled-components";
 
 export const RemoveFromGroupConfirmation = ({group, selectedProfessionals, handleSubmit, handleClose}) => {
   let count = selectedProfessionals.size;
@@ -9,14 +9,15 @@ export const RemoveFromGroupConfirmation = ({group, selectedProfessionals, handl
       <div className="move-to-group-container">
         <text>Are you sure you wish to remove {count} {count === 1 ? "professional" : "professionals"} from "{group.label}"</text>
       </div>
-      <div className="remove-from-group-actions">
-        <div className="cancel-button-container">
-          <BaseButton secondary onClick={handleClose}>Cancel</BaseButton>
-        </div>
-        <div className="submit-button-container">
-          <BaseButton onClick={() => handleSubmit(group)}>Confirm</BaseButton>
-        </div>
-      </div>
+      <ActionsContainer>
+        <ButtonContainer><BaseButton secondary onClick={handleClose}>Cancel</BaseButton></ButtonContainer>
+        <ButtonContainer><BaseButton onClick={() => handleSubmit(group)}>Confirm</BaseButton></ButtonContainer>
+      </ActionsContainer>
     </div>
   )
 };
+
+const ActionsContainer = styled(FlexRow)`
+  justify-content: flex-end;
+  padding: 16px 0 0 0;
+`;

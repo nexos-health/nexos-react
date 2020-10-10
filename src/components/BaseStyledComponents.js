@@ -28,6 +28,10 @@ export const IconButton = styled.button`
   }
 `;
 
+export const ButtonContainer = styled.div`
+  padding-right: 10px;
+`;
+
 export const FlexColumn = styled.div`
   display: flex;
   flex-direction: column;

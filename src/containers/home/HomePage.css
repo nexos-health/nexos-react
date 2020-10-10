@@ -54,7 +54,6 @@ html {
   outline: none;
   transition: border-color 0.3s ease;
   font-size: 0.9em;
-  font-family: "Lato", Helvetica, Arial, serif;
   box-sizing: border-box;
 }
 
@@ -68,11 +67,9 @@ html {
   border-radius: 3px;
   padding: 0 0.5rem;
   -webkit-appearance: none;
-  -webkit-font-smoothing: antialiased;
   outline: none;
   transition: border-color 0.3s ease;
   box-sizing: border-box;
-  color: hsl(0,0%,50%);
 }
 
 .location-search-input {
@@ -80,15 +77,11 @@ html {
   width: 350px;
   padding: 0 0.5rem;
   -webkit-appearance: none;
-  -webkit-font-smoothing: antialiased;
-  line-height: 1.5;
-  font-weight: 400;
   outline: none;
   transition: border-color 0.3s ease;
   font-size: 0.9em;
   box-sizing: border-box;
   border: 0;
-  color: hsl(0,0%,50%);
 }
 
 .search-cancel {
@@ -183,8 +176,18 @@ html {
   width: 550px;
 }
 
+.current-professional {
+  display: flex;
+  flex-direction: column;
+}
+
 .current-professional-name {
   padding: 10px 0 10px 0;
+}
+
+.current-professional-description {
+  color: darkgray;
+  padding: 0 0 10px 0;
 }
 
 .current-professional-extras {
@@ -234,28 +237,6 @@ html {
 
 .search-sidebar-heading {
   font-size: 10px
-}
-
-.search-sidebar-section-text {
-  font-family: "Lato", Helvetica, Arial, serif;
-  font-weight: 900;
-  font-style: normal;
-  font-size: 14px;
-  padding: 5px 0 5px 0;
-}
-
-.search-sidebar-section-text.selected {
-  font-family: "Lato", Helvetica, Arial, serif;
-  font-weight: 900;
-  font-style: normal;
-  font-size: 14px;
-  padding: 5px 0 5px 0;
-  color: #3b6ad3;
-}
-
-.search-sidebar-section-text:hover {
-  cursor: pointer;
-  background-color: #f1f1f1;
 }
 
 .sidebar-groups-heading:hover {
@@ -396,11 +377,6 @@ html {
   padding: 3px 0 0 0;
 }
 
-.professional-list-container {
-  border-color: darkslategrey;
-  border-right: inset;
-}
-
 .professionals-results-body {
   display: flex;
   flex-direction: row;
@@ -413,12 +389,6 @@ html {
   color: #3b6ad3;
 }
 
-
-.selection-action-share {
-  padding: 3px 0 0 20px;
-  color: #3b6ad3;
-}
-
 .selection-action-group-add {
   padding: 3px 0 0 20px;
   color: #3b6ad3;
@@ -426,79 +396,4 @@ html {
 
 .selection-action-group-add:hover {
   cursor: pointer;
-}
-
-.groups-container {
-
-}
-
-.selection-action-text {
-  padding: 0 0 0 20px;
-  font-family: "Lato", Helvetica, Arial, serif;
-  font-weight: 900;
-  font-style: normal;
-  font-size: 14px;
-}
-
-.no-selection {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  color: black;
-  border-color: darkslategrey;
-  padding: 20px;
-}
-
-.professional-favourite {
-  display: flex;
-  justify-content: center;
-  flex-grow: 1
-}
-
-.favourite {
-  width: 100px;
-}
-
-.professional-top-row {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-.professional-name {
-  padding: 10px 0 0 10px;
-  color: black;
-  font-size: medium;
-  flex-grow: 1;
-}
-
-.professional-extras {
-  color: darkgray;
-  font-size: small;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  padding: 0 0 5px 10px;
-}
-
-.professional-wait-time {
-  color: black;
-  padding-top: 10px;
-  font-size: small;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100px;
-}
-
-.professional-description {
-  color: darkgray;
-  font-size: medium;
-  flex-grow: 4;
-  padding: 10px 0 0 10px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  height: 100px;
-  max-width: 100%;
 }

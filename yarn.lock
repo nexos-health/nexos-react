@@ -1819,7 +1819,7 @@ babel-plugin-named-asset-import@^0.3.1:
   version "0.3.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-named-asset-import/-/babel-plugin-named-asset-import-0.3.1.tgz#5ec13ec446d0a1e5bb6c57a1f94c9cdedb0c50d6"
 
-"babel-plugin-styled-components@>= 1":
+"babel-plugin-styled-components@>= 1", babel-plugin-styled-components@^1.11.1:
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/babel-plugin-styled-components/-/babel-plugin-styled-components-1.11.1.tgz#5296a9e557d736c3186be079fff27c6665d63d76"
   integrity sha512-YwrInHyKUk1PU3avIRdiLyCpM++18Rs1NgyMXEAQC33rIXs/vro0A+stf4sT0Gf22Got+xRWB8Cm0tw+qkRzBA==
@@ -8090,6 +8090,13 @@ react-fontawesome@^1.7.1:
   integrity sha512-kottReWW1I9Uupub6A5YX4VK7qfpFnEjAcm5zB4Aepst7iofONT27GJYdTcRsj7q5uQu9PXBL7GsxAFKANNUVg==
   dependencies:
     prop-types "^15.5.6"
+
+react-icons@^3.11.0:
+  version "3.11.0"
+  resolved "https://registry.yarnpkg.com/react-icons/-/react-icons-3.11.0.tgz#2ca2903dfab8268ca18ebd8cc2e879921ec3b254"
+  integrity sha512-JRgiI/vdF6uyBgyZhVyYJUZAop95Sy4XDe/jmT3R/bKliFWpO/uZBwvSjWEdxwzec7SYbEPNPck0Kff2tUGM2Q==
+  dependencies:
+    camelcase "^5.0.0"
 
 react-input-autosize@^2.2.2:
   version "2.2.2"

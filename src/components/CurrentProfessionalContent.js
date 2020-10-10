@@ -22,21 +22,21 @@ export const CurrentProfessionalContent = ({currentProfessional}) => {
       <span className="current-professional-extras">
         <b>Bulk Billing:</b> {currentProfessional.bulkBilling}
       </span>
-      <div className="current-professional-clinics">
+      <ClinicsContainer>
         <span><b>Clinics</b></span>
         {currentProfessional.clinics.map((clinic) => {
           return (
-            <div className="current-professional-clinic">
+            <ClinicContainer>
               <span>{clinic.clinicName}</span>
               <span>Phone: {clinic.phone}</span>
               <span>Fax: {clinic.fax}</span>
               <span>
                 Address: {clinic.streetNumber} {clinic.streetName} {clinic.suburb}, {clinic.state}, {clinic.postcode}
                 </span>
-            </div>
+            </ClinicContainer>
           )
         })}
-      </div>
+      </ClinicsContainer>
     </FlexColumn>
   )
 };
@@ -46,3 +46,14 @@ const CurrentProfessionalDescription = styled(ParagraphText)`
   color: darkgray;
   padding: 0 0 10px 0;
 `;
+
+const ClinicContainer = styled(FlexColumn)`
+  justify-content: space-around;
+  padding-top: 20px;
+  font-size: small;
+`;
+
+const ClinicsContainer = styled.div`
+  padding: 25px 0 10px 0;
+`;
+

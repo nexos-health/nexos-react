@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import styled from 'styled-components';
+import styled, {css} from 'styled-components';
 import Select, { components } from 'react-select'
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
@@ -33,7 +33,14 @@ import {useAuth0} from "../../react-auth0-spa";
 import {AuthenticatePrompt} from "../../components/AuthenticatePrompt";
 import {EditableGroupSummary} from "../../components/EditableGroupSummary";
 import {GroupsTable} from "../../components/GroupsTable";
-import {BaseButton, FlexColumn, FlexRow, IconButton, BoldedText} from "../../components/BaseStyledComponents";
+import {
+  BaseButton,
+  FlexColumn,
+  FlexRow,
+  IconButton,
+  BoldedText,
+  ParagraphText
+} from "../../components/BaseStyledComponents";
 
 
 Modal.setAppElement('#root');
@@ -477,62 +484,15 @@ const HomePage = () => {
               <div className="search-sidebar-container">
                 <div className="search-sidebar">
                   <div className="search-sidebar-heading">SEARCH</div>
-                  <div
-                    className={"search-sidebar-section-text" +
-                      (selectedSidebarOption === "all" ? " selected" : "")}
-                    onClick={() => handleSidebarTitleSelection("all")}>
+                  <SidebarSectionText selected={selectedSidebarOption === "all"}
+                                      onClick={() => handleSidebarTitleSelection("all")}>
                     All
-                  </div>
+                  </SidebarSectionText>
                   <div className="search-sidebar-groups">
-                    <div className="sidebar-groups-heading" onClick={() => handleSidebarTitleSelection("groups")}>
-                      <div
-                        className={"search-sidebar-section-text" +
-                        (selectedSidebarOption === "groups" ? " selected" : "")}
-                        >
-                        My Groups
-                      </div>
-                    </div>
-                    {/*{groupsOptions.map((group) => {*/}
-                      {/*return (*/}
-                        {/*<div*/}
-                          {/*className={"group-list-item" + (selectedGroup && group.value === selectedGroup.value ? " selected" : "")}*/}
-                          {/*onClick={() => handleSelectGroup(group)}*/}
-                        {/*>*/}
-                          {/*<div>*/}
-                            {/*{group.label}*/}
-                          {/*</div>*/}
-                          {/*<i*/}
-                            {/*className="fa fa-ellipsis-h sidebar-icon"*/}
-                            {/*aria-hidden="true"*/}
-                            {/*onClick={() => handleGroupOptions(group.value)}*/}
-                          {/*/>*/}
-                          {/*<Modal*/}
-                            {/*isOpen={groupActionsModalOpen}*/}
-                            {/*onRequestClose={() => setGroupActionsModalOpen(!groupActionsModalOpen)}*/}
-                            {/*style={groupActionsCustomStyles}*/}
-                            {/*contentLabel="Example Modal"*/}
-                          {/*>*/}
-                            {/*<GroupActionsOptions*/}
-                              {/*group={group}*/}
-                              {/*handleSubmit={() => handleDeleteGroupConfirm(group)}*/}
-                              {/*handleClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}*/}
-                            {/*/>*/}
-                          {/*</Modal>*/}
-                        {/*<Modal*/}
-                            {/*isOpen={deleteGroupModalOpen}*/}
-                            {/*onRequestClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}*/}
-                            {/*style={deleteGroupCustomStyles}*/}
-                            {/*contentLabel="Example Modal"*/}
-                          {/*>*/}
-                            {/*<DeleteGroupConfirmation*/}
-                              {/*group={group}*/}
-                              {/*handleSubmit={() => handleDeleteGroupConfirm(group)}*/}
-                              {/*handleClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}*/}
-                            {/*/>*/}
-                          {/*</Modal>*/}
-                        {/*</div>*/}
-                      {/*)*/}
-                    {/*})}*/}
+                    <SidebarSectionText selected={selectedSidebarOption === "groups"}
+                                        onClick={() => handleSidebarTitleSelection("groups")}>
+                      My Groups
+                    </SidebarSectionText>
                   </div>
                 </div>
               </div>
@@ -702,6 +662,18 @@ const HomePage = () => {
             handleClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}
           />
         </Modal>
+        <Modal
+          isOpen={deleteGroupModalOpen}
+          onRequestClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}
+          style={deleteGroupCustomStyles}
+          contentLabel="Example Modal"
+        >
+          {/*<DeleteGroupConfirmation*/}
+            {/*group={group}*/}
+            {/*handleSubmit={() => handleDeleteGroupConfirm(group)}*/}
+            {/*handleClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}*/}
+          {/*/>*/}
+        </Modal>
       </div>
     );
   } else {
@@ -812,7 +784,7 @@ const CurrentProfessionalContainer = styled.div`
   width: 550px;
 `;
 
-const NoCurrentProfessionalContainer = styled(FlexColumn)`
+export const NoCurrentProfessionalContainer = styled(FlexColumn)`
   justify-content: flex-start;
   color: black;
   border-color: darkslategrey;
@@ -833,4 +805,18 @@ const DistanceContainer = styled.div`
   width: 140px;
   font-size: 0.9em;
   color: hsl(0,0%,50%);
+`;
+
+const SidebarSectionText = styled(ParagraphText)`
+  font-weight: 900;
+  font-style: normal;
+  font-size: 14px;
+  padding: 5px 0 5px 0;
+  &:hover {
+    cursor: pointer;
+    background-color: #f1f1f1;
+  }
+  ${props => props.selected && css`
+    color: #3b6ad3;
+  `}
 `;

@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import {Button} from "./Button";
-import {BaseButton} from "./BaseStyledComponents";
+import {BaseButton, ButtonContainer} from "./BaseStyledComponents";
 
 export const DeleteGroupConfirmation = ({group, handleSubmit, handleClose}) => {
   return (
@@ -9,12 +9,8 @@ export const DeleteGroupConfirmation = ({group, handleSubmit, handleClose}) => {
         <text>Are you sure you wish to delete the group "{group.label}"</text>
       </div>
       <div className="move-to-modal-actions">
-        <div className="cancel-button-container">
-          <BaseButton secondary onClick={handleClose}>Cancel</BaseButton>
-        </div>
-        <div className="submit-button-container">
-          <BaseButton onClick={() => handleSubmit(group)}>Confirm</BaseButton>
-        </div>
+        <ButtonContainer><BaseButton secondary onClick={handleClose}>Cancel</BaseButton></ButtonContainer>
+        <ButtonContainer><BaseButton onClick={() => handleSubmit(group)}>Confirm</BaseButton></ButtonContainer>
       </div>
     </div>
   )

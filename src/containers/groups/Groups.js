@@ -14,6 +14,7 @@ import { CreateGroupForm } from "../../components/CreateGroupForm";
 import {Button} from "../../components/Button";
 import {CurrentProfessionalContent} from "../../components/CurrentProfessionalContent";
 import {ProfessionalListItem} from "../../components/ProfessionalListItem";
+import {NoCurrentProfessionalContainer} from "../home/HomePage";
 
 
 const customStyles = {
@@ -167,7 +168,7 @@ const Groups = () => {
                 <div className="current-professional-box">
                   {currentProfessional && filteredProfessionals.indexOf(currentProfessional) >= 0
                     ? <CurrentProfessionalContent currentProfessional={currentProfessional}/>
-                    : <div className="no-selection">No Professional Selected</div>
+                    : <NoCurrentProfessionalContainer>No Professional Selected</div>
                   }
                 </div>
               </div>
