@@ -264,6 +264,7 @@ const TopNavBar = styled(FlexRow)`
   position: fixed;
   width: 100vw;
   padding-right: 20px;
+  z-index: 1;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
 `;
 
@@ -283,6 +284,7 @@ const NavMenu = styled.nav`
   top: ${TOP_BAR_HEIGHT};
   left: -100%;
   transition: 850ms;
+  box-shadow: 2px 5px 3px 0 rgba(0,0,0,0.16);
   ${props => props.active && css`
     left: 0;
     transition: 350ms;
@@ -293,13 +295,12 @@ const NavText = styled.li`
   display: flex;
   justify-content: start;
   align-items: center;
-  padding: 8px 0 8px 16px;
+  padding-left: 16px;
   list-style: none;
-  height: 60px;
+  height: 50px;
 `;
 
 const NavTextLink = styled(Link)`
-  text-decoration: none;
   color: #394963;
   font-size: 16px;
   font-weight: 600;
@@ -311,13 +312,14 @@ const NavTextLink = styled(Link)`
   border-radius: 4px;
   &:hover {
     background-color: #ebebeb;
+    text-decoration: none;
   }
 `;
 
 const NavMenuItems = styled.ul`
   width: 100%;
   padding-inline-start: 0;
-  //padding-top: 40px;
+  padding-top: 25px;
 `;
 
 const NavToggle = styled.li`
