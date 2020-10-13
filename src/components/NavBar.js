@@ -3,7 +3,7 @@ import {Link, NavLink as RouterNavLink} from "react-router-dom";
 import { FaBars } from 'react-icons/fa'
 import { AiOutlineClose } from 'react-icons/ai'
 import { IconContext } from 'react-icons';
-import styled, {css} from "styled-components";
+import styled, { css } from 'styled-components/macro';
 
 import { useAuth0 } from "../react-auth0-spa";
 import {clearAccessToken, getAccessToken} from "../utils/authentication";
@@ -264,7 +264,7 @@ const TopNavBar = styled(FlexRow)`
   position: fixed;
   width: 100vw;
   padding-right: 20px;
-  z-index: 1;
+  z-index: 2;
   box-shadow: 0 2px 5px 0 rgba(0,0,0,0.16), 0 2px 10px 0 rgba(0,0,0,0.12);
 `;
 
@@ -284,6 +284,7 @@ const NavMenu = styled.nav`
   top: ${TOP_BAR_HEIGHT};
   left: -100%;
   transition: 850ms;
+  z-index: 1;
   box-shadow: 2px 5px 3px 0 rgba(0,0,0,0.16);
   ${props => props.active && css`
     left: 0;

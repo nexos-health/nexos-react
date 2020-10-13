@@ -1,8 +1,8 @@
 import React from "react";
-import styled, {css} from 'styled-components';
+import styled, {css} from 'styled-components/macro'
 
 
-export const GroupsTable = ({groupsOptions, handleSelectedGroup}) => {
+export const GroupsTable = ({groupsOptions, groups, handleSelectedGroup}) => {
   return (
     <GroupListContainer>
       <Table>
@@ -19,7 +19,7 @@ export const GroupsTable = ({groupsOptions, handleSelectedGroup}) => {
             <TableRow onClick={() => handleSelectedGroup(group)}>
               <TableData>{group.label}</TableData>
               <TableData>{group.description}</TableData>
-              <TableDataEnd># Members</TableDataEnd>
+              <TableDataEnd>{groups[group.value].professionalsUids.length}</TableDataEnd>
             </TableRow>
           )
         })}
@@ -88,7 +88,7 @@ const TableData = styled.td`
 
 const TableDataEnd = styled(TableData)`
   text-align: right;
-  padding-right: 10px;
+  padding-right: 15px;
 `;
 
 const GroupListContainer= styled.div`

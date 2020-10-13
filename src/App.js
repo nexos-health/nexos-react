@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { Router, Route, Switch } from "react-router-dom";
-import styled, { css }from 'styled-components';
+import styled, { css } from 'styled-components/macro';
 
 import PrivateRoute from "./components/PrivateRoute";
 import Loading from "./components/Loading";
@@ -34,21 +34,24 @@ const App = () => {
   return (
     <Router history={history}>
       <NavBar toggleSidebar={toggleSidebar} sidebar={sidebar}/>
-      <PageBody sidebar={sidebar}>
+      <PageBodyContainer sidebar={sidebar}>
         <Switch>
           <Route path="/" exact component={Home} />
           <PrivateRoute path="/groups" component={Groups} />
         </Switch>
-      </PageBody>
+      </PageBodyContainer>
     </Router>
   );
 };
 
 export default App;
 
-const PageBody = styled(FlexRow)`
-  display: flex;
+const PageBodyContainer = styled.div`
+  position: absolute;
   height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
   padding-top: ${TOP_BAR_HEIGHT};
   transition: 350ms;
   ${props => props.sidebar && css`

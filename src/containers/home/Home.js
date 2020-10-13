@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import styled, {css} from 'styled-components';
-import Select, { components } from 'react-select'
-import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
+import styled, {css} from 'styled-components/macro';
+import Select, { components } from 'react-select';
+import AsyncSelect from 'react-select/async';
+import { geocodeByPlaceId, getLatLng } from "react-places-autocomplete";
 
 import './Home.css';
 import {
@@ -28,8 +29,12 @@ import {
   FlexRow,
   IconButton,
   BoldedText,
-  ParagraphText
+  Text,
+  ParagraphText,
+  SearchInput,
+  SearchBarContainer
 } from "../../components/BaseStyledComponents";
+import {fetchPlaces} from "../../utils/api";
 
 
 Modal.setAppElement('#root');
@@ -192,20 +197,22 @@ const Home = () => {
   const [locationSearchTerm, setLocationSearchTerm] = useState("");
   const [locationSelected, setLocationSelected] = useState(false);
   const [latLngBounds, setLatLngBounds] = useState({});
-  const [distance, setDistance] = useState(Object.values(distanceOptions)[1]);
+  const [distance, setDistance] = useState(Object.values(distanceOptions)[2]);
   const [currentProfessional, setCurrentProfessional] = useState(null);
   const [selectedProfessionals, setSelectedProfessionals] = useState(new Set());
   const [professionTypesSelections, setProfessionTypesSelections] = useState([]);
   const [selectedProfessionTypes, setSelectedProfessionTypes] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const handleLocationSelect = async (value, distance) => {
-    const results = await geocodeByAddress(value);
+  const handleLocationSelect = async (action, location, distance) => {
+    if (action.action === 'clear') {
+      handleLocationCancel();
+      return
+    }
+    const results = await geocodeByPlaceId(location.value);
     const latLng = await getLatLng(results[0]);
     // const latBounds = await Object.values(results[0].geometry.bounds.Ya);
     // const lngBounds = await Object.values(results[0].geometry.bounds.Ua);
-    setLocationSelected(true);
-    setLocationSearchTerm(value);
     let [latDelta, lngDelta] = kmToLatLng(distance.value, latLng.lat);
     setLatLngBounds({
       latitude: {min: latLng.lat - latDelta, max:latLng.lat + latDelta},
@@ -214,10 +221,7 @@ const Home = () => {
   };
 
   const handleLocationCancel = () => {
-    setLocationSelected(false);
-    setLocationSearchTerm("");
     setLatLngBounds({});
-    document.getElementById("location-search-input").focus()
   };
 
   const handleDistanceChange = (distance) => {
@@ -286,64 +290,45 @@ const Home = () => {
     return (
       <div className="homepage">
         <div className="professional-body">
-          <div className="search-container">
-            <div className="professional-dropdown">
-              <Select
-                options={professionTypesSelections}
-                value={selectedProfessionTypes}
-                onChange={setSelectedProfessionTypes}
-                styles={customStyles}
-                isMulti
-                isSearchable
-                name="profession"
-                placeholder="Select professions"
-                className="basic-multi-select"
-                classNamePrefix="select"
-              />
-            </div>
-            <span onChange={(e) => setSearchTerm(e.target.value)}>
-              <input
-                id="search-input"
-                className="search-input"
-                placeholder="Search by name, specialty, or clinic..."
-              />
-            </span>
-            <div className="search-autocomplete">
-              <PlacesAutocomplete
-                value={locationSearchTerm}
-                onChange={setLocationSearchTerm}
-                onSelect={(location) => handleLocationSelect(location, distance)}
-                searchOptions={{types: ["(cities)"], componentRestrictions: {country: ["au"]}}}
-                debounce={200}
-              >
-                {({getInputProps, suggestions, getSuggestionItemProps}) => (
-                  <div>
-                    <div className="location-search-box">
-                      <input
-                        id="location-search-input"
-                        className="location-search-input" {...getInputProps({placeholder: "Search by suburb..."})}
-                        readOnly={!!locationSelected}
-                      />
-                      {locationSelected &&
-                        <i className="fa fa-times" style={{fontSize: "20px", color: "grey", paddingTop: "7px"}} onClick={() => handleLocationCancel()}/>
-                      }
-                    </div>
-                    <div className={suggestions.length > 0 ? "suggested-locations-box" : null}>
-                      {suggestions.map(suggestion => {
-                        const className = suggestion.active ? "suggested-location-active" : "suggested-location";
-                        return (
-                          <div {...getSuggestionItemProps(suggestion, {className})}>
-                            {suggestion.description}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </PlacesAutocomplete>
-            </div>
-            <DistanceContainer>
-              {locationSelected &&
+          <SearchContainer>
+            <SearchProfessionType>
+              <SearchAreaTitle>Professions</SearchAreaTitle>
+              <ProfessionTypeDropdown>
+                <Select
+                  options={professionTypesSelections}
+                  value={selectedProfessionTypes}
+                  onChange={setSelectedProfessionTypes}
+                  styles={customStyles}
+                  isMulti
+                  isSearchable
+                  name="profession"
+                  placeholder="Select professions..."
+                  className="basic-multi-select"
+                  classNamePrefix="select"
+                />
+              </ProfessionTypeDropdown>
+            </SearchProfessionType>
+            <SearchKeyword>
+              <SearchAreaTitle>Keyword</SearchAreaTitle>
+              <SearchBarContainer onChange={(e) => setSearchTerm(e.target.value)}>
+                <SearchInput placeholder="Search by name, specialty, or clinic..."/>
+              </SearchBarContainer>
+            </SearchKeyword>
+            <SearchLocation>
+              <SearchAreaTitle>Location</SearchAreaTitle>
+              <LocationSearchBarContainer>
+                <AsyncSelect
+                  onChange={(location, action) => handleLocationSelect(action, location, distance)}
+                  loadOptions={fetchPlaces}
+                  styles={customStyles}
+                  components={{ DropdownIndicator:() => null, IndicatorSeparator:() => null }}
+                  isSearchable
+                  isClearable
+                  name="location"
+                  placeholder="Search by suburb..."
+                />
+              </LocationSearchBarContainer>
+              <DistanceContainer hide={Object.keys(latLngBounds).length === 0}>
                 <Select
                   options={distanceOptions}
                   value={distance}
@@ -367,22 +352,22 @@ const Home = () => {
                     },
                     IndicatorSeparator: () => null,
                   }}
-                  />
-              }
-            </DistanceContainer>
-          </div>
-          <div className="professional-results">
+                />
+              </DistanceContainer>
+            </SearchLocation>
+          </SearchContainer>
+          <SearchResults>
             <ProfessionalResultsContainer>
               <ProfessionalResultsListContainer>
-                <ProfessionalListActions>
-                  <i className="fa fa-square-o selection-action"/>
-                  <TitleText>Actions</TitleText>
-                  <i onClick={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
-                     className="fa fa-trash selection-action-delete"/>
-                  <i className="fa fa-plus selection-action-group-add"
-                     onClick={() => setAddToGroupModalOpen(true)}/>
-                  {/*<i className="fa fa-share-alt selection-action-share"/>*/}
-                </ProfessionalListActions>
+                {/*<ProfessionalListActions>*/}
+                  {/*<i className="fa fa-square-o selection-action"/>*/}
+                  {/*<TitleText>Actions</TitleText>*/}
+                  {/*<i onClick={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}*/}
+                     {/*className="fa fa-trash selection-action-delete"/>*/}
+                  {/*<i className="fa fa-plus selection-action-group-add"*/}
+                     {/*onClick={() => setAddToGroupModalOpen(true)}/>*/}
+                  {/*/!*<i className="fa fa-share-alt selection-action-share"/>*!/*/}
+                {/*</ProfessionalListActions>*/}
                 <ul className="professional-list">
                   {filteredProfessionals.map((professional) => {
                     return (
@@ -405,7 +390,7 @@ const Home = () => {
                 }
               </CurrentProfessionalContainer>
             </ProfessionalResultsContainer>
-          </div>
+          </SearchResults>
         </div>
         {/*BELOW WE KEEP THE CODE FOR THE MODALS*/}
         <Modal
@@ -463,71 +448,55 @@ const ProfessionalResultsContainer = styled.div`
   height: 650px;
 `;
 
+const SearchContainer = styled(FlexRow)`
+  width: 100%;
+  justify-content: center;
+  padding: 0 0 50px 0;
+`;
+
+const SearchAreaTitle = styled(Text)`
+  font-size: 20px;
+  font-weight: 800;
+  color: #766F6F;
+  padding-bottom: 10px;
+`;
+
+const SearchProfessionType = styled(FlexColumn)`
+  padding-right: 20px;
+`;
+
+const SearchKeyword= styled(FlexColumn)`
+  padding-right: 20px;
+`;
+
+const SearchLocation = styled(FlexColumn)`
+  width: 300px;
+`;
+
+const LocationSearchBarContainer = styled(SearchBarContainer)`
+  padding: 0;
+  color: #6d6d6d;
+  font-size: 0.9em;
+`;
+
+const SearchResults = styled(FlexRow)`
+  width: 100%;
+  justify-content: center;
+`;
+
 const ProfessionalResultsListContainer = styled.div`
   border-color: darkslategrey;
   border-right: inset;
 `;
 
-const GroupsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: 650px;
-`;
-
-const GroupsHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 10px 30px 80px 30px;
-`;
-
-const GroupsActions = styled.div`
-  align-self: flex-start;
-  white-space: nowrap;
-`;
-
-const GroupsTitle = styled(BoldedText)`
-  font-weight: 600;
-  font-size: 24px;
-`;
-
-const GroupsDescription= styled(BoldedText)`
-  max-width: 550px;
-  font-weight: 500;
-`;
-
-const GroupSummary = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  padding: 10px;
-  min-height: 100px;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-`;
-
-const GroupSummaryHeader = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-`;
-
-const GroupSummaryTitle = styled.div`
-  display: flex;
-  justify-content: space-between;
-  font-family: "Lato", Helvetica, Arial, serif;
-  font-weight: 900;
-  font-style: normal;
-  font-size: 20px;
-`;
-
-const GroupSummaryDescription = styled.div`
-  font-family: "Lato", Helvetica, Arial, serif;
-  font-weight: 500;
-  font-style: normal;
-  font-size: 14px;
-  max-width: 550px;
+const ProfessionTypeDropdown = styled(FlexColumn)`
+  align-items: center;
+  justify-content: center;
+  color: #6d6d6d;
+  width: 400px;
+  padding: 0 0 25px 0;
+  font-size: 0.9em;
+  min-width: 250px;
 `;
 
 const ProfessionalListActions = styled.div`
@@ -540,7 +509,7 @@ const ProfessionalListActions = styled.div`
   border-bottom-style: solid;
 `;
 
-const TitleText = styled.div`
+const TitleText = styled(Text)`
   padding: 0 0 0 20px;
   font-family: "Lato", Helvetica, Arial, serif;
   font-weight: 900;
@@ -578,6 +547,11 @@ const DistanceContainer = styled.div`
   width: 140px;
   font-size: 0.9em;
   color: hsl(0,0%,50%);
+  align-self: flex-end;
+  padding-top: 5px;
+  ${props => props.hide && css`
+    opacity: 0;
+  `}
 `;
 
 const SidebarSectionText = styled(ParagraphText)`

@@ -6,7 +6,6 @@ const fetchMiddleware = store => next => action => {
 
   let options = {};
   const accessToken = getAccessToken();
-  console.log("accessToken", accessToken);
 
   options.headers = action.meta.headers || {"Content-Type": "application/json"};
   if (accessToken) {

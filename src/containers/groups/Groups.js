@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux'
-import styled, {css} from 'styled-components';
+import styled, { css } from 'styled-components/macro';
 import Select, { components } from 'react-select'
 import PlacesAutocomplete, { geocodeByAddress, getLatLng } from "react-places-autocomplete";
 
@@ -37,7 +37,7 @@ import {
   FlexRow,
   IconButton,
   BoldedText,
-  ParagraphText
+  ParagraphText, SearchBarContainer, SearchInput
 } from "../../components/BaseStyledComponents";
 
 
@@ -341,181 +341,102 @@ const Groups = () => {
     }
 
     return (
-      <div className="homepage">
-        <div className="professional-body">
-          <div className="search-container">
-            <div className="professional-dropdown">
-              <Select
-                options={professionTypesSelections}
-                value={selectedProfessionTypes}
-                onChange={setSelectedProfessionTypes}
-                styles={customStyles}
-                isMulti
-                isSearchable
-                name="profession"
-                placeholder="Select professions"
-                className="basic-multi-select"
-                classNamePrefix="select"
-              />
-            </div>
-            <span onChange={(e) => setSearchTerm(e.target.value)}>
-              <input
-                id="search-input"
-                className="search-input"
-                placeholder="Search by name, specialty, or clinic..."
-              />
-            </span>
-            <div className="search-autocomplete">
-              <PlacesAutocomplete
-                value={locationSearchTerm}
-                onChange={setLocationSearchTerm}
-                onSelect={(location) => handleLocationSelect(location, distance)}
-                searchOptions={{types: ["(cities)"], componentRestrictions: {country: ["au"]}}}
-                debounce={200}
-              >
-                {({getInputProps, suggestions, getSuggestionItemProps}) => (
-                  <div>
-                    <div className="location-search-box">
-                      <input
-                        id="location-search-input"
-                        className="location-search-input" {...getInputProps({placeholder: "Search by suburb..."})}
-                        readOnly={!!locationSelected}
-                      />
-                      {locationSelected &&
-                      <i className="fa fa-times" style={{fontSize: "20px", color: "grey", paddingTop: "7px"}} onClick={() => handleLocationCancel()}/>
-                      }
-                    </div>
-                    <div className={suggestions.length > 0 ? "suggested-locations-box" : null}>
-                      {suggestions.map(suggestion => {
-                        const className = suggestion.active ? "suggested-location-active" : "suggested-location";
-                        return (
-                          <div {...getSuggestionItemProps(suggestion, {className})}>
-                            {suggestion.description}
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                )}
-              </PlacesAutocomplete>
-            </div>
-            <DistanceContainer>
-              {locationSelected &&
-              <Select
-                options={distanceOptions}
-                value={distance}
-                onChange={handleDistanceChange}
-                placeholder="Distance..."
-                style={customStyles}
-                components={{
-                  SingleValue: ({ children, ...props }) => {
-                    return (
-                      <components.SingleValue {...props}>
-                        {"within " + children}
-                      </components.SingleValue>
-                    );
-                  },
-                  Placeholder: ({ children, ...props }) => {
-                    return (
-                      <components.Placeholder {...props}>
-                        {"within " + children}
-                      </components.Placeholder>
-                    );
-                  },
-                  IndicatorSeparator: () => null,
-                }}
-              />
-              }
-            </DistanceContainer>
-          </div>
-          <div className="professional-results">
-            {selectedGroup
-              ? <ProfessionalResultsContainer>
-                <ProfessionalResultsListContainer>
-                  {groupEditable === selectedGroup.value
-                    ? <EditableGroupSummary
-                      selectedGroup={selectedGroup}
-                      editGroupName={editGroupName}
-                      editGroupDescription={editGroupDescription}
-                      setEditGroupName={setEditGroupName}
-                      setEditGroupDescription={setEditGroupDescription}
-                      handleEditGroupSave={handleEditGroupSave}
-                      handleEditGroupCancel={handleEditGroupCancel}
-                    />
-                    : <GroupSummary>
-                      <BackButtonContainer>
-                        <BackIcon className="fa fa-chevron-left"/>
-                        <IconButton onClick={() => setSelectedGroup(null)}>Back to Groups</IconButton>
-                      </BackButtonContainer>
-                      <GroupSummaryHeader>
-                        <GroupSummaryTitle>{selectedGroup.label}</GroupSummaryTitle>
-                        <i className="fa fa-edit group-edit" onClick={() => handleEditGroup(selectedGroup)}/>
-                      </GroupSummaryHeader>
-                      <GroupSummaryDescription>{selectedGroup.description}</GroupSummaryDescription>
-                    </GroupSummary>
-                  }
-                  <ProfessionalListActions>
-                    <i className="fa fa-square-o selection-action"/>
-                    <TitleText>Actions</TitleText>
-                    <i onClick={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
-                       className="fa fa-trash selection-action-delete"/>
-                    <i className="fa fa-plus selection-action-group-add"
-                       onClick={() => setAddToGroupModalOpen(true)}/>
-                    {/*<i className="fa fa-share-alt selection-action-share"/>*/}
-                  </ProfessionalListActions>
-                  <ul className="professional-list">
-                    {filteredProfessionals.map((professional) => {
-                      return (
-                        <ProfessionalListItem
-                          currentProfessional={currentProfessional}
-                          professional={professional}
-                          professionals={filteredProfessionals}
-                          setCurrentProfessional={setCurrentProfessional}
-                          selectedProfessionals={selectedProfessionals}
-                          handleSelectedProfessional={handleSelectedProfessional}
-                        />
-                      )
-                    })}
-                  </ul>
-                </ProfessionalResultsListContainer>
-                <CurrentProfessionalContainer>
-                  {currentProfessional && filteredProfessionals.indexOf(currentProfessional) >= 0
-                    ? <CurrentProfessionalContent currentProfessional={currentProfessional}/>
-                    : <NoCurrentProfessionalContainer>No Professional Selected</NoCurrentProfessionalContainer>
-                  }
-                </CurrentProfessionalContainer>
-              </ProfessionalResultsContainer>
-              : <GroupsContainer>
-                <GroupsHeader>
-                  <FlexColumn>
-                    <GroupsTitle>Groups</GroupsTitle>
-                    {groupsOptions.length > 0 && <GroupsDescription>
-                      Create groups to organise professionals into helpful categories
-                      such as “Diabetes Support” or “Favourites”,
-                      so you can quickly find them at a later stage
-                    </GroupsDescription>}
-                  </FlexColumn>
-                  <GroupsActions>
-                    {groupsOptions.length > 0 &&
-                    <BaseButton onClick={() => setCreateGroupModalOpen(true)}>Create Group</BaseButton>
-                    }
-                  </GroupsActions>
-                </GroupsHeader>
-                {groupsOptions.length > 0
-                  ? <div>
-                    <GroupsTable
-                      groupsOptions={groupsOptions}
-                      handleSelectedGroup={setSelectedGroup}
-                    />
-                  </div> // <GroupsList/>
-                  : <CreateFirstGroup
-                    createGroup={() => setCreateGroupModalOpen(true)}
-                    loginWithRedirect={loginWithRedirect}
-                    isAuthenticated={isAuthenticated}/>
+      <GroupPageBody>
+        <div className="professional-results">
+          {selectedGroup
+            ? <ProfessionalResultsContainer>
+              <ProfessionalResultsListContainer>
+                {groupEditable === selectedGroup.value
+                  ? <EditableGroupSummary
+                    selectedGroup={selectedGroup}
+                    editGroupName={editGroupName}
+                    editGroupDescription={editGroupDescription}
+                    setEditGroupName={setEditGroupName}
+                    setEditGroupDescription={setEditGroupDescription}
+                    handleEditGroupSave={handleEditGroupSave}
+                    handleEditGroupCancel={handleEditGroupCancel}
+                  />
+                  : <GroupSummary>
+                    <BackButtonContainer>
+                      <BackIcon className="fa fa-chevron-left"/>
+                      <IconButton onClick={() => setSelectedGroup(null)}>Back to Groups</IconButton>
+                    </BackButtonContainer>
+                    <GroupSummaryHeader>
+                      <GroupSummaryTitle>{selectedGroup.label}</GroupSummaryTitle>
+                      <i className="fa fa-edit group-edit" onClick={() => handleEditGroup(selectedGroup)}/>
+                    </GroupSummaryHeader>
+                    <GroupSummaryDescription>{selectedGroup.description}</GroupSummaryDescription>
+                  </GroupSummary>
                 }
-              </GroupsContainer>
-            }
-          </div>
+                <ProfessionalListActions>
+                  <i className="fa fa-square-o selection-action"/>
+                  <TitleText>Actions</TitleText>
+                  <i onClick={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}
+                     className="fa fa-trash selection-action-delete"/>
+                  <i className="fa fa-plus selection-action-group-add"
+                     onClick={() => setAddToGroupModalOpen(true)}/>
+                  {/*<i className="fa fa-share-alt selection-action-share"/>*/}
+                </ProfessionalListActions>
+                <ul className="professional-list">
+                  {filteredProfessionals.map((professional) => {
+                    return (
+                      <ProfessionalListItem
+                        currentProfessional={currentProfessional}
+                        professional={professional}
+                        professionals={filteredProfessionals}
+                        setCurrentProfessional={setCurrentProfessional}
+                        selectedProfessionals={selectedProfessionals}
+                        handleSelectedProfessional={handleSelectedProfessional}
+                      />
+                    )
+                  })}
+                </ul>
+              </ProfessionalResultsListContainer>
+              <CurrentProfessionalContainer>
+                {currentProfessional && filteredProfessionals.indexOf(currentProfessional) >= 0
+                  ? <CurrentProfessionalContent currentProfessional={currentProfessional}/>
+                  : <NoCurrentProfessionalContainer>No Professional Selected</NoCurrentProfessionalContainer>
+                }
+              </CurrentProfessionalContainer>
+            </ProfessionalResultsContainer>
+            : <GroupsContainer>
+              <GroupsHeader>
+                <FlexColumn>
+                  <GroupsTitle>Groups</GroupsTitle>
+                  {groupsOptions.length > 0 && <GroupsDescription>
+                    Create groups to organise professionals into helpful categories
+                    such as “Diabetes Support” or “Favourites”,
+                    so you can quickly find them at a later stage
+                  </GroupsDescription>}
+                </FlexColumn>
+                <GroupsActions>
+                  {groupsOptions.length > 0 &&
+                  <BaseButton onClick={() => setCreateGroupModalOpen(true)}>Create Group</BaseButton>
+                  }
+                </GroupsActions>
+              </GroupsHeader>
+              {groupsOptions.length > 0
+                ? <div>
+                  <SearchBarContainer>
+                    <SearchBar onChange={(e) => setSearchTerm(e.target.value)}>
+                      <SearchInput
+                        placeholder="Search by group name or description..."
+                      />
+                    </SearchBar>
+                  </SearchBarContainer>
+                  <GroupsTable
+                    groupsOptions={groupsOptions}
+                    groups={groups}
+                    handleSelectedGroup={setSelectedGroup}
+                  />
+                </div> // <GroupsList/>
+                : <CreateFirstGroup
+                  createGroup={() => setCreateGroupModalOpen(true)}
+                  loginWithRedirect={loginWithRedirect}
+                  isAuthenticated={isAuthenticated}/>
+              }
+            </GroupsContainer>
+          }
         </div>
         {/*BELOW WE KEEP THE CODE FOR THE MODALS*/}
         <Modal
@@ -570,7 +491,7 @@ const Groups = () => {
           {/*handleClose={() => setDeleteGroupModalOpen(!deleteGroupModalOpen)}*/}
           {/*/>*/}
         </Modal>
-      </div>
+      </GroupPageBody>
     );
   } else {
     return null
@@ -578,6 +499,13 @@ const Groups = () => {
 };
 
 export default Groups;
+
+
+const GroupPageBody = styled(FlexColumn)`
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+`;
 
 const ProfessionalResultsContainer = styled.div`
   display: flex;
@@ -603,7 +531,7 @@ const GroupsHeader = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  padding: 10px 30px 80px 30px;
+  padding: 10px 30px 50px 30px;
 `;
 
 const GroupsActions = styled.div`
@@ -695,7 +623,7 @@ const BackButtonContainer = styled(FlexRow)`
 const BackIcon = styled.i`
   align-self: center;
   padding-right: 3px;
-  font-size: x-small;
+  font-size: small;
 `;
 
 const DistanceContainer = styled.div`
@@ -716,4 +644,8 @@ const SidebarSectionText = styled(ParagraphText)`
   ${props => props.selected && css`
     color: #3b6ad3;
   `}
+`;
+
+const SearchBar = styled.span`
+  padding-left: 30px;
 `;

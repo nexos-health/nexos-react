@@ -1,5 +1,5 @@
 import React from "react";
-import styled, {css} from "styled-components";
+import styled, { css } from 'styled-components/macro';
 
 import {FlexColumn, BoldedText} from "../components/BaseStyledComponents";
 import {FlexRow, OverflowText, ParagraphText} from "./BaseStyledComponents";
@@ -8,16 +8,16 @@ import {FlexRow, OverflowText, ParagraphText} from "./BaseStyledComponents";
 export const ProfessionalListItem = ({currentProfessional: current, professional, professionals, setCurrentProfessional, selectedProfessionals=null, handleSelectedProfessional=null}) => {
   return (
     <li className="professional-list-item">
-      {selectedProfessionals &&
-        <div className="checkbox-selection-container">
-          <i className={"fa fa-" + (selectedProfessionals.has(professional.uid)
-            ? "check-square"
-            : "square-o")}
-             style={{"font-size": "larger"}}
-             onClick={() => handleSelectedProfessional(professional.uid)}
-             aria-hidden="true"/>
-        </div>
-      }
+      {/*{selectedProfessionals &&*/}
+        {/*<div className="checkbox-selection-container">*/}
+          {/*<i className={"fa fa-" + (selectedProfessionals.has(professional.uid)*/}
+            {/*? "check-square"*/}
+            {/*: "square-o")}*/}
+             {/*style={{"font-size": "larger"}}*/}
+             {/*onClick={() => handleSelectedProfessional(professional.uid)}*/}
+             {/*aria-hidden="true"/>*/}
+        {/*</div>*/}
+      {/*}*/}
       <ProfessionalInfoContainer active={current && professional.uid === current.uid}
        onClick={() => setCurrentProfessional(professionals.filter(item => item.uid === professional.uid)[0])}>
         <FlexRow>

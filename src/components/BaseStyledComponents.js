@@ -1,5 +1,5 @@
 import React from "react";
-import styled, {css} from 'styled-components';
+import styled, {css} from 'styled-components/macro'
 
 
 export const BaseButton = styled.button`
@@ -20,7 +20,7 @@ export const IconButton = styled.button`
   color: #5f5f5f;
   background-color: transparent;
   border: none;
-  font-size: 12px;
+  font-size: 16px;
   font-weight: 500;
   padding: 2px;
   &:hover {
@@ -64,4 +64,23 @@ export const OverflowText = styled(ParagraphText)`
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+`;
+
+export const SearchBarContainer = styled(FlexRow)`
+  width: 100%;
+  justify-content: left;
+  padding: 0 0 25px 0;
+`;
+
+export const SearchInput = styled.input`
+  border: 1px solid #DBE2E9;
+  height: 2.38rem;
+  width: 350px;
+  border-radius: 3px;
+  padding: 0 0.5rem;
+  -webkit-appearance: none;
+  outline: none;
+  transition: border-color 0.3s ease;
+  font-size: 0.9em;
+  box-sizing: border-box;
 `;
