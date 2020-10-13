@@ -357,39 +357,47 @@ const Home = () => {
             </SearchLocation>
           </SearchContainer>
           <SearchResults>
-            <ProfessionalResultsContainer>
-              <ProfessionalResultsListContainer>
-                {/*<ProfessionalListActions>*/}
-                  {/*<i className="fa fa-square-o selection-action"/>*/}
-                  {/*<TitleText>Actions</TitleText>*/}
-                  {/*<i onClick={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}*/}
-                     {/*className="fa fa-trash selection-action-delete"/>*/}
-                  {/*<i className="fa fa-plus selection-action-group-add"*/}
-                     {/*onClick={() => setAddToGroupModalOpen(true)}/>*/}
-                  {/*/!*<i className="fa fa-share-alt selection-action-share"/>*!/*/}
-                {/*</ProfessionalListActions>*/}
-                <ul className="professional-list">
-                  {filteredProfessionals.map((professional) => {
-                    return (
-                      <ProfessionalListItem
-                        currentProfessional={currentProfessional}
-                        professional={professional}
-                        professionals={filteredProfessionals}
-                        setCurrentProfessional={setCurrentProfessional}
-                        selectedProfessionals={selectedProfessionals}
-                        handleSelectedProfessional={handleSelectedProfessional}
-                      />
-                    )
-                  })}
-                </ul>
-              </ProfessionalResultsListContainer>
-              <CurrentProfessionalContainer>
-                {currentProfessional && filteredProfessionals.indexOf(currentProfessional) >= 0
-                  ? <CurrentProfessionalContent currentProfessional={currentProfessional}/>
-                  : <NoCurrentProfessionalContainer>No Professional Selected</NoCurrentProfessionalContainer>
-                }
-              </CurrentProfessionalContainer>
-            </ProfessionalResultsContainer>
+            {filteredProfessionals.length > 0
+              ? <ProfessionalResultsContainer>
+                <FlexRow>
+                  <ProfessionalResultsListContainer>
+                    {/*<ProfessionalListActions>*/}
+                    {/*<i className="fa fa-square-o selection-action"/>*/}
+                    {/*<TitleText>Actions</TitleText>*/}
+                    {/*<i onClick={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}*/}
+                    {/*className="fa fa-trash selection-action-delete"/>*/}
+                    {/*<i className="fa fa-plus selection-action-group-add"*/}
+                    {/*onClick={() => setAddToGroupModalOpen(true)}/>*/}
+                    {/*/!*<i className="fa fa-share-alt selection-action-share"/>*!/*/}
+                    {/*</ProfessionalListActions>*/}
+                    <ProfessionalList>
+                      {filteredProfessionals.map((professional) => {
+                        return (
+                          <ProfessionalListItem
+                            currentProfessional={currentProfessional}
+                            professional={professional}
+                            professionals={filteredProfessionals}
+                            setCurrentProfessional={setCurrentProfessional}
+                            selectedProfessionals={selectedProfessionals}
+                            handleSelectedProfessional={handleSelectedProfessional}
+                          />
+                        )
+                      })}
+                    </ProfessionalList>
+                  </ProfessionalResultsListContainer>
+                  <CurrentProfessionalContainer inactive={!currentProfessional}>
+                    {currentProfessional && filteredProfessionals.indexOf(currentProfessional) >= 0
+                      ? <CurrentProfessionalContent currentProfessional={currentProfessional}/>
+                      : <NoCurrentProfessionalContainer>Select a professional to view their
+                        profile</NoCurrentProfessionalContainer>
+                    }
+                  </CurrentProfessionalContainer>
+                </FlexRow>
+              </ProfessionalResultsContainer>
+              : <ProfessionalResultsContainer noResults>
+                Your search criteria have returned 0 results
+              </ProfessionalResultsContainer>
+            }
           </SearchResults>
         </div>
         {/*BELOW WE KEEP THE CODE FOR THE MODALS*/}
@@ -446,6 +454,16 @@ const ProfessionalResultsContainer = styled.div`
   flex-direction: row;
   justify-content: center;
   height: 650px;
+  border-top: solid;
+  border-top-color: #f5e8e8;
+  border-width: thick;
+  ${props => props.noResults && css`
+    padding-top: 100px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #9c7676;
+    width: 1100px;
+  `};
 `;
 
 const SearchContainer = styled(FlexRow)`
@@ -487,6 +505,7 @@ const SearchResults = styled(FlexRow)`
 const ProfessionalResultsListContainer = styled.div`
   border-color: darkslategrey;
   border-right: inset;
+  border-width: 0.15em
 `;
 
 const ProfessionTypeDropdown = styled(FlexColumn)`
@@ -497,6 +516,14 @@ const ProfessionTypeDropdown = styled(FlexColumn)`
   padding: 0 0 25px 0;
   font-size: 0.9em;
   min-width: 250px;
+`;
+
+const ProfessionalList = styled.ul`
+  width: 550px;
+  text-align: left;
+  overflow: scroll;
+  box-sizing: content-box;
+  height: 100%;
 `;
 
 const ProfessionalListActions = styled.div`
@@ -517,13 +544,17 @@ const TitleText = styled(Text)`
   font-size: 14px;
 `;
 
-const CurrentProfessionalContainer = styled.div`
-  display: flex;
-  flex-direction: column;
+const CurrentProfessionalContainer = styled(FlexColumn)`
   justify-content: flex-start;
   color: black;
   padding: 20px;
   width: 550px;
+  ${props => props.inactive && css`
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 100px 0 0 0;
+  `};
 `;
 
 export const NoCurrentProfessionalContainer = styled(FlexColumn)`

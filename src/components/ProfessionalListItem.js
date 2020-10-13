@@ -7,7 +7,7 @@ import {FlexRow, OverflowText, ParagraphText} from "./BaseStyledComponents";
 
 export const ProfessionalListItem = ({currentProfessional: current, professional, professionals, setCurrentProfessional, selectedProfessionals=null, handleSelectedProfessional=null}) => {
   return (
-    <li className="professional-list-item">
+    <ProfessionalListItemWrapper>
       {/*{selectedProfessionals &&*/}
         {/*<div className="checkbox-selection-container">*/}
           {/*<i className={"fa fa-" + (selectedProfessionals.has(professional.uid)*/}
@@ -20,38 +20,55 @@ export const ProfessionalListItem = ({currentProfessional: current, professional
       {/*}*/}
       <ProfessionalInfoContainer active={current && professional.uid === current.uid}
        onClick={() => setCurrentProfessional(professionals.filter(item => item.uid === professional.uid)[0])}>
-        <FlexRow>
+        <ProfessionalTopLine>
           <ProfessionalName>{professional.firstName} {professional.lastName}</ProfessionalName>
-          <ProfessionalWaitTime>{professional.waitTimes}</ProfessionalWaitTime>
-        </FlexRow>
+          <ProfessionType>{professional.professionType}</ProfessionType>
+        </ProfessionalTopLine>
         <ProfessionalDescription>{professional.description}</ProfessionalDescription>
         <ProfessionalExtras>Fees: {professional.fees}</ProfessionalExtras>
         <ProfessionalExtras>BB: {professional.bulkBilling}</ProfessionalExtras>
+        <ProfessionalExtras>Wait: {professional.waitTimes}</ProfessionalExtras>
       </ProfessionalInfoContainer>
-    </li>
+    </ProfessionalListItemWrapper>
   )
 };
+
+
+const ProfessionalListItemWrapper = styled(FlexRow)`
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  height: 190px;
+  justify-content: space-between;
+  list-style-position: inside;
+`;
 
 const ProfessionalInfoContainer = styled(FlexColumn)`
   justify-content: space-around;
   flex-grow: 2;
   width: 80%;
-  border-bottom: 1px solid dimgrey;
+  border-bottom: 1px solid #f5e8e8;
   padding: 10px 20px 10px 0;
   ${props => props.active && css`
       background-color: #dbe2e9;
   `}
+  &:hover {
+    cursor: pointer;
+  }
+`;
+
+const ProfessionalTopLine = styled(FlexRow)`
+  padding: 10px 0 0 10px;
 `;
 
 const ProfessionalName = styled(OverflowText)`
-  padding: 10px 0 0 10px;
   color: black;
   flex-grow: 1;
 `;
 
 const ProfessionalExtras = styled(OverflowText)`
   color: darkgray;
-  padding: 0 0 5px 10px;
+  padding: 0 0 0 10px;
   font-size: 13px;
 `;
 
@@ -63,9 +80,11 @@ const ProfessionalDescription = styled(OverflowText)`
   max-width: 100%;
 `;
 
-const ProfessionalWaitTime = styled(OverflowText)`
+const ProfessionType = styled(OverflowText)`
   color: black;
-  padding-top: 14px;
+  padding: 0 5px 0 0;
   font-size: 12px;
-  max-width: 100px;
+  font-weight: 600;
+  max-width: 200px;
+  align-self: flex-end;
 `;
