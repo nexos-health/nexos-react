@@ -30,6 +30,7 @@ export const CurrentProfessionalContent = ({currentProfessional}) => {
               <span>{clinic.clinicName}</span>
               <span>Phone: {clinic.phone}</span>
               <span>Fax: {clinic.fax}</span>
+              <span>Website: <a href={clinic.website} target="_blank" rel="noopener noreferrer">{clinic.website}</a></span>
               <span>
                 Address: {clinic.streetNumber} {clinic.streetName} {clinic.suburb}, {clinic.state}, {clinic.postcode}
                 </span>

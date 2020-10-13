@@ -299,6 +299,7 @@ const Home = () => {
                   value={selectedProfessionTypes}
                   onChange={setSelectedProfessionTypes}
                   styles={customStyles}
+                  closeMenuOnSelect={false}
                   isMulti
                   isSearchable
                   name="profession"
@@ -388,8 +389,9 @@ const Home = () => {
                   <CurrentProfessionalContainer inactive={!currentProfessional}>
                     {currentProfessional && filteredProfessionals.indexOf(currentProfessional) >= 0
                       ? <CurrentProfessionalContent currentProfessional={currentProfessional}/>
-                      : <NoCurrentProfessionalContainer>Select a professional to view their
-                        profile</NoCurrentProfessionalContainer>
+                      : <NoCurrentProfessionalContainer>
+                        Select a professional to view their profile
+                      </NoCurrentProfessionalContainer>
                     }
                   </CurrentProfessionalContainer>
                 </FlexRow>
@@ -549,6 +551,7 @@ const CurrentProfessionalContainer = styled(FlexColumn)`
   color: black;
   padding: 20px;
   width: 550px;
+  overflow: scroll;
   ${props => props.inactive && css`
     flex-direction: row;
     justify-content: center;
