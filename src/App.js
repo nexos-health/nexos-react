@@ -37,7 +37,7 @@ const App = () => {
       <PageBodyContainer sidebar={sidebar}>
         <Switch>
           <Route path="/" exact component={Home} />
-          <PrivateRoute path="/groups" component={Groups} />
+          <Route path="/groups" component={Groups} />
         </Switch>
       </PageBodyContainer>
     </Router>
