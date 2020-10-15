@@ -46,11 +46,11 @@ const NavBar = ({toggleSidebar, sidebar}) => {
         {/*</MenuBarsLink>*/}
         <div>
           <Nav className="d-none d-md-block" navbar>
-            {/*{!isAuthenticated && (*/}
-              {/*<NavItem>*/}
-                {/*<BaseButton onClick={() => loginWithRedirect({})}>Sign In</BaseButton>*/}
-              {/*</NavItem>*/}
-            {/*)}*/}
+            {!isAuthenticated && (
+              <NavItem>
+                <BaseButton onClick={() => loginWithRedirect({})}>Sign In</BaseButton>
+              </NavItem>
+            )}
             {isAuthenticated && (
               <UncontrolledDropdown nav inNavbar>
                 <DropdownToggle nav caret id="profileDropDown">
@@ -73,13 +73,13 @@ const NavBar = ({toggleSidebar, sidebar}) => {
               </UncontrolledDropdown>
             )}
           </Nav>
-          {/*{!isAuthenticated && (*/}
-            {/*<Nav className="d-md-none" navbar>*/}
-              {/*<NavItem>*/}
-                {/*<BaseButton onClick={() => loginWithRedirect({})}>Sign In</BaseButton>*/}
-              {/*</NavItem>*/}
-            {/*</Nav>*/}
-          {/*)}*/}
+          {!isAuthenticated && (
+            <Nav className="d-md-none" navbar>
+              <NavItem>
+                <BaseButton onClick={() => loginWithRedirect({})}>Sign In</BaseButton>
+              </NavItem>
+            </Nav>
+          )}
           {isAuthenticated && (
             <Nav
               className="d-md-none justify-content-between"

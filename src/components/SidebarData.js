@@ -9,9 +9,9 @@ export const SidebarData = [
     path: "/",
     icon: <AiIcons.AiOutlineSearch style={{color: "#394963"}}/>,
   },
-  // {
-  //   title: "My Groups",
-  //   path: "/groups",
-  //   icon: <IoIcons.IoMdPeople style={{color: "#394963"}}/>,
-  // },
+  {
+    title: "My Groups",
+    path: "/groups",
+    icon: <IoIcons.IoMdPeople style={{color: "#394963"}}/>,
+  },
 ];
