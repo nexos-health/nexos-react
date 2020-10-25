@@ -13,7 +13,7 @@ import {
   FlexRow,
 } from "../../components/BaseStyledComponents";
 import {MoveToGroupSelector} from "../../components/MoveToGroupSelector";
-import {addProfessionalsToGroup} from "../../redux/actions/professional";
+import {addProfessionalsToGroup, favourProfessional, unfavourProfessional} from "../../redux/actions/professional";
 
 
 
@@ -61,8 +61,14 @@ const actionsOptions = [
   // {"value": "share", "name": "Share"},
 ];
 
-const SearchResults = ({ groupsOptions, filteredProfessionals, selectedProfessionals, setSelectedProfessionals, handleSelectedProfessional, showActions=true }) => {
+const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesToggle, filteredProfessionals,
+                         selectedProfessionals, setSelectedProfessionals, handleSelectedProfessional,
+                         showActions=false }) => {
+
   const dispatch = useDispatch();
+  const [favouritesUid, favourites] = Object.entries(groups).filter(([uid, group]) => {
+    return group.name === "Favourites"
+  })[0];
 
   const [currentProfessional, setCurrentProfessional] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
@@ -73,48 +79,83 @@ const SearchResults = ({ groupsOptions, filteredProfessionals, selectedProfessio
     setSelectedProfessionals(new Set())
   };
 
+  const handleFavourProfessional = (professionalUid) => {
+    if (favourites.professionalsUids.indexOf(professionalUid) > 0) {
+      dispatch(unfavourProfessional(professionalUid, favouritesUid))
+    } else {
+      dispatch(favourProfessional(professionalUid, favouritesUid))
+    }
+  };
+
+  const filterFavourites = (professionals) => {
+    let filteredFavourites = professionals;
+    filteredFavourites = filteredFavourites.filter(professional => {
+      return favourites.professionalsUids.indexOf(professional.uid) > 0
+    });
+
+    return filteredFavourites
+  };
+
+  let displayProfessionals = filteredProfessionals;
+  if (favouritesToggle) {
+    displayProfessionals = filterFavourites(filteredProfessionals)
+  }
+
   return (
     <SearchResultsContainer>
       {filteredProfessionals.length > 0
         ? <ProfessionalResultsContainer>
           <FlexRow>
             <ProfessionalResultsListContainer>
-              {showActions &&
-                <ActionsContainer>
-                  <SelectionsContainer>
-                    <CheckboxContainer>
-                      <i className={"fa fa-" + (selectedProfessionals.size > 0 ? "check-square" : "square-o")}
-                         style={{"font-size": "larger"}}/>
-                    </CheckboxContainer>
-                    <SelectedText>
-                      {selectedProfessionals ? selectedProfessionals.size : "0"}
-                      {selectedProfessionals.size === 1 ? " Professional" : " Professionals"} Selected
-                    </SelectedText>
-                  </SelectionsContainer>
-                  <GroupActions>
-                    <Select
-                      options={actionsOptions}
-                      value={selectedAction}
-                      onChange={setSelectedAction}
-                      isSearchable={false}
-                      isDisabled={!selectedProfessionals || selectedProfessionals.size === 0}
-                      components={{IndicatorSeparator: () => null}}
-                      styles={customStyles}
-                      name="actions"
-                      placeholder="Actions"
-                      className="basic-multi-select"
-                      classNamePrefix="select"
-                    />
-                  </GroupActions>
-                </ActionsContainer>
-              }
+              {/*{showActions &&*/}
+                {/*<ActionsContainer>*/}
+                  {/*<SelectionsContainer>*/}
+                    {/*<CheckboxContainer>*/}
+                      {/*<i className={"fa fa-" + (selectedProfessionals.size > 0 ? "check-square" : "square-o")}*/}
+                         {/*style={{"font-size": "larger"}}/>*/}
+                    {/*</CheckboxContainer>*/}
+                    {/*<SelectedText>*/}
+                      {/*{selectedProfessionals ? selectedProfessionals.size : "0"}*/}
+                      {/*{selectedProfessionals.size === 1 ? " Professional" : " Professionals"} Selected*/}
+                    {/*</SelectedText>*/}
+                  {/*</SelectionsContainer>*/}
+                  {/*<GroupActions>*/}
+                    {/*<Select*/}
+                      {/*options={actionsOptions}*/}
+                      {/*value={selectedAction}*/}
+                      {/*onChange={setSelectedAction}*/}
+                      {/*isSearchable={false}*/}
+                      {/*isDisabled={!selectedProfessionals || selectedProfessionals.size === 0}*/}
+                      {/*components={{IndicatorSeparator: () => null}}*/}
+                      {/*styles={customStyles}*/}
+                      {/*name="actions"*/}
+                      {/*placeholder="Actions"*/}
+                      {/*className="basic-multi-select"*/}
+                      {/*classNamePrefix="select"*/}
+                    {/*/>*/}
+                  {/*</GroupActions>*/}
+                 {/*</ActionsContainer>*/}
+               {/*}*/}
+              <FavouritesToggleContainer>
+                <SelectionsContainer>
+                  <ToggleContainer>
+                    <Toggle
+                      onClick={() => setFavouritesToggle(!favouritesToggle)}
+                      on={favouritesToggle}
+                      className={"fa fa-" + (favouritesToggle ? "toggle-on" : "toggle-off")}/>
+                  </ToggleContainer>
+                  <FavouritesText>Only Show Favourites</FavouritesText>
+                </SelectionsContainer>
+              </FavouritesToggleContainer>
               <ProfessionalList>
-                {filteredProfessionals.map((professional) => {
+                {displayProfessionals.map((professional) => {
                   return (
                     <ProfessionalListItem
                       currentProfessional={currentProfessional}
                       professional={professional}
                       professionals={filteredProfessionals}
+                      favouriteProfessionalsUids={favourites.professionalsUids}
+                      handleFavourProfessional={handleFavourProfessional}
                       setCurrentProfessional={setCurrentProfessional}
                       selectedProfessionals={selectedProfessionals}
                       handleSelectedProfessional={handleSelectedProfessional}
@@ -189,12 +230,40 @@ const ActionsContainer = styled(FlexRow)`
   border-bottom: 2px solid #d4bfbf;
 `;
 
+const FavouritesToggleContainer = styled(FlexRow)`
+  padding: 10px 20px 10px 40px;
+  justify-content: space-between;
+  border-bottom: 2px solid #d4bfbf;
+`;
+
 const SelectionsContainer = styled(FlexRow)`
   justify-content: left;
 `;
 
 const CheckboxContainer = styled.div`
-  align-self: center
+  align-self: center;
+`;
+
+const ToggleContainer = styled.div`
+  align-self: center;
+`;
+
+const Toggle = styled.i`
+  font-size: x-large;
+  transition: 350ms;
+  &:hover {
+    cursor: pointer;
+  }
+  ${props => props.on && css`
+    color: green;
+  `}
+`;
+
+const FavouritesText = styled(BoldedText)`
+  align-self: center;
+  font-size: 16px;
+  color: #766f6f;
+  padding-left: 15px;
 `;
 
 const SelectedText = styled(BoldedText)`

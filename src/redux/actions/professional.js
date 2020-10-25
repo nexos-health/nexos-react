@@ -8,6 +8,7 @@ export const ADD_PROFESSIONALS_TO_GROUP = "ADD_PROFESSIONALS_TO_GROUP";
 export const REMOVE_PROFESSIONALS_FROM_GROUP = "REMOVE_PROFESSIONALS_FROM_GROUP";
 export const CREATE_GROUP = "CREATE_GROUP";
 export const FETCH_GROUPS = "FETCH_GROUPS";
+export const FETCH_FAVOURITES = "FETCH_FAVOURITES";
 export const DELETE_GROUP = "DELETE_GROUP";
 export const EDIT_GROUP = "EDIT_GROUP";
 export const UPDATE_GROUPS = "UPDATE_GROUPS";
@@ -91,6 +92,38 @@ export function removeProfessionalsFromGroup(professionals, group) {
   }
 }
 
+export function favourProfessional(professional, group) {
+  let professionalsList = [professional];
+  return {
+    type: ADD_PROFESSIONALS_TO_GROUP,
+    meta: {
+      method: 'POST',
+      endpoint: "/api/groups/add_professionals/",
+      body: {
+        group: group,
+        professionals: professionalsList
+      },
+      success: updateGroup,
+    }
+  }
+}
+
+export function unfavourProfessional(professional, group) {
+  let professionalsList = [professional];
+  return {
+    type: REMOVE_PROFESSIONALS_FROM_GROUP,
+    meta: {
+      method: 'DELETE',
+      endpoint: "/api/groups/remove_professionals/",
+      body: {
+        group: group,
+        professionals: professionalsList
+      },
+      success: updateGroup,
+    }
+  }
+}
+
 export function fetchProfessional() {
   return {
     type: FETCH_PROFESSIONAL,
@@ -117,6 +150,17 @@ export function fetchGroups() {
     meta: {
       method: 'GET',
       endpoint: "/api/groups/",
+      success: updateGroups,
+    }
+  }
+}
+
+export function fetchFavourites() {
+  return {
+    type: FETCH_FAVOURITES,
+    meta: {
+      method: 'GET',
+      endpoint: "/api/groups/get_favourites/",
       success: updateGroups,
     }
   }

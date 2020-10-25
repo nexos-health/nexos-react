@@ -13,16 +13,20 @@ import "./App.css"
 
 // fontawesome
 import initFontAwesome from "./utils/initFontAwesome";
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { far } from '@fortawesome/free-regular-svg-icons';
+import { fas } from '@fortawesome/free-solid-svg-icons';
 import Groups from "./containers/groups/Groups";
 import {FlexRow} from "./components/BaseStyledComponents";
 import {SIDEBAR_WIDTH, TOP_BAR_HEIGHT} from "./utils/constants";
 import GroupView from "./containers/groups/GroupView";
-initFontAwesome();
 
+initFontAwesome();
+library.add(far, fas);
 
 const App = () => {
   const { loading } = useAuth0();
-  const [sidebar, setSidebar] = useState(true);
+  const [sidebar, setSidebar] = useState(false);
 
   const toggleSidebar = () => {
     setSidebar(!sidebar)
@@ -38,8 +42,8 @@ const App = () => {
       <PageBodyContainer sidebar={sidebar}>
         <Switch>
           <Route path="/" exact component={Home}/>
-          <Route path="/groups" exact component={Groups}/>
-          <Route path="/groups/:id" component={GroupView}/>
+          {/*<Route path="/groups" exact component={Groups}/>*/}
+          {/*<Route path="/groups/:id" component={GroupView}/>*/}
         </Switch>
       </PageBodyContainer>
     </Router>

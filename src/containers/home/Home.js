@@ -12,6 +12,7 @@ import {
   addProfessionalsToGroup,
   createGroup,
   fetchGroups,
+  fetchFavourites,
 } from "../../redux/actions/professional";
 import { login } from "../../redux/actions/account";
 import {kmToLatLng} from "../../utils/helpers";
@@ -36,7 +37,6 @@ import {
 } from "../../components/BaseStyledComponents";
 import {fetchPlaces} from "../../utils/api";
 import SearchResults from "./SearchResults";
-
 
 Modal.setAppElement('#root');
 
@@ -121,8 +121,8 @@ const filterProfessionals = (professionals, searchTerm, latLngBounds) => {
   }
 
   filteredProfessionals.sort((a, b) => {
-    const aName = a.lastName;
-    const bName = b.lastName;
+    const aName = a.firstName;
+    const bName = b.firstName;
     if (aName < bName) return -1;
     if (aName > bName) return 1;
     return 0;
@@ -174,7 +174,6 @@ const Home = () => {
 
   const groupsOptions = formatGroups(groups);
 
-
   const [createGroupModalOpen, setCreateGroupModalOpen] = useState(false);
   const [removeFromGroupModalOpen, setRemoveFromGroupModalOpen] = useState(false);
   const [deleteGroupModalOpen, setDeleteGroupModalOpen] = useState(false);
@@ -186,6 +185,7 @@ const Home = () => {
   const [latLngBounds, setLatLngBounds] = useState({});
   const [distance, setDistance] = useState(Object.values(distanceOptions)[2]);
   const [selectedProfessionals, setSelectedProfessionals] = useState(new Set());
+  const [favouritesToggle, setFavouritesToggle] = useState(false);
   const [professionTypesSelections, setProfessionTypesSelections] = useState([]);
   const [selectedProfessionTypes, setSelectedProfessionTypes] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
@@ -246,9 +246,15 @@ const Home = () => {
     }
   }, [professionTypesSelections]);
 
+  // useEffect(() => {
+  //   if (Object.entries(groups).length === 0) {
+  //     dispatch(fetchGroups());
+  //   }
+  // }, []);
+
   useEffect(() => {
     if (Object.entries(groups).length === 0) {
-      dispatch(fetchGroups());
+      dispatch(fetchFavourites());
     }
   }, []);
 
@@ -261,7 +267,7 @@ const Home = () => {
     setProfessionTypesSelections(formattedProfessionTypes);
   }
 
-  if (professionTypesSelections.length > 0) {
+  if (professionTypesSelections.length > 0 && Object.keys(groups).length > 0) {
     let filteredProfessionals = [];
     if (professionals) {
       filteredProfessionals = filterProfessionals(professionals, searchTerm, latLngBounds);
@@ -338,6 +344,9 @@ const Home = () => {
           </SearchContainer>
           <SearchResults
             groupsOptions={groupsOptions}
+            groups={groups}
+            favouritesToggle={favouritesToggle}
+            setFavouritesToggle={setFavouritesToggle}
             filteredProfessionals={filteredProfessionals}
             selectedProfessionals={selectedProfessionals}
             setSelectedProfessionals={setSelectedProfessionals}
