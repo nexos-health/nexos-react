@@ -35,6 +35,7 @@ import {
   SearchBarContainer
 } from "../../components/BaseStyledComponents";
 import {fetchPlaces} from "../../utils/api";
+import SearchResults from "./SearchResults";
 
 
 Modal.setAppElement('#root');
@@ -48,19 +49,6 @@ const createGroupCustomStyles = {
     bottom                : 'auto',
     marginRight           : '-50%',
     height                : '305px',
-    width                 : '400px',
-    transform             : 'translate(-50%, -50%)'
-  }
-};
-
-const addToGroupCustomStyles = {
-  content : {
-    top                   : '40%',
-    left                  : '50%',
-    right                 : 'auto',
-    bottom                : 'auto',
-    marginRight           : '-50%',
-    height                : '315px',
     width                 : '400px',
     transform             : 'translate(-50%, -50%)'
   }
@@ -188,7 +176,6 @@ const Home = () => {
 
 
   const [createGroupModalOpen, setCreateGroupModalOpen] = useState(false);
-  const [addToGroupModalOpen, setAddToGroupModalOpen] = useState(false);
   const [removeFromGroupModalOpen, setRemoveFromGroupModalOpen] = useState(false);
   const [deleteGroupModalOpen, setDeleteGroupModalOpen] = useState(false);
   const [createFormName, setCreateFormName] = useState("");
@@ -198,7 +185,6 @@ const Home = () => {
   const [locationSelected, setLocationSelected] = useState(false);
   const [latLngBounds, setLatLngBounds] = useState({});
   const [distance, setDistance] = useState(Object.values(distanceOptions)[2]);
-  const [currentProfessional, setCurrentProfessional] = useState(null);
   const [selectedProfessionals, setSelectedProfessionals] = useState(new Set());
   const [professionTypesSelections, setProfessionTypesSelections] = useState([]);
   const [selectedProfessionTypes, setSelectedProfessionTypes] = useState([]);
@@ -252,12 +238,6 @@ const Home = () => {
     setCreateGroupModalOpen(false);
     setCreateFromDescription("");
     setCreateFormName("");
-  };
-
-  const handleAddProfessionalsToGroupSubmit = (group) => {
-    dispatch(addProfessionalsToGroup(selectedProfessionals, group.value));
-    setAddToGroupModalOpen(false);
-    setSelectedProfessionals(new Set());
   };
 
   useEffect(() => {
@@ -356,49 +336,13 @@ const Home = () => {
               </DistanceContainer>
             </SearchLocation>
           </SearchContainer>
-          <SearchResults>
-            {filteredProfessionals.length > 0
-              ? <ProfessionalResultsContainer>
-                <FlexRow>
-                  <ProfessionalResultsListContainer>
-                    {/*<ProfessionalListActions>*/}
-                    {/*<i className="fa fa-square-o selection-action"/>*/}
-                    {/*<TitleText>Actions</TitleText>*/}
-                    {/*<i onClick={() => setRemoveFromGroupModalOpen(!removeFromGroupModalOpen)}*/}
-                    {/*className="fa fa-trash selection-action-delete"/>*/}
-                    {/*<i className="fa fa-plus selection-action-group-add"*/}
-                    {/*onClick={() => setAddToGroupModalOpen(true)}/>*/}
-                    {/*/!*<i className="fa fa-share-alt selection-action-share"/>*!/*/}
-                    {/*</ProfessionalListActions>*/}
-                    <ProfessionalList>
-                      {filteredProfessionals.map((professional) => {
-                        return (
-                          <ProfessionalListItem
-                            currentProfessional={currentProfessional}
-                            professional={professional}
-                            professionals={filteredProfessionals}
-                            setCurrentProfessional={setCurrentProfessional}
-                            selectedProfessionals={selectedProfessionals}
-                            handleSelectedProfessional={handleSelectedProfessional}
-                          />
-                        )
-                      })}
-                    </ProfessionalList>
-                  </ProfessionalResultsListContainer>
-                  <CurrentProfessionalContainer inactive={!currentProfessional}>
-                    {currentProfessional && filteredProfessionals.indexOf(currentProfessional) >= 0
-                      ? <CurrentProfessionalContent currentProfessional={currentProfessional}/>
-                      : <NoCurrentProfessionalContainer>Select a professional to view their
-                        profile</NoCurrentProfessionalContainer>
-                    }
-                  </CurrentProfessionalContainer>
-                </FlexRow>
-              </ProfessionalResultsContainer>
-              : <ProfessionalResultsContainer noResults>
-                Your search criteria have returned 0 results
-              </ProfessionalResultsContainer>
-            }
-          </SearchResults>
+          <SearchResults
+            groupsOptions={groupsOptions}
+            filteredProfessionals={filteredProfessionals}
+            selectedProfessionals={selectedProfessionals}
+            setSelectedProfessionals={setSelectedProfessionals}
+            handleSelectedProfessional={handleSelectedProfessional}
+          />
         </div>
         {/*BELOW WE KEEP THE CODE FOR THE MODALS*/}
         <Modal
@@ -414,18 +358,6 @@ const Home = () => {
             setGroupDescription={setCreateFromDescription}
             handleSubmit={handleCreateGroupSubmit}
             handleClose={handleCreateGroupModalClose}
-          />
-        </Modal>
-        <Modal
-          isOpen={addToGroupModalOpen}
-          onRequestClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}
-          style={addToGroupCustomStyles}
-          contentLabel="Example Modal"
-        >
-          <MoveToGroupSelector
-            groups={groupsOptions}
-            handleSubmit={handleAddProfessionalsToGroupSubmit}
-            handleClose={() => setAddToGroupModalOpen(!addToGroupModalOpen)}
           />
         </Modal>
         <Modal
@@ -449,24 +381,7 @@ const Home = () => {
 
 export default Home;
 
-const ProfessionalResultsContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  height: 650px;
-  border-top: solid;
-  border-top-color: #f5e8e8;
-  border-width: thick;
-  ${props => props.noResults && css`
-    padding-top: 100px;
-    font-size: 16px;
-    font-weight: bold;
-    color: #9c7676;
-    width: 1100px;
-  `};
-`;
-
-const SearchContainer = styled(FlexRow)`
+export const SearchContainer = styled(FlexRow)`
   width: 100%;
   justify-content: center;
   padding: 0 0 50px 0;
@@ -497,17 +412,6 @@ const LocationSearchBarContainer = styled(SearchBarContainer)`
   font-size: 0.9em;
 `;
 
-const SearchResults = styled(FlexRow)`
-  width: 100%;
-  justify-content: center;
-`;
-
-const ProfessionalResultsListContainer = styled.div`
-  border-color: darkslategrey;
-  border-right: inset;
-  border-width: 0.15em
-`;
-
 const ProfessionTypeDropdown = styled(FlexColumn)`
   align-items: center;
   justify-content: center;
@@ -518,62 +422,6 @@ const ProfessionTypeDropdown = styled(FlexColumn)`
   min-width: 250px;
 `;
 
-const ProfessionalList = styled.ul`
-  width: 550px;
-  text-align: left;
-  overflow: scroll;
-  box-sizing: content-box;
-  height: 100%;
-`;
-
-const ProfessionalListActions = styled.div`
-  display: flex;
-  flex-direction: row;
-  justify-content: flex-start;
-  padding: 8px 0 8px 40px;
-  border-bottom-width: 1px;
-  border-top-width: 1px;
-  border-bottom-style: solid;
-`;
-
-const TitleText = styled(Text)`
-  padding: 0 0 0 20px;
-  font-family: "Lato", Helvetica, Arial, serif;
-  font-weight: 900;
-  font-style: normal;
-  font-size: 14px;
-`;
-
-const CurrentProfessionalContainer = styled(FlexColumn)`
-  justify-content: flex-start;
-  color: black;
-  padding: 20px;
-  width: 550px;
-  ${props => props.inactive && css`
-    flex-direction: row;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 100px 0 0 0;
-  `};
-`;
-
-export const NoCurrentProfessionalContainer = styled(FlexColumn)`
-  justify-content: flex-start;
-  color: black;
-  border-color: darkslategrey;
-  padding: 20px;
-`;
-
-const BackButtonContainer = styled(FlexRow)`
-  align-self: flex-start;
-`;
-
-const BackIcon = styled.i`
-  align-self: center;
-  padding-right: 3px;
-  font-size: x-small;
-`;
-
 const DistanceContainer = styled.div`
   width: 140px;
   font-size: 0.9em;
@@ -582,19 +430,5 @@ const DistanceContainer = styled.div`
   padding-top: 5px;
   ${props => props.hide && css`
     opacity: 0;
-  `}
-`;
-
-const SidebarSectionText = styled(ParagraphText)`
-  font-weight: 900;
-  font-style: normal;
-  font-size: 14px;
-  padding: 5px 0 5px 0;
-  &:hover {
-    cursor: pointer;
-    background-color: #f1f1f1;
-  }
-  ${props => props.selected && css`
-    color: #3b6ad3;
   `}
 `;

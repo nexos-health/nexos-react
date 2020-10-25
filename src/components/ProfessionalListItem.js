@@ -8,16 +8,14 @@ import {FlexRow, OverflowText, ParagraphText} from "./BaseStyledComponents";
 export const ProfessionalListItem = ({currentProfessional: current, professional, professionals, setCurrentProfessional, selectedProfessionals=null, handleSelectedProfessional=null}) => {
   return (
     <ProfessionalListItemWrapper>
-      {/*{selectedProfessionals &&*/}
-        {/*<div className="checkbox-selection-container">*/}
-          {/*<i className={"fa fa-" + (selectedProfessionals.has(professional.uid)*/}
-            {/*? "check-square"*/}
-            {/*: "square-o")}*/}
-             {/*style={{"font-size": "larger"}}*/}
-             {/*onClick={() => handleSelectedProfessional(professional.uid)}*/}
-             {/*aria-hidden="true"/>*/}
-        {/*</div>*/}
-      {/*}*/}
+      {selectedProfessionals &&
+        <div className="checkbox-selection-container">
+          <i className={"fa fa-" + (selectedProfessionals.has(professional.uid) ? "check-square" : "square-o")}
+             style={{"font-size": "larger"}}
+             onClick={() => handleSelectedProfessional(professional.uid)}
+             aria-hidden="true"/>
+        </div>
+      }
       <ProfessionalInfoContainer active={current && professional.uid === current.uid}
        onClick={() => setCurrentProfessional(professionals.filter(item => item.uid === professional.uid)[0])}>
         <ProfessionalTopLine>

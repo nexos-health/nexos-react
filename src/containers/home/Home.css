@@ -299,6 +299,7 @@ html {
 }
 
 .group-edit {
+  align-self: center;
   font-size: larger;
 }
 

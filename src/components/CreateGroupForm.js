@@ -22,7 +22,7 @@ export const CreateGroupForm = ({groupName, groupDescription, setGroupName, setG
           <BaseButton secondary onClick={handleClose}>Cancel</BaseButton>
         </ButtonContainer>
         <ButtonContainer>
-          <BaseButton onClick={handleSubmit}>Create</BaseButton>
+          <BaseButton onClick={handleSubmit}>Save</BaseButton>
         </ButtonContainer>
       </ModalActions>
     </FlexColumn>

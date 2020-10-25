@@ -1,23 +1,24 @@
 import React from "react";
 import styled, {css} from 'styled-components/macro'
+import {Link} from "react-router-dom";
 
 
-export const GroupsTable = ({groupsOptions, groups, handleSelectedGroup}) => {
+export const GroupsTable = ({groupsOptions, groups}) => {
   return (
     <GroupListContainer>
       <Table>
         <TableHead>
-          <TableHeader>
+          <TableRow>
             <TableHeading>Name</TableHeading>
             <TableHeadingLong>Description</TableHeadingLong>
             <TableHeadingEnd>Members</TableHeadingEnd>
-          </TableHeader>
+          </TableRow>
         </TableHead>
         <TableBody>
         {groupsOptions.map((group) => {
           return (
-            <TableRow onClick={() => handleSelectedGroup(group)}>
-              <TableData>{group.label}</TableData>
+            <TableRow>
+              <TableData><GroupLink to={`/groups/${group.value}`}>{group.label}</GroupLink></TableData>
               <TableData>{group.description}</TableData>
               <TableDataEnd>{groups[group.value].professionalsUids.length}</TableDataEnd>
             </TableRow>
@@ -44,14 +45,6 @@ const TableHead = styled.thead`
 `;
 
 const TableRow = styled.tr`
-  display: table-row;
-  &:hover {
-    cursor: pointer;
-    background-color: lightgrey;
-  }
-`;
-
-const TableHeader = styled.tr`
   display: table-row;
 `;
 
@@ -94,4 +87,11 @@ const TableDataEnd = styled(TableData)`
 const GroupListContainer= styled.div`
   margin: 0 30px;
   padding: 0;
+`;
+
+const GroupLink = styled(Link)`
+  color: #041433;
+  &:hover {
+    color: #041433;
+  }
 `;

@@ -16,6 +16,7 @@ import initFontAwesome from "./utils/initFontAwesome";
 import Groups from "./containers/groups/Groups";
 import {FlexRow} from "./components/BaseStyledComponents";
 import {SIDEBAR_WIDTH, TOP_BAR_HEIGHT} from "./utils/constants";
+import GroupView from "./containers/groups/GroupView";
 initFontAwesome();
 
 
@@ -36,8 +37,9 @@ const App = () => {
       <NavBar toggleSidebar={toggleSidebar} sidebar={sidebar}/>
       <PageBodyContainer sidebar={sidebar}>
         <Switch>
-          <Route path="/" exact component={Home} />
-          <Route path="/groups" component={Groups} />
+          <Route path="/" exact component={Home}/>
+          <Route path="/groups" exact component={Groups}/>
+          <Route path="/groups/:id" component={GroupView}/>
         </Switch>
       </PageBodyContainer>
     </Router>
