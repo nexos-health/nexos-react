@@ -2,12 +2,11 @@ import React from "react";
 import styled, { css } from 'styled-components/macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-import {FlexColumn, BoldedText} from "../components/BaseStyledComponents";
-import {FlexRow, OverflowText, ParagraphText} from "./BaseStyledComponents";
+import {FlexColumn, FlexRow, OverflowText, ParagraphText} from "./BaseStyledComponents";
 
 
-export const ProfessionalListItem = ({currentProfessional: current, professional, professionals, setCurrentProfessional, favouriteProfessionalsUids, handleFavourProfessional, selectedProfessionals=null, handleSelectedProfessional=null}) => {
-  const favoured = favouriteProfessionalsUids.indexOf(professional.uid) > 0;
+export const ProfessionalListItem = ({currentProfessional: current, professional, professionals, setCurrentProfessional, favourites, handleFavourProfessional, setSignInModalOpen, selectedProfessionals=null, handleSelectedProfessional=null}) => {
+  const favoured = favourites.professionalsUids.indexOf(professional.uid) > 0;
   return (
     <ProfessionalListItemWrapper>
       {/*{selectedProfessionals &&*/}
@@ -22,7 +21,7 @@ export const ProfessionalListItem = ({currentProfessional: current, professional
         <StarIcon
           favoured={favoured}
           icon={[favoured ? "fas" : "far", "star"]}
-          onClick={() => handleFavourProfessional(professional.uid)}/>
+          onClick={favourites.length === 1 ? () => handleFavourProfessional(professional.uid) : setSignInModalOpen(true)}/>
       </div>
       <ProfessionalInfoContainer active={current && professional.uid === current.uid}
        onClick={() => setCurrentProfessional(professionals.filter(item => item.uid === professional.uid)[0])}>
