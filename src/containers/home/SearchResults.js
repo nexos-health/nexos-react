@@ -3,6 +3,8 @@ import styled, { css } from 'styled-components/macro';
 import {useDispatch} from "react-redux";
 import Modal from "react-modal";
 import Select from 'react-select';
+import {useAuth0} from "../../react-auth0-spa";
+
 
 import './Home.css';
 import {CurrentProfessionalContent} from "../../components/CurrentProfessionalContent";
@@ -14,7 +16,7 @@ import {
 } from "../../components/BaseStyledComponents";
 import {MoveToGroupSelector} from "../../components/MoveToGroupSelector";
 import {addProfessionalsToGroup, favourProfessional, unfavourProfessional} from "../../redux/actions/professional";
-
+import { SignInPrompt } from "../../components/SignInPrompt";
 
 
 const addToGroupCustomStyles = {
@@ -65,13 +67,21 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
                          selectedProfessionals, setSelectedProfessionals, handleSelectedProfessional,
                          showActions=false }) => {
 
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
+
   const dispatch = useDispatch();
-  const [favouritesUid, favourites] = Object.entries(groups).filter(([uid, group]) => {
+  const favouriteGroup = Object.entries(groups).filter(([uid, group]) => {
     return group.name === "Favourites"
-  })[0];
+  });
+
+  let favouritesUid, favourites;
+  if (favouriteGroup.length === 1) {
+    [favouritesUid, favourites] = favouriteGroup[0]
+  }
 
   const [currentProfessional, setCurrentProfessional] = useState(null);
   const [selectedAction, setSelectedAction] = useState(null);
+  const [signInModalOpen, setSignInModalOpen] = useState(false);
 
   const handleAddToGroupSubmit = (group) => {
     dispatch(addProfessionalsToGroup(selectedProfessionals, group.value));
@@ -136,17 +146,19 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
                   {/*</GroupActions>*/}
                  {/*</ActionsContainer>*/}
                {/*}*/}
-              <FavouritesToggleContainer>
-                <SelectionsContainer>
-                  <ToggleContainer>
-                    <Toggle
-                      onClick={() => setFavouritesToggle(!favouritesToggle)}
-                      on={favouritesToggle}
-                      className={"fa fa-" + (favouritesToggle ? "toggle-on" : "toggle-off")}/>
-                  </ToggleContainer>
-                  <FavouritesText>Only Show Favourites</FavouritesText>
-                </SelectionsContainer>
-              </FavouritesToggleContainer>
+              {isAuthenticated && favourites &&
+                <FavouritesToggleContainer>
+                  <SelectionsContainer>
+                    <ToggleContainer>
+                      <Toggle
+                        onClick={() => setFavouritesToggle(!favouritesToggle)}
+                        on={favouritesToggle}
+                        className={"fa fa-" + (favouritesToggle ? "toggle-on" : "toggle-off")}/>
+                    </ToggleContainer>
+                    <FavouritesText>Only Show Favourites</FavouritesText>
+                  </SelectionsContainer>
+                </FavouritesToggleContainer>
+              }
               <ProfessionalList>
                 {displayProfessionals.map((professional) => {
                   return (
@@ -154,7 +166,8 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
                       currentProfessional={currentProfessional}
                       professional={professional}
                       professionals={filteredProfessionals}
-                      favouriteProfessionalsUids={favourites.professionalsUids}
+                      favourites={favourites}
+                      setSignInModalOpen={setSignInModalOpen}
                       handleFavourProfessional={handleFavourProfessional}
                       setCurrentProfessional={setCurrentProfessional}
                       selectedProfessionals={selectedProfessionals}
@@ -186,6 +199,17 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
         <MoveToGroupSelector
           groups={groupsOptions}
           handleSubmit={handleAddToGroupSubmit}
+          handleClose={() => setSelectedAction(null)}
+        />
+      </Modal>
+      <Modal
+        isOpen={signInModalOpen}
+        onRequestClose={() => setSignInModalOpen(false)}
+        style={addToGroupCustomStyles}
+      >
+        <SignInPrompt
+          message={"Sign in to keep track of your favourite professionals"}
+          login={loginWithRedirect}
           handleClose={() => setSelectedAction(null)}
         />
       </Modal>

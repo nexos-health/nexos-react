@@ -14,16 +14,10 @@ import {
   fetchGroups,
   fetchFavourites,
 } from "../../redux/actions/professional";
-import { login } from "../../redux/actions/account";
 import {kmToLatLng} from "../../utils/helpers";
-import {CurrentProfessionalContent} from "../../components/CurrentProfessionalContent";
-import {ProfessionalListItem} from "../../components/ProfessionalListItem";
 import Modal from "react-modal";
 import {CreateGroupForm} from "../../components/CreateGroupForm";
-import {MoveToGroupSelector} from "../../components/MoveToGroupSelector";
-import {RemoveFromGroupConfirmation} from "../../components/RemoveFromGroupConfirmation";
 import {useAuth0} from "../../react-auth0-spa";
-import {AuthenticatePrompt} from "../../components/AuthenticatePrompt";
 import {
   BaseButton,
   FlexColumn,
@@ -253,7 +247,7 @@ const Home = () => {
   // }, []);
 
   useEffect(() => {
-    if (Object.entries(groups).length === 0) {
+    if (Object.entries(groups).length === 0 && isAuthenticated) {
       dispatch(fetchFavourites());
     }
   }, []);
@@ -267,7 +261,7 @@ const Home = () => {
     setProfessionTypesSelections(formattedProfessionTypes);
   }
 
-  if (professionTypesSelections.length > 0 && Object.keys(groups).length > 0) {
+  if (professionTypesSelections.length > 0) {
     let filteredProfessionals = [];
     if (professionals) {
       filteredProfessionals = filterProfessionals(professionals, searchTerm, latLngBounds);
