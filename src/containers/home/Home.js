@@ -279,6 +279,7 @@ const Home = () => {
                   value={selectedProfessionTypes}
                   onChange={setSelectedProfessionTypes}
                   styles={customStyles}
+                  closeMenuOnSelect={false}
                   isMulti
                   isSearchable
                   name="profession"
@@ -425,6 +426,66 @@ const ProfessionTypeDropdown = styled(FlexColumn)`
   min-width: 250px;
 `;
 
+<<<<<<< HEAD
+=======
+const ProfessionalList = styled.ul`
+  width: 550px;
+  text-align: left;
+  overflow: scroll;
+  box-sizing: content-box;
+  height: 100%;
+`;
+
+const ProfessionalListActions = styled.div`
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  padding: 8px 0 8px 40px;
+  border-bottom-width: 1px;
+  border-top-width: 1px;
+  border-bottom-style: solid;
+`;
+
+const TitleText = styled(Text)`
+  padding: 0 0 0 20px;
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-weight: 900;
+  font-style: normal;
+  font-size: 14px;
+`;
+
+const CurrentProfessionalContainer = styled(FlexColumn)`
+  justify-content: flex-start;
+  color: black;
+  padding: 20px;
+  width: 550px;
+  overflow: scroll;
+  ${props => props.inactive && css`
+    flex-direction: row;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 100px 0 0 0;
+  `};
+`;
+
+export const NoCurrentProfessionalContainer = styled(FlexColumn)`
+  justify-content: flex-start;
+  color: black;
+  border-color: darkslategrey;
+  padding: 20px;
+`;
+
+const BackButtonContainer = styled(FlexRow)`
+  align-self: flex-start;
+`;
+
+const BackIcon = styled.i`
+  align-self: center;
+  padding-right: 3px;
+  font-size: x-small;
+`;
+
+>>>>>>> master
 const DistanceContainer = styled.div`
   width: 140px;
   font-size: 0.9em;
