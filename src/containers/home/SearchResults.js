@@ -15,7 +15,12 @@ import {
   FlexRow,
 } from "../../components/BaseStyledComponents";
 import {MoveToGroupSelector} from "../../components/MoveToGroupSelector";
-import {addProfessionalsToGroup, favourProfessional, unfavourProfessional} from "../../redux/actions/professional";
+import {
+  addProfessionalsToGroup,
+  editProfessionalNotes,
+  favourProfessional,
+  unfavourProfessional
+} from "../../redux/actions/professional";
 import { SignInPrompt } from "../../components/SignInPrompt";
 
 
@@ -25,10 +30,22 @@ const addToGroupCustomStyles = {
     left                  : '50%',
     right                 : 'auto',
     bottom                : 'auto',
-    marginRight           : '-50%',
     height                : '315px',
     width                 : '400px',
     transform             : 'translate(-50%, -50%)'
+  }
+};
+
+const signInPromptCustomStyles = {
+  content : {
+    top                   : '40%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    height                : 'auto',
+    width                 : '400px',
+    transform             : 'translate(-50%, -50%)',
+    padding               : "10px 5px",
   }
 };
 
@@ -80,6 +97,9 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
   }
 
   const [currentProfessional, setCurrentProfessional] = useState(null);
+  const [notes, setNotes] = useState(null);
+  const [editNotes, setEditNotes] = useState(null);
+
   const [selectedAction, setSelectedAction] = useState(null);
   const [signInModalOpen, setSignInModalOpen] = useState(false);
 
@@ -89,12 +109,23 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
     setSelectedProfessionals(new Set())
   };
 
+  const handleSaveNotes = () => {
+    dispatch(editProfessionalNotes(currentProfessional.uid, notes));
+    setEditNotes(false);
+  };
+
   const handleFavourProfessional = (professionalUid) => {
     if (favourites.professionalsUids.indexOf(professionalUid) > 0) {
       dispatch(unfavourProfessional(professionalUid, favouritesUid))
     } else {
       dispatch(favourProfessional(professionalUid, favouritesUid))
     }
+  };
+
+  const handleCurrentProfessional = (professionals, professional) => {
+    let currentProfessional = professionals.filter(item => item.uid === professional.uid)[0];
+    setCurrentProfessional(currentProfessional);
+    setNotes(currentProfessional.userNotes);
   };
 
   const filterFavourites = (professionals) => {
@@ -169,7 +200,7 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
                       favourites={favourites}
                       setSignInModalOpen={setSignInModalOpen}
                       handleFavourProfessional={handleFavourProfessional}
-                      setCurrentProfessional={setCurrentProfessional}
+                      handleCurrentProfessional={handleCurrentProfessional}
                       selectedProfessionals={selectedProfessionals}
                       handleSelectedProfessional={handleSelectedProfessional}
                     />
@@ -178,8 +209,16 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
               </ProfessionalList>
             </ProfessionalResultsListContainer>
             <CurrentProfessionalContainer inactive={!currentProfessional}>
-              {currentProfessional && filteredProfessionals.indexOf(currentProfessional) >= 0
-                ? <CurrentProfessionalContent currentProfessional={currentProfessional}/>
+              {currentProfessional && (filteredProfessionals.filter(p => {return p.uid === currentProfessional.uid}).length === 1)
+                ? <CurrentProfessionalContent
+                  currentProfessional={currentProfessional}
+                  notes={notes}
+                  editNotes={editNotes}
+                  setNotes={setNotes}
+                  setEditNotes={setEditNotes}
+                  setSignInModalOpen={setSignInModalOpen}
+                  handleSaveNotes={handleSaveNotes}
+                  />
                 : <NoCurrentProfessionalContainer>
                   Select a professional to view their profile
                 </NoCurrentProfessionalContainer>
@@ -205,12 +244,12 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
       <Modal
         isOpen={signInModalOpen}
         onRequestClose={() => setSignInModalOpen(false)}
-        style={addToGroupCustomStyles}
+        style={signInPromptCustomStyles}
       >
         <SignInPrompt
-          message={"Sign in to keep track of your favourite professionals"}
+          message={"Sign in to keep track of your favourite professionals and take personal notes on them"}
           login={loginWithRedirect}
-          handleClose={() => setSelectedAction(null)}
+          handleClose={() => setSignInModalOpen(false)}
         />
       </Modal>
     </SearchResultsContainer>

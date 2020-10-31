@@ -12,7 +12,7 @@ import {
   addProfessionalsToGroup,
   createGroup,
   fetchGroups,
-  fetchFavourites,
+  fetchFavourites
 } from "../../redux/actions/professional";
 import {kmToLatLng} from "../../utils/helpers";
 import Modal from "react-modal";
@@ -41,7 +41,6 @@ const createGroupCustomStyles = {
     left                  : '50%',
     right                 : 'auto',
     bottom                : 'auto',
-    marginRight           : '-50%',
     height                : '305px',
     width                 : '400px',
     transform             : 'translate(-50%, -50%)'
@@ -54,7 +53,6 @@ const deleteGroupCustomStyles = {
     left                  : '50%',
     right                 : 'auto',
     bottom                : 'auto',
-    marginRight           : '-50%',
     height                : '250px',
     width                 : '400px',
     transform             : 'translate(-50%, -50%)'
@@ -81,7 +79,7 @@ const formatProfessionTypes = (professionTypes) => {
 };
 
 const filterProfessionals = (professionals, searchTerm, latLngBounds) => {
-  let filteredProfessionals = professionals;
+  let filteredProfessionals = Object.values(professionals);
   if (searchTerm && searchTerm.trim() !== "") {
     let searchLower = searchTerm.toLowerCase();
     filteredProfessionals = filteredProfessionals.filter(professional => {
@@ -92,8 +90,8 @@ const filterProfessionals = (professionals, searchTerm, latLngBounds) => {
           (firstName && firstName.indexOf(searchLower) >= 0) ||
           (lastName && lastName.indexOf(searchLower) >= 0) ||
           (firstName && lastName && `${firstName} ${lastName}`.indexOf(searchLower) >= 0) ||
-          (professional.description && professional.description.toLowerCase().indexOf(searchLower) >= 0)
-        // (professional.notes && professional.notes.toLowerCase().indexOf(searchLower) >= 0)
+          (professional.description && professional.description.toLowerCase().indexOf(searchLower) >= 0) ||
+          (professional.userNotes && professional.userNotes.toLowerCase().indexOf(searchLower) >= 0)
         )
       }
     );

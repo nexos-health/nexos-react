@@ -5,8 +5,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {FlexColumn, FlexRow, OverflowText, ParagraphText} from "./BaseStyledComponents";
 
 
-export const ProfessionalListItem = ({currentProfessional: current, professional, professionals, setCurrentProfessional, favourites, handleFavourProfessional, setSignInModalOpen, selectedProfessionals=null, handleSelectedProfessional=null}) => {
-  const favoured = favourites.professionalsUids.indexOf(professional.uid) > 0;
+export const ProfessionalListItem = ({currentProfessional: current, professional, professionals, handleCurrentProfessional, favourites, handleFavourProfessional, setSignInModalOpen, selectedProfessionals=null, handleSelectedProfessional=null}) => {
+  const favoured = favourites && favourites.professionalsUids.indexOf(professional.uid) > 0;
   return (
     <ProfessionalListItemWrapper>
       {/*{selectedProfessionals &&*/}
@@ -21,10 +21,10 @@ export const ProfessionalListItem = ({currentProfessional: current, professional
         <StarIcon
           favoured={favoured}
           icon={[favoured ? "fas" : "far", "star"]}
-          onClick={favourites.length === 1 ? () => handleFavourProfessional(professional.uid) : setSignInModalOpen(true)}/>
+          onClick={favourites ? () => handleFavourProfessional(professional.uid) : () => setSignInModalOpen(true)}/>
       </div>
       <ProfessionalInfoContainer active={current && professional.uid === current.uid}
-       onClick={() => setCurrentProfessional(professionals.filter(item => item.uid === professional.uid)[0])}>
+       onClick={() => handleCurrentProfessional(professionals, professional)}>
         <ProfessionalTopLine>
           <ProfessionalName>{professional.firstName} {professional.lastName}</ProfessionalName>
           <ProfessionType>{professional.professionType}</ProfessionType>

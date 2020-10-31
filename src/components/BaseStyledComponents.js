@@ -44,6 +44,13 @@ export const FlexRow = styled.div`
   font-family: "Lato", Helvetica, Arial, serif;
 `;
 
+export const TextArea = styled.textarea`
+  display: flex;
+  font-family: "Lato", Helvetica, Arial, serif;
+  font-style: normal;
+  font-size: 14px;
+`;
+
 export const Text = styled.div`
   display: flex;
   font-family: "Lato", Helvetica, Arial, serif;
@@ -57,6 +64,7 @@ export const BoldedText = styled(Text)`
 
 export const ParagraphText = styled(Text)`
   font-weight: 400;
+  white-space: pre-wrap;
 `;
 
 export const OverflowText = styled(ParagraphText)`

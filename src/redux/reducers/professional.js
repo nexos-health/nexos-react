@@ -23,10 +23,16 @@ const professionalReducer = (state = professionalInitialState, action) => {
         ...state,
         professionals: action.payload.professionals
       };
-    case actions.UPDATE_PROFESSIONAL:
+    case actions.UPDATE_PROFESSIONAL_NOTES:
       return {
         ...state,
-        active: action.payload.currentProfessional
+        professionals: {
+          ...state.professionals,
+          [action.payload.professionalUid]: {
+            ...state.professionals[action.payload.professionalUid],
+            "userNotes": action.payload.notes
+          }
+        }
       };
     case actions.UPDATE_GROUPS:
       return {

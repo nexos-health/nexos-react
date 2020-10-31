@@ -3,12 +3,15 @@ export const UPDATE_PROFESSION_TYPES = "UPDATE_PROFESSION_TYPES";
 export const FETCH_PROFESSIONALS = "FETCH_PROFESSIONALS";
 export const UPDATE_PROFESSIONALS = "UPDATE_PROFESSIONALS";
 export const FETCH_PROFESSIONAL = "FETCH_PROFESSIONAL";
-export const UPDATE_PROFESSIONAL = "UPDATE_PROFESSIONAL";
+export const UPDATE_PROFESSIONAL_NOTES = "UPDATE_PROFESSIONAL_NOTES";
 export const ADD_PROFESSIONALS_TO_GROUP = "ADD_PROFESSIONALS_TO_GROUP";
 export const REMOVE_PROFESSIONALS_FROM_GROUP = "REMOVE_PROFESSIONALS_FROM_GROUP";
 export const CREATE_GROUP = "CREATE_GROUP";
 export const FETCH_GROUPS = "FETCH_GROUPS";
 export const FETCH_FAVOURITES = "FETCH_FAVOURITES";
+export const FAVOUR_PROFESSIONAL = "FAVOUR_PROFESSIONAL";
+export const UNFAVOUR_PROFESSIONAL = "UNFAVOUR_PROFESSIONAL";
+export const EDIT_PROFESSIONAL_NOTE = "EDIT_PROFESSIONAL_NOTE";
 export const DELETE_GROUP = "DELETE_GROUP";
 export const EDIT_GROUP = "EDIT_GROUP";
 export const UPDATE_GROUPS = "UPDATE_GROUPS";
@@ -95,7 +98,7 @@ export function removeProfessionalsFromGroup(professionals, group) {
 export function favourProfessional(professional, group) {
   let professionalsList = [professional];
   return {
-    type: ADD_PROFESSIONALS_TO_GROUP,
+    type: FAVOUR_PROFESSIONAL,
     meta: {
       method: 'POST',
       endpoint: "/api/groups/add_professionals/",
@@ -111,7 +114,7 @@ export function favourProfessional(professional, group) {
 export function unfavourProfessional(professional, group) {
   let professionalsList = [professional];
   return {
-    type: REMOVE_PROFESSIONALS_FROM_GROUP,
+    type: UNFAVOUR_PROFESSIONAL,
     meta: {
       method: 'DELETE',
       endpoint: "/api/groups/remove_professionals/",
@@ -124,22 +127,38 @@ export function unfavourProfessional(professional, group) {
   }
 }
 
-export function fetchProfessional() {
+export function editProfessionalNotes(professional, notes) {
   return {
-    type: FETCH_PROFESSIONAL,
+    type: EDIT_PROFESSIONAL_NOTE,
     meta: {
-      method: 'GET',
-      endpoint: "/api/professional/",
+      method: 'POST',
+      endpoint: "/api/users/create_note/",
+      body: {
+        notes: notes,
+        professional: professional
+      },
       success: updateProfessional,
     }
   }
 }
+//
+// export function fetchProfessional() {
+//   return {
+//     type: FETCH_PROFESSIONAL,
+//     meta: {
+//       method: 'GET',
+//       endpoint: "/api/professional/",
+//       success: updateProfessional,
+//     }
+//   }
+// }
 
 function updateProfessional(data) {
   return {
-    type: UPDATE_PROFESSIONAL,
+    type: UPDATE_PROFESSIONAL_NOTES,
     payload: {
-      currentProfessional: data
+      professionalUid: data.professionalUid,
+      notes: data.notes
     }
   }
 }
