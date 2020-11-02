@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import styled, { css } from 'styled-components/macro';
-import {useDispatch} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import Modal from "react-modal";
 import Select from 'react-select';
 import {useAuth0} from "../../react-auth0-spa";
@@ -19,6 +19,7 @@ import {
   addProfessionalsToGroup,
   editProfessionalNotes,
   favourProfessional,
+  fetchFavourites,
   unfavourProfessional
 } from "../../redux/actions/professional";
 import { SignInPrompt } from "../../components/SignInPrompt";
@@ -80,13 +81,32 @@ const actionsOptions = [
   // {"value": "share", "name": "Share"},
 ];
 
-const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesToggle, filteredProfessionals,
-                         selectedProfessionals, setSelectedProfessionals, handleSelectedProfessional,
-                         showActions=false }) => {
+const formatGroups = (groups) => {
+  let formattedGroups = [];
+  if (Object.keys(groups).length > 0) {
+    Object.entries(groups).forEach(([uid, group]) => {
+      formattedGroups.push({value: uid, label: group.name, description: group.description})
+    });
+  }
 
-  const { isAuthenticated, loginWithRedirect } = useAuth0();
+  return formattedGroups.sort((a, b) => {
+    const aName = a.label.toLowerCase();
+    const bName = b.label.toLowerCase();
+    if (aName < bName) return -1;
+    if (aName > bName) return 1;
+    return 0;
+  });
+};
 
+
+const SearchResults = ({ favouritesToggle, setFavouritesToggle, filteredProfessionals, selectedProfessionals,
+                         setSelectedProfessionals, handleSelectedProfessional, showActions=false }) => {
+
+  const { isAuthenticated, loginWithPopup } = useAuth0();
   const dispatch = useDispatch();
+  const groups = useSelector(state => state.professionals.groups);
+
+  const groupsOptions = formatGroups(groups);
   const favouriteGroup = Object.entries(groups).filter(([uid, group]) => {
     return group.name === "Favourites"
   });
@@ -99,9 +119,14 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
   const [currentProfessional, setCurrentProfessional] = useState(null);
   const [notes, setNotes] = useState(null);
   const [editNotes, setEditNotes] = useState(null);
-
   const [selectedAction, setSelectedAction] = useState(null);
   const [signInModalOpen, setSignInModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchFavourites());
+    }
+  }, [isAuthenticated]);
 
   const handleAddToGroupSubmit = (group) => {
     dispatch(addProfessionalsToGroup(selectedProfessionals, group.value));
@@ -115,7 +140,7 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
   };
 
   const handleFavourProfessional = (professionalUid) => {
-    if (favourites.professionalsUids.indexOf(professionalUid) > 0) {
+    if (favourites.professionalsUids.indexOf(professionalUid) >= 0) {
       dispatch(unfavourProfessional(professionalUid, favouritesUid))
     } else {
       dispatch(favourProfessional(professionalUid, favouritesUid))
@@ -128,10 +153,15 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
     setNotes(currentProfessional.userNotes);
   };
 
+  const handleLogin = () => {
+    setSignInModalOpen(false);
+    loginWithPopup()
+  };
+
   const filterFavourites = (professionals) => {
     let filteredFavourites = professionals;
     filteredFavourites = filteredFavourites.filter(professional => {
-      return favourites.professionalsUids.indexOf(professional.uid) > 0
+      return favourites.professionalsUids.indexOf(professional.uid) >= 0
     });
 
     return filteredFavourites
@@ -248,7 +278,7 @@ const SearchResults = ({ groupsOptions, groups, favouritesToggle, setFavouritesT
       >
         <SignInPrompt
           message={"Sign in to keep track of your favourite professionals and take personal notes on them"}
-          login={loginWithRedirect}
+          login={handleLogin}
           handleClose={() => setSignInModalOpen(false)}
         />
       </Modal>

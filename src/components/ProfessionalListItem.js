@@ -6,7 +6,7 @@ import {FlexColumn, FlexRow, OverflowText, ParagraphText} from "./BaseStyledComp
 
 
 export const ProfessionalListItem = ({currentProfessional: current, professional, professionals, handleCurrentProfessional, favourites, handleFavourProfessional, setSignInModalOpen, selectedProfessionals=null, handleSelectedProfessional=null}) => {
-  const favoured = favourites && favourites.professionalsUids.indexOf(professional.uid) > 0;
+  const favoured = favourites && favourites.professionalsUids.indexOf(professional.uid) >= 0;
   return (
     <ProfessionalListItemWrapper>
       {/*{selectedProfessionals &&*/}

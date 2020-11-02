@@ -123,37 +123,13 @@ const filterProfessionals = (professionals, searchTerm, latLngBounds) => {
   return filteredProfessionals;
 };
 
-const formatGroups = (groups) => {
-  let formattedGroups = [];
-  if (Object.keys(groups).length > 0) {
-    Object.entries(groups).forEach(([uid, group]) => {
-      formattedGroups.push({value: uid, label: group.name, description: group.description})
-    });
-  }
-
-  return formattedGroups.sort((a, b) => {
-    const aName = a.label.toLowerCase();
-    const bName = b.label.toLowerCase();
-    if (aName < bName) return -1;
-    if (aName > bName) return 1;
-    return 0;
-  });
-};
-
-
 const Home = () => {
   // Redux state initialisation
   const account = useSelector(state => state.account.accountDetails);
   const professionals = useSelector(state => state.professionals.professionals);
   const professionTypes = useSelector(state => state.professionals.professionTypes);
-  const groups = useSelector(state => state.professionals.groups);
   // const currentProfessional = useSelector(state => state.professionals.currentProfessional);
   const dispatch = useDispatch();
-  const {
-    isAuthenticated,
-    isLoading,
-    loginWithRedirect,
-  } = useAuth0();
 
   // State initialisation
   const distanceOptions = [
@@ -163,8 +139,6 @@ const Home = () => {
     {value: 50, label: "100km"},
     {value: 100, label: "200km"},
   ];
-
-  const groupsOptions = formatGroups(groups);
 
   const [createGroupModalOpen, setCreateGroupModalOpen] = useState(false);
   const [removeFromGroupModalOpen, setRemoveFromGroupModalOpen] = useState(false);
@@ -243,12 +217,6 @@ const Home = () => {
   //     dispatch(fetchGroups());
   //   }
   // }, []);
-
-  useEffect(() => {
-    if (Object.entries(groups).length === 0 && isAuthenticated) {
-      dispatch(fetchFavourites());
-    }
-  }, []);
 
   useEffect(() => {
     dispatch(fetchProfessionals(selectedProfessionTypes || []))
@@ -336,8 +304,6 @@ const Home = () => {
             </SearchLocation>
           </SearchContainer>
           <SearchResults
-            groupsOptions={groupsOptions}
-            groups={groups}
             favouritesToggle={favouritesToggle}
             setFavouritesToggle={setFavouritesToggle}
             filteredProfessionals={filteredProfessionals}

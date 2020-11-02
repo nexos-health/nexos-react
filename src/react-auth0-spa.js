@@ -59,8 +59,8 @@ export const Auth0Provider = ({
     }
     const user = await auth0Client.getUser();
     const accessToken = await auth0Client.getTokenSilently();
-    setAccessToken(accessToken);
     setUser(user);
+    setAccessToken(accessToken);
     setIsAuthenticated(true);
   };
 
