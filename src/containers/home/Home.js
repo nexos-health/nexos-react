@@ -146,6 +146,7 @@ const Home = () => {
   const [createFormName, setCreateFormName] = useState("");
   const [createFormDescription, setCreateFromDescription] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [professionTextValue, setProfessionTextValue] = useState("");
   const [locationSearchTerm, setLocationSearchTerm] = useState("");
   const [locationSelected, setLocationSelected] = useState(false);
   const [latLngBounds, setLatLngBounds] = useState({});
@@ -155,6 +156,20 @@ const Home = () => {
   const [professionTypesSelections, setProfessionTypesSelections] = useState([]);
   const [selectedProfessionTypes, setSelectedProfessionTypes] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+
+
+  const handleInputChange = (inputValue, { action }) => {
+    switch (action) {
+      case 'input-change':
+        setProfessionTextValue(inputValue);
+        return;
+      case 'menu-close':
+        setProfessionTextValue("");
+        return;
+      default:
+        return;
+    }
+  };
 
   const handleLocationSelect = async (action, location, distance) => {
     if (action.action === 'clear') {
@@ -243,7 +258,9 @@ const Home = () => {
                 <Select
                   options={professionTypesSelections}
                   value={selectedProfessionTypes}
+                  inputValue={professionTextValue}
                   onChange={setSelectedProfessionTypes}
+                  onInputChange={handleInputChange}
                   styles={customStyles}
                   closeMenuOnSelect={false}
                   isMulti
